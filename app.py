@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Definicje modeli bazodanowych w PostgreSQL
-class ArtykulModel(db.Model):
+class ArtykulModel(Model := db.Model):
     __tablename__ = 'produkty_baza'
     kod = db.Column(db.String(50), primary_key=True)
     nazwa = db.Column(db.String(200), nullable=False)
@@ -138,7 +138,7 @@ T = {
         "raport_wyd_opis": "Poniższy raport przedstawia całkowity czas pracy oraz średnią produktywność w przeliczeniu na 1 godzinę dla każdej linii i zmiany.",
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
         "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla linii.",
-        "wybierz_dzien_plan": "Wybierz dzień planu:", "podglad_planu": "Podgląd zaplanowanej produkcji według dni:", "brak_planow": "Brak zdefiniowanych planów produkcyjnych.",
+        "wybierz_dzien_plan": "Wybierz dzień planu:", "podglad_planu": "Podgląd zaplanowanej produkcji:", "brak_planow": "Brak zdefiniowanych planów produkcyjnych.",
         "dodaj_nowego_uzyt": "Dodaj nowego użytkownika / operatora", "imie_nazwisko": "Imię i Nazwisko operatora:", "rola": "Rola:",
         "uprawnienia_lbl": "Uprawnienia (wybierz zakładki):", "zapisz_uzyt_btn": "Zapisz użytkownika", "zarejestrowani_uzyt": "Zarejestrowani użytkownicy",
         "systemowy": "(systemowy)", "kol_kod": "Kod", "kol_nazwa": "Nazwa", "kol_odbiorca": "Odbiorca", "kol_akcja": "Akcja",
@@ -187,7 +187,7 @@ T = {
         "raport_wyd_opis": "The report below shows total working time and average productivity per 1 hour for each line and shift.",
         "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Productivity (pcs/h)",
         "brak_czasow": "No recorded working times and palettes for the line.",
-        "wybierz_dzien_plan": "Select plan day:", "podglad_planu": "Preview of planned production by days:", "brak_planow": "No production plans defined.",
+        "wybierz_dzien_plan": "Select plan day:", "podglad_planu": "Preview of planned production:", "brak_planow": "No production plans defined.",
         "dodaj_nowego_uzyt": "Add new user / operator", "imie_nazwisko": "Operator Full Name:", "rola": "Role:",
         "uprawnienia_lbl": "Permissions (select tabs):", "zapisz_uzyt_btn": "Save user", "zarejestrowani_uzyt": "Registered users",
         "systemowy": "(system)", "kol_kod": "Code", "kol_nazwa": "Name", "kol_odbiorca": "Recipient", "kol_akcja": "Action",
@@ -286,7 +286,7 @@ T = {
         "raport_wyd_opis": "Звіт нижче показує загальний час роботи та середню продуктивність за 1 годину для кожної лінії та зміни.",
         "th_linia": "Лінія", "th_zmiana": "Зміна", "th_wyprodukowano": "Вироблено штук", "th_czas_pracy": "Час роботи (години)", "th_wydajnosc": "Продуктивність (шт/год)",
         "brak_czasow": "Немає зареєстрованого часу роботи та палет для лінії.",
-        "wybierz_dzien_plan": "Виберіть день плану:", "podglad_planu": "Попередній перегляд спланованого виробництва за днями:", "brak_planow": "Немає визначених планів.",
+        "wybierz_dzien_plan": "Виберіть день плану:", "podglad_planu": "Попередній перегляд спланованого виробництва:", "brak_planow": "Немає визначених планів.",
         "dodaj_nowego_uzyt": "Додати нового користувача / оператора",
         "imie_nazwisko": "ПІБ оператора:", "rola": "Роль:",
         "uprawnienia_lbl": "Права доступу (виберіть вкладки):", "zapisz_uzyt_btn": "Зберегти користувача", "zarejestrowani_uzyt": "Зареєстровані користувачі",
@@ -502,7 +502,7 @@ HTML_TEMPLATE = """
                 <h3 style="margin-top: 0; color: #385723;">📋 {{ t.wklej_plan }}</h3>
                 <form action="/zapisz-plan" method="POST" style="margin-bottom: 20px;">
                     <label><b>{{ t.wybierz_dzien_plan }}</b></label>
-                    <input type="date" name="data_planu" value="{{ dzis }}" style="max-width: 250px; margin-bottom: 15px;" required>
+                    <input type="date" name="data_planu" value="{{ wybrana_data_planu or dzis }}" style="max-width: 250px; margin-bottom: 15px;" required>
                     
                     <p style="font-size: 13px; color: #444;">{{ t.instrukcja_plan }}</p>
                     <textarea name="surowy_plan" rows="8" placeholder="Wklej skopiowane kolumny z Excela (Kod [Tab] Ilość)..." style="font-family: monospace; font-size: 13px;"></textarea>
@@ -510,20 +510,34 @@ HTML_TEMPLATE = """
                 </form>
 
                 <h4 style="border-top: 1px solid #c8e1b9; padding-top: 15px;">{{ t.podglad_planu }}</h4>
-                {% for data_p, pozycje in plan_produkcyjny.items() %}
-                    <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #c8e1b9;">
-                        <b>📅 Dzień: {{ data_p }}</b>
-                        <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
-                            {% for kod, szt in pozycje.items() %}
-                                <li><b>{{ kod }}</b> - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}: <b>{{ szt }} szt.</b> 
-                                    (<a href="/usun-z-planu?data={{ data_p }}&kod={{ kod }}" style="color: red; text-decoration: none;">{{ t.usun }}</a>)
+                
+                <!-- Wybór konkretnego dnia z listy rozwijanej zamiast długiej listy -->
+                <form method="GET" action="/" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end;">
+                    <input type="hidden" name="linia" value="plan">
+                    <div style="flex: 1; max-width: 300px;">
+                        <label><b>Wybierz dzień do podglądu:</b></label>
+                        <select name="wybrana_data_planu" onchange="this.form.submit()">
+                            {% for data_p in plan_produkcyjny.keys() | sort(reverse=True) %}
+                                <option value="{{ data_p }}" {{ 'selected' if data_p == wybrana_data_planu else '' }}>📅 {{ data_p }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+
+                {% if wybrana_data_planu and wybrana_data_planu in plan_produkcyjny %}
+                    <div style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #c8e1b9;">
+                        <b>📅 Dzień: {{ wybrana_data_planu }}</b>
+                        <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 13px;">
+                            {% for kod, szt in plan_produkcyjny[wybrana_data_planu].items() %}
+                                <li style="margin-bottom: 5px;"><b>{{ kod }}</b> - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}: <b>{{ szt }} szt.</b> 
+                                    (<a href="/usun-z-planu?data={{ wybrana_data_planu }}&kod={{ kod }}" style="color: red; text-decoration: none;">{{ t.usun }}</a>)
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
                 {% else %}
                     <p style="color: #666; font-size: 13px;">{{ t.brak_planow }}</p>
-                {% endfor %}
+                {% endif %}
             </div>
         {% elif linia == 'progress' and 'progress' in dostep %}
             <div class="progress-section">
@@ -939,6 +953,13 @@ def index():
             plan_produkcyjny[pl.data] = {}
         plan_produkcyjny[pl.data][pl.kod] = pl.ilosc
 
+    # Obsługa wyboru daty planu dla nowego selektora
+    dostepne_daty_planu = sorted(plan_produkcyjny.keys(), reverse=True)
+    domyslna_data_planu = dostepne_daty_planu[0] if dostepne_daty_planu else dzis
+    wybrana_data_planu = request.args.get('wybrana_data_planu', domyslna_data_planu)
+    if wybrana_data_planu not in plan_produkcyjny and dostepne_daty_planu:
+        wybrana_data_planu = dostepne_daty_planu[0]
+
     wpisy_baza = WpisProdukcyjnyModel.query.filter_by(data=wybrana_data).all()
     wpisy_dla_dnia = [{
         "id": w.id, "linia": w.linia, "zmiana": w.zmiana, "kod": w.kod,
@@ -995,6 +1016,7 @@ def index():
         wypr_zmiana=wypr_zmiana,
         dzis=dzis,
         wybrana_data=wybrana_data,
+        wybrana_data_planu=wybrana_data_planu,
         min_data=min_data,
         domyslna_partia=domyslna_partia,
         produkty_baza=produkty_baza,
@@ -1137,7 +1159,7 @@ def zapisz_plan():
                 except ValueError:
                     pass
         db.session.commit()
-    return redirect(url_for('index', linia='plan'))
+    return redirect(url_for('index', linia='plan', wybrana_data_planu=data_planu))
 
 @app.route('/usun-z-planu')
 def usun_z_planu():
@@ -1149,7 +1171,7 @@ def usun_z_planu():
     if plan_poz:
         db.session.delete(plan_poz)
         db.session.commit()
-    return redirect(url_for('index', linia='plan'))
+    return redirect(url_for('index', linia='plan', wybrana_data_planu=data_p))
 
 @app.route('/admin/dodaj-uzytkownika', methods=['POST'])
 def admin_dodaj_uzytkownika():
