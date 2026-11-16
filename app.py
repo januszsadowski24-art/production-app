@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Definicje modeli bazodanowych w PostgreSQL
-class ArtykulModel(Model := db.Model):
+class ArtykulModel(db.Model):
     __tablename__ = 'produkty_baza'
     kod = db.Column(db.String(50), primary_key=True)
     nazwa = db.Column(db.String(200), nullable=False)
@@ -953,7 +953,6 @@ def index():
             plan_produkcyjny[pl.data] = {}
         plan_produkcyjny[pl.data][pl.kod] = pl.ilosc
 
-    # Obsługa wyboru daty planu dla nowego selektora
     dostepne_daty_planu = sorted(plan_produkcyjny.keys(), reverse=True)
     domyslna_data_planu = dostepne_daty_planu[0] if dostepne_daty_planu else dzis
     wybrana_data_planu = request.args.get('wybrana_data_planu', domyslna_data_planu)
@@ -1347,9 +1346,10 @@ def generate():
             except Exception:
                 pass
 
-        ws_linia.cell(row=1, column=6, value="Nr dok: CP4/F02").font = Font(name="Calibri", size=9, bold=True)
-        ws_linia.cell(row=1, column=8, value="Nr wydania: 2").font = Font(name="Calibri", size=9, bold=True)
-        ws_linia.cell(row=1, column=10, value="Data wydania: 02.11.2026").font = Font(name="Calibri", size=9, bold=True)
+        # Zaktualizowane dane nagłówka dokumentu
+        ws_linia.cell(row=1, column=6, value="Nr dok: CP4/F01").font = Font(name="Calibri", size=9, bold=True)
+        ws_linia.cell(row=1, column=8, value="Nr wydania: 3").font = Font(name="Calibri", size=9, bold=True)
+        ws_linia.cell(row=1, column=10, value="Data wydania: 18.11.2026").font = Font(name="Calibri", size=9, bold=True)
         ws_linia.cell(row=1, column=12, value="Sporządził: Barbara Łogin").font = Font(name="Calibri", size=9, bold=True)
 
         thick_black = Side(style='medium', color='000000')
