@@ -133,11 +133,11 @@ T = {
         "podsumowanie_dnia": "Podsumowanie Dnia (Wszystkie Artykuły)",
         "do_zrobienia": "Do zrobienia łącznie:", "wykonano": "Wykonano:", "pozostalo": "Pozostało:",
         "postep_art": "Postęp według poszczególnych artykułów:",
-        "brak_planu_dzis": "Brak planu produkcyjnego na dzisiejszy dzień. Przejdź do zakładki „Plan Produkcyjny”, aby dodać plan na wybraną datę.",
+        "brak_planu_dzis": "Brak planu produkcyjnego na ten dzień. Wybierz datę z planem lub przejdź do zakładki „Plan Produkcyjny”.",
         "raport_wyd_tytul": "Raport Wydajności (Sztuk na Godzinę)",
         "raport_wyd_opis": "Poniższy raport przedstawia całkowity czas pracy oraz średnią produktywność w przeliczeniu na 1 godzinę dla każdej linii i zmiany.",
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
-        "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla linii.",
+        "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla wybranej daty.",
         "wybierz_dzien_plan": "Wybierz dzień planu:", "podglad_planu": "Podgląd zaplanowanej produkcji:", "brak_planow": "Brak zdefiniowanych planów produkcyjnych.",
         "dodaj_nowego_uzyt": "Dodaj nowego użytkownika / operatora", "imie_nazwisko": "Imię i Nazwisko operatora:", "rola": "Rola:",
         "uprawnienia_lbl": "Uprawnienia (wybierz zakładki):", "zapisz_uzyt_btn": "Zapisz użytkownika", "zarejestrowani_uzyt": "Zarejestrowani użytkownicy",
@@ -182,11 +182,11 @@ T = {
         "podsumowanie_dnia": "Day Summary (All Articles)",
         "do_zrobienia": "Total to do:", "wykonano": "Completed:", "pozostalo": "Remaining:",
         "postep_art": "Progress by individual articles:",
-        "brak_planu_dzis": "No production plan for today. Go to the „Production Plan” tab to add a plan for the selected date.",
+        "brak_planu_dzis": "No production plan for this day.",
         "raport_wyd_tytul": "Productivity Report (Pcs per Hour)",
         "raport_wyd_opis": "The report below shows total working time and average productivity per 1 hour for each line and shift.",
         "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Productivity (pcs/h)",
-        "brak_czasow": "No recorded working times and palettes for the line.",
+        "brak_czasow": "No recorded working times for selected date.",
         "wybierz_dzien_plan": "Select plan day:", "podglad_planu": "Preview of planned production:", "brak_planow": "No production plans defined.",
         "dodaj_nowego_uzyt": "Add new user / operator", "imie_nazwisko": "Operator Full Name:", "rola": "Role:",
         "uprawnienia_lbl": "Permissions (select tabs):", "zapisz_uzyt_btn": "Save user", "zarejestrowani_uzyt": "Registered users",
@@ -232,11 +232,11 @@ T = {
         "podsumowanie_dnia": "Resumen del Día (Todos los Artículos)",
         "do_zrobienia": "Total por hacer:", "wykonano": "Completado:", "pozostalo": "Restante:",
         "postep_art": "Progreso por artículos individuales:",
-        "brak_planu_dzis": "No hay plan de producción para hoy. Vaya a la pestaña „Plan de Producción” para agregar un plan.",
+        "brak_planu_dzis": "No hay plan para este día.",
         "raport_wyd_tytul": "Informe de Productividad (Pcs por Hora)",
         "raport_wyd_opis": "El informe muestra el tiempo total de trabajo y la productividad promedio por hora para cada línea.",
         "th_linia": "Línea", "th_zmiana": "Turno", "th_wyprodukowano": "Pcs producidas", "th_czas_pracy": "Tiempo de trabajo (horas)", "th_wydajnosc": "Productividad (pcs/h)",
-        "brak_czasow": "No hay tiempos de trabajo registrados para la línea.",
+        "brak_czasow": "No hay tiempos registrados.",
         "wybierz_dzien_plan": "Seleccionar día del plan:", "podglad_planu": "Vista previa de producción planificada:", "brak_planow": "No hay planes definidos.",
         "dodaj_nowego_uzyt": "Añadir nuevo usuario / operador", "imie_nazwisko": "Nombre completo del operador:", "rola": "Rol:",
         "uprawnienia_lbl": "Permisos (seleccionar pestañas):", "zapisz_uzyt_btn": "Guardar usuario", "zarejestrowani_uzyt": "Usuarios registrados",
@@ -281,11 +281,11 @@ T = {
         "podsumowanie_dnia": "Підсумок дня (Всі артикули)",
         "do_zrobienia": "Загалом виконати:", "wykonano": "Виконано:", "pozostalo": "Залишилось:",
         "postep_art": "Прогрес за окремими артикулами:",
-        "brak_planu_dzis": "Немає виробничого плану на сьогодні. Перейдіть до вкладки „Виробничий план”, щоб додати план.",
+        "brak_planu_dzis": "Немає плану на цей день.",
         "raport_wyd_tytul": "Звіт про продуктивність (Шт за годину)",
         "raport_wyd_opis": "Звіт нижче показує загальний час роботи та середню продуктивність за 1 годину для кожної лінії та зміни.",
         "th_linia": "Лінія", "th_zmiana": "Зміна", "th_wyprodukowano": "Вироблено штук", "th_czas_pracy": "Час роботи (години)", "th_wydajnosc": "Продуктивність (шт/год)",
-        "brak_czasow": "Немає зареєстрованого часу роботи та палет для лінії.",
+        "brak_czasow": "Немає зареєстрованого часу.",
         "wybierz_dzien_plan": "Виберіть день плану:", "podglad_planu": "Попередній перегляд спланованого виробництва:", "brak_planow": "Немає визначених планів.",
         "dodaj_nowego_uzyt": "Додати нового користувача / оператора",
         "imie_nazwisko": "ПІБ оператора:", "rola": "Роль:",
@@ -511,13 +511,12 @@ HTML_TEMPLATE = """
 
                 <h4 style="border-top: 1px solid #c8e1b9; padding-top: 15px;">{{ t.podglad_planu }}</h4>
                 
-                <!-- Wybór konkretnego dnia z listy rozwijanej zamiast długiej listy -->
                 <form method="GET" action="/" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="plan">
                     <div style="flex: 1; max-width: 300px;">
                         <label><b>Wybierz dzień do podglądu:</b></label>
                         <select name="wybrana_data_planu" onchange="this.form.submit()">
-                            {% for data_p in plan_produkcyjny.keys() | sort(reverse=True) %}
+                            {% for data_p in dostepne_daty_planu %}
                                 <option value="{{ data_p }}" {{ 'selected' if data_p == wybrana_data_planu else '' }}>📅 {{ data_p }}</option>
                             {% endfor %}
                         </select>
@@ -541,17 +540,38 @@ HTML_TEMPLATE = """
             </div>
         {% elif linia == 'progress' and 'progress' in dostep %}
             <div class="progress-section">
-                <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }} (Dzień: {{ dzis }})</h3>
+                <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }}</h3>
                 
-                {% set plan_dzis = plan_produkcyjny.get(dzis, {}) %}
-                {% set suma_planu_calkowita = plan_dzis.values() | map('int') | sum %}
-                {% set suma_wykonana_calkowita = zrealizowane_calkowite.values() | map('int') | sum %}
+                <!-- Wybór dnia dla postępu -->
+                <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
+                    <input type="hidden" name="linia" value="progress">
+                    <div style="flex: 1; max-width: 300px;">
+                        <label><b>Wybierz dzień do podglądu postępu:</b></label>
+                        <select name="wybrana_data_progress" onchange="this.form.submit()">
+                            {% for data_d in dostepne_daty_wpisow_lub_planu %}
+                                <option value="{{ data_d }}" {{ 'selected' if data_d == wybrana_data_progress else '' }}>📅 {{ data_d }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+
+                {% set plan_wybrany = plan_produkcyjny.get(wybrana_data_progress, {}) %}
+                {% set suma_planu_calkowita = plan_wybrany.values() | map('int') | sum %}
+                
+                {% set wykonane_dla_wybranej_daty = {} %}
+                {% for w in wpisy_baza_wszystkie %}
+                    {% if w.data == wybrana_data_progress %}
+                        {% set _ = wykonane_dla_wybranej_daty.update({w.kod: wykonane_dla_wybranej_daty.get(w.kod, 0) + int(w.ilosc)}) %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% set suma_wykonana_calkowita = wykonane_dla_wybranej_daty.values() | map('int') | sum %}
                 {% set pozostalo_calkowite = [suma_planu_calkowita - suma_wykonana_calkowita, 0] | max %}
                 {% set procent_calkowity = (suma_wykonana_calkowita / suma_planu_calkowita * 100) | round | int if suma_planu_calkowita > 0 else 0 %}
 
                 <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid #28a745; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
                     <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #155724; display: flex; justify-content: space-between;">
-                        <span>🚀 {{ t.podsumowanie_dnia }}</span>
+                        <span>🚀 {{ t.podsumowanie_dnia }} (Dzień: {{ wybrana_data_progress }})</span>
                         <span><b>{{ suma_wykonana_calkowita }}</b> / {{ suma_planu_calkowita }} szt. (<b>{{ procent_calkowity }}%</b>)</span>
                     </div>
                     <div style="background: #e9ecef; border-radius: 8px; height: 26px; overflow: hidden; border: 1px solid #ced4da; margin-bottom: 10px;">
@@ -567,10 +587,10 @@ HTML_TEMPLATE = """
                 </div>
 
                 <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }}</h4>
-                {% for kod, plan_val in plan_dzis.items() %}
-                    {% set wykonane = zrealizowane_calkowite.get(kod, 0) %}
+                {% for kod, plan_val in plan_wybrany.items() %}
+                    {% set wykonane = wykonane_dla_wybranej_daty.get(kod, 0) %}
                     {% set left_amt = [plan_val - wykonane, 0] | max %}
-                    {% set procent = (wykonane / plan_val * 100) | round | int %}
+                    {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
                     <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd;">
                         <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 6px;">
                             <span>{{ kod }} - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}</span>
@@ -583,12 +603,30 @@ HTML_TEMPLATE = """
                 {% else %}
                     <p style="color: #777; font-size: 13px;">{{ t.brak_planu_dzis }}</p>
                 {% endfor %}
+
+                <!-- Przycisk generowania raportu postępu dla wybranej daty -->
+                <form action="/generate?data={{ wybrana_data_progress }}&linia=1" method="POST" style="margin-top: 25px;">
+                    <button type="submit" style="background: #28a745;">📥 {{ t.zapisz_excel }} (Postęp / Dzień: {{ wybrana_data_progress }})</button>
+                </form>
             </div>
         {% elif linia == 'wydajnosc' and 'wydajnosc' in dostep %}
             <div class="wydajnosc-section">
                 <h3 style="margin-top: 0; color: #5a32a3;">⏱️ {{ t.raport_wyd_tytul }}</h3>
                 <p style="font-size: 13px; color: #555;">{{ t.raport_wyd_opis }}</p>
                 
+                <!-- Wybór dnia dla wydajności -->
+                <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
+                    <input type="hidden" name="linia" value="wydajnosc">
+                    <div style="flex: 1; max-width: 300px;">
+                        <label><b>Wybierz dzień do podglądu wydajności:</b></label>
+                        <select name="wybrana_data_wydajnosc" onchange="this.form.submit()">
+                            {% for data_d in dostepne_daty_wpisow %}
+                                <option value="{{ data_d }}" {{ 'selected' if data_d == wybrana_data_wydajnosc else '' }}>📅 {{ data_d }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+
                 <table>
                     <tr>
                         <th>{{ t.th_linia }}</th>
@@ -597,7 +635,7 @@ HTML_TEMPLATE = """
                         <th>{{ t.th_czas_pracy }}</th>
                         <th>{{ t.th_wydajnosc }}</th>
                     </tr>
-                    {% for klucz, stat in statystyki_wydajnosci.items() %}
+                    {% for klucz, stat in statystyki_wydajnosci_wybrana.items() %}
                     <tr>
                         <td><b>{{ t.linia_1.split()[0] }} {{ stat.linia }}</b></td>
                         <td>{{ t.th_zmiana }} {{ stat.zmiana }}</td>
@@ -609,6 +647,11 @@ HTML_TEMPLATE = """
                     <tr><td colspan="5" style="text-align: center; color: #777;">{{ t.brak_czasow }}</td></tr>
                     {% endfor %}
                 </table>
+
+                <!-- Przycisk generowania raportu wydajności dla wybranej daty -->
+                <form action="/generate?data={{ wybrana_data_wydajnosc }}&linia=1" method="POST" style="margin-top: 25px;">
+                    <button type="submit" style="background: #6f42c1;">📥 {{ t.zapisz_excel }} (Wydajność / Dzień: {{ wybrana_data_wydajnosc }})</button>
+                </form>
             </div>
         {% elif linia == 'db_art' and 'db_art' in dostep %}
             <div class="db-section">
@@ -959,44 +1002,57 @@ def index():
     if wybrana_data_planu not in plan_produkcyjny and dostepne_daty_planu:
         wybrana_data_planu = dostepne_daty_planu[0]
 
-    wpisy_baza = WpisProdukcyjnyModel.query.filter_by(data=wybrana_data).all()
-    wpisy_dla_dnia = [{
-        "id": w.id, "linia": w.linia, "zmiana": w.zmiana, "kod": w.kod,
+    # Pobieranie wszystkich wpisów historycznych dla widoków postępu i wydajności
+    wpisy_baza_wszystkie_obj = WpisProdukcyjnyModel.query.all()
+    wpisy_baza_wszystkie = [{
+        "id": w.id, "data": w.data, "linia": w.linia, "zmiana": w.zmiana, "kod": w.kod,
         "nazwa": w.nazwa, "odbiorca": w.odbiorca, "ilosc": w.ilosc,
         "data_przyd": w.data_przyd, "partia_prod": w.partia_prod,
         "etykieta_gora": w.etykieta_gora, "etykieta_dol": w.etykieta_dol,
         "czas_start": w.czas_start, "czas_koniec": w.czas_koniec,
         "operator": w.operator
-    } for w in wpisy_baza]
+    } for w in wpisy_baza_wszystkie_obj]
 
-    wpisy_dla_linii = [w for w in wpisy_dla_dnia if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
+    dostepne_daty_wpisow = sorted(list(set([w['data'] for w in wpisy_baza_wszystkie])), reverse=True)
+    if dzis not in dostepne_daty_wpisow:
+        dostepne_daty_wpisow.insert(0, dzis)
+
+    dostepne_daty_wpisow_lub_planu = sorted(list(set(list(plan_produkcyjny.keys()) + [w['data'] for w in wpisy_baza_wszystkie] + [dzis])), reverse=True)
+
+    wybrana_data_progress = request.args.get('wybrana_data_progress', dzis if dzis in dostepne_daty_wpisow_lub_planu else (dostepne_daty_wpisow_lub_planu[0] if dostepne_daty_wpisow_lub_planu else dzis))
+    wybrana_data_wydajnosc = request.args.get('wybrana_data_wydajnosc', dzis if dzis in dostepne_daty_wpisow else (dostepne_daty_wpisow[0] if dostepne_daty_wpisow else dzis))
+
+    wpisy_baza = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data]
+    wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
     suma_sztuk = sum(int(w['ilosc']) for w in wpisy_dla_linii)
 
     zrealizowane_calkowite = {}
-    for item in wpisy_dla_dnia:
+    for item in wpisy_baza:
         zrealizowane_calkowite[item['kod']] = zrealizowane_calkowite.get(item['kod'], 0) + int(item['ilosc'])
 
-    statystyki_wydajnosci = {}
-    for item in wpisy_dla_dnia:
+    # Statystyki wydajności dla wybranej daty w zakładce wydajności
+    wpisy_dla_wydajnosci = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data_wydajnosc]
+    statystyki_wydajnosci_wybrana = {}
+    for item in wpisy_dla_wydajnosci:
         key = f"L{item['linia']}_Z{item['zmiana']}"
-        if key not in statystyki_wydajnosci:
-            statystyki_wydajnosci[key] = {
+        if key not in statystyki_wydajnosci_wybrana:
+            statystyki_wydajnosci_wybrana[key] = {
                 "linia": item['linia'],
                 "zmiana": item['zmiana'],
                 "suma_sztuk": 0,
                 "czas_minut": 0
             }
-        statystyki_wydajnosci[key]["suma_sztuk"] += int(item['ilosc'])
+        statystyki_wydajnosci_wybrana[key]["suma_sztuk"] += int(item['ilosc'])
         try:
             t1 = datetime.strptime(item['czas_start'], '%H:%M')
             t2 = datetime.strptime(item['czas_koniec'], '%H:%M')
             diff = (t2 - t1).total_seconds() / 60
             if diff > 0:
-                statystyki_wydajnosci[key]["czas_minut"] += diff
+                statystyki_wydajnosci_wybrana[key]["czas_minut"] += diff
         except Exception:
             pass
 
-    for key, stat in statystyki_wydajnosci.items():
+    for key, stat in statystyki_wydajnosci_wybrana.items():
         godziny = stat["czas_minut"] / 60
         stat["czas_godz"] = round(godziny, 2)
         if godziny > 0:
@@ -1016,6 +1072,11 @@ def index():
         dzis=dzis,
         wybrana_data=wybrana_data,
         wybrana_data_planu=wybrana_data_planu,
+        wybrana_data_progress=wybrana_data_progress,
+        wybrana_data_wydajnosc=wybrana_data_wydajnosc,
+        dostepne_daty_planu=dostepne_daty_planu,
+        dostepne_daty_wpisow=dostepne_daty_wpisow,
+        dostepne_daty_wpisow_lub_planu=dostepne_daty_wpisow_lub_planu,
         min_data=min_data,
         domyslna_partia=domyslna_partia,
         produkty_baza=produkty_baza,
@@ -1024,9 +1085,10 @@ def index():
         plan_produkcyjny=plan_produkcyjny,
         zrealizowane_json=json.dumps(zrealizowane_calkowite),
         zrealizowane_calkowite=zrealizowane_calkowite,
+        wpisy_baza_wszystkie=wpisy_baza_wszystkie,
         wpisy_dla_linii=wpisy_dla_linii,
         suma_sztuk=suma_sztuk,
-        statystyki_wydajnosci=statystyki_wydajnosci,
+        statystyki_wydajnosci_wybrana=statystyki_wydajnosci_wybrana,
         user=user,
         role=role,
         pelna_nazwa=pelna_nazwa,
@@ -1346,7 +1408,6 @@ def generate():
             except Exception:
                 pass
 
-        # Zaktualizowane dane nagłówka dokumentu
         ws_linia.cell(row=1, column=6, value="Nr dok: CP4/F01").font = Font(name="Calibri", size=9, bold=True)
         ws_linia.cell(row=1, column=8, value="Nr wydania: 3").font = Font(name="Calibri", size=9, bold=True)
         ws_linia.cell(row=1, column=10, value="Data wydania: 18.11.2026").font = Font(name="Calibri", size=9, bold=True)
@@ -1424,7 +1485,8 @@ def generate():
         ws_linia.cell(row=11, column=7, value="S")
         ws_linia.cell(row=11, column=8, value="K")
         
-        ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ")
+        # Zaktualizowana nazwa kolumny zgodnie z wytycznymi
+        ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ/OKUB")
         ws_linia.cell(row=10, column=10, value="Nr partii etykiety DOLNEJ")
         ws_linia.cell(row=10, column=11, value="Godz. rozpoczęcia")
         ws_linia.cell(row=10, column=12, value="Godz. zakończenia")
