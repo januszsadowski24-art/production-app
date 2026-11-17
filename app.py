@@ -169,7 +169,7 @@ T = {
         "zapisz_plan_btn": "Save plan for selected date", "zarzadzanie_art": "Articles Management",
         "dodaj_art": "Add / Edit Article", "nazwa": "Name", "dodaj_art_btn": "Save Article",
         "istniejace_art": "Existing Articles", "usun": "[Delete]",
-        "logowanie_tytul": "Production System Login", "login": "Login:", "haslo": "Password:", "zaloguj": "Log in",
+        "logowanie_tytul": "Production System Login",
         "brak_dostepu": "Access denied!", "wyloguj": "Log out", "zarzadzanie_uzyt": "Users and Permissions Management",
         "bhp_tytul": "Required OHS and Control confirmations:",
         "bhp_1": "I confirm the inspection of workers and equipment cleanliness before starting work.",
@@ -188,7 +188,8 @@ T = {
         "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Productivity (pcs/h)",
         "brak_czasow": "No recorded working times for selected date.",
         "wybierz_dzien_plan": "Select plan day:", "podglad_planu": "Preview of planned production:", "brak_planow": "No production plans defined.",
-        "dodaj_nowego_uzyt": "Add new user / operator", "imie_nazwisko": "Operator Full Name:", "rola": "Role:",
+        "dodaj_nowego_uzyt": "Add new user / operator",
+        "imie_nazwisko": "Operator Full Name:", "rola": "Role:",
         "uprawnienia_lbl": "Permissions (select tabs):", "zapisz_uzyt_btn": "Save user", "zarejestrowani_uzyt": "Registered users",
         "systemowy": "(system)", "kol_kod": "Code", "kol_nazwa": "Name", "kol_odbiorca": "Recipient", "kol_akcja": "Action",
         "wybierz_dzien_hist": "Select day to view history and generate report (Admin):",
@@ -219,7 +220,7 @@ T = {
         "zapisz_plan_btn": "Guardar plan para la fecha", "zarzadzanie_art": "Gestión de Artículos",
         "dodaj_art": "Añadir / Editar Artículo", "nazwa": "Nombre", "dodaj_art_btn": "Guardar Artículo",
         "istniejace_art": "Artículos Existentes", "usun": "[Eliminar]",
-        "logowanie_tytul": "Iniciar sesión en el sistema", "login": "Usuario:", "haslo": "Contraseña:", "zaloguj": "Iniciar sesión",
+        "logowanie_tytul": "Iniciar sesión en el sistema",
         "brak_dostepu": "¡Acceso denegado!", "wyloguj": "Cerrar sesión", "zarzadzanie_uzyt": "Gestión de Usuarios y Permisos",
         "bhp_tytul": "Confirmaciones requeridas de SST y Control:",
         "bhp_1": "Confirmo la inspección de trabajadores y limpieza de equipos antes de comenzar el trabajo.",
@@ -238,14 +239,14 @@ T = {
         "th_linia": "Línea", "th_zmiana": "Turno", "th_wyprodukowano": "Pcs producidas", "th_czas_pracy": "Tiempo de trabajo (horas)", "th_wydajnosc": "Productividad (pcs/h)",
         "brak_czasow": "No hay tiempos registrados.",
         "wybierz_dzien_plan": "Seleccionar día del plan:", "podglad_planu": "Vista previa de producción planificada:", "brak_planow": "No hay planes definidos.",
-        "dodaj_nowego_uzyt": "Añadir nuevo usuario / operador", "imie_nazwisko": "Nombre completo del operador:", "rola": "Rol:",
+        "dodaj_nowego_uzyt": "Añadir nuevo usuario / operador",
+        "imie_nazwisko": "Nombre completo del operador:", "rola": "Rol:",
         "uprawnienia_lbl": "Permisos (seleccionar pestañas):", "zapisz_uzyt_btn": "Guardar usuario", "zarejestrowani_uzyt": "Usuarios registrados",
         "systemowy": "(sistema)", "kol_kod": "Código", "kol_nazwa": "Nombre", "kol_odbiorca": "Destinatario", "kol_akcja": "Acción",
         "wybierz_dzien_hist": "Seleccionar día para ver historial e informe (Admin):",
         "data_raportu_hist": "Fecha de informe / historial:", "tabela_nr": "#", "tabela_ilosc": "Cantidad", "tabela_czas": "Tiempo de trabajo",
         "tabela_bhp": "Confirmaciones SST", "tabela_szczegoly": "Detalles",
-        "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Destinatario", "ph_ilosc": "ingrese cantidad...",
-        "ph_etygora": "Ingrese etiqueta superior...", "ph_etydol": "Ingrese etiqueta inferior..."
+        "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Destinatario", "ph_ilosc": "ingrese cantidad..."
     },
     "uk": {
         "tytul": "Панель управління виробництвом",
@@ -268,7 +269,7 @@ T = {
         "zapisz_plan_btn": "Зберегти план на дату", "zarzadzanie_art": "Управління артикулами",
         "dodaj_art": "Додати / Редагувати артикул", "nazwa": "Назва", "dodaj_art_btn": "Зберегти артикул",
         "istniejace_art": "Існуючі артикули", "usun": "[Видалити]",
-        "logowanie_tytul": "Вхід до системи", "login": "Логин:", "haslo": "Пароль:", "zaloguj": "Увійти",
+        "logowanie_tytul": "Вхід до системи",
         "brak_dostepu": "Доступ заборонено!", "wyloguj": "Вийти", "zarzadzanie_uzyt": "Управління користувачами",
         "bhp_tytul": "Необхідні підтвердження з охорони праці та контролю:",
         "bhp_1": "Підтверджую проведення перевірки працівників та чистоти обладнання перед початком роботи.",
@@ -294,8 +295,7 @@ T = {
         "wybierz_dzien_hist": "Виберіть день для перегляду історії та створення звіту (Адмін):",
         "data_raportu_hist": "Дата звіту / історії:", "tabela_nr": "#", "tabela_ilosc": "Кількість", "tabela_czas": "Час роботи",
         "tabela_bhp": "Підтвердження ОП", "tabela_szczegoly": "Деталі",
-        "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Одержувач", "ph_ilosc": "введіть кількість...",
-        "ph_etygora": "Введіть верхню етикетку...", "ph_etydol": "Введіть нижню етикетку..."
+        "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Одержувач", "ph_ilosc": "введіть кількість..."
     }
 }
 
@@ -542,7 +542,7 @@ HTML_TEMPLATE = """
             <div class="progress-section">
                 <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }}</h3>
                 
-                <!-- Wybór dnia dla postępu -->
+                <!-- Poprawiony formularz z ukrytym polem linia=progress -->
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="progress">
                     <div style="flex: 1; max-width: 300px;">
@@ -614,7 +614,6 @@ HTML_TEMPLATE = """
                 <h3 style="margin-top: 0; color: #5a32a3;">⏱️ {{ t.raport_wyd_tytul }}</h3>
                 <p style="font-size: 13px; color: #555;">{{ t.raport_wyd_opis }}</p>
                 
-                <!-- Wybór dnia dla wydajności -->
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="wydajnosc">
                     <div style="flex: 1; max-width: 300px;">
@@ -648,7 +647,6 @@ HTML_TEMPLATE = """
                     {% endfor %}
                 </table>
 
-                <!-- Przycisk generowania raportu wydajności dla wybranej daty -->
                 <form action="/generate?data={{ wybrana_data_wydajnosc }}&linia=1" method="POST" style="margin-top: 25px;">
                     <button type="submit" style="background: #6f42c1;">📥 {{ t.zapisz_excel }} (Wydajność / Dzień: {{ wybrana_data_wydajnosc }})</button>
                 </form>
@@ -1026,10 +1024,6 @@ def index():
     wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
     suma_sztuk = sum(int(w['ilosc']) for w in wpisy_dla_linii)
 
-    zrealizowane_calkowite = {}
-    for item in wpisy_baza:
-        zrealizowane_calkowite[item['kod']] = zrealizowane_calkowite.get(item['kod'], 0) + int(item['ilosc'])
-
     # Statystyki wydajności dla wybranej daty w zakładce wydajności
     wpisy_dla_wydajnosci = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data_wydajnosc]
     statystyki_wydajnosci_wybrana = {}
@@ -1083,8 +1077,6 @@ def index():
         produkty_json=json.dumps(produkty_baza),
         plan_json=json.dumps(plan_produkcyjny),
         plan_produkcyjny=plan_produkcyjny,
-        zrealizowane_json=json.dumps(zrealizowane_calkowite),
-        zrealizowane_calkowite=zrealizowane_calkowite,
         wpisy_baza_wszystkie=wpisy_baza_wszystkie,
         wpisy_dla_linii=wpisy_dla_linii,
         suma_sztuk=suma_sztuk,
@@ -1485,7 +1477,6 @@ def generate():
         ws_linia.cell(row=11, column=7, value="S")
         ws_linia.cell(row=11, column=8, value="K")
         
-        # Zaktualizowana nazwa kolumny zgodnie z wytycznymi
         ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ/OKUB")
         ws_linia.cell(row=10, column=10, value="Nr partii etykiety DOLNEJ")
         ws_linia.cell(row=10, column=11, value="Godz. rozpoczęcia")
