@@ -195,8 +195,7 @@ T = {
         "wybierz_dzien_hist": "Select day to view history and generate report (Admin):",
         "data_raportu_hist": "Report / history date:", "tabela_nr": "#", "tabela_ilosc": "Quantity", "tabela_czas": "Working time",
         "tabela_bhp": "OHS Confirmations", "tabela_szczegoly": "Details",
-        "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Recipient", "ph_ilosc": "enter quantity...",
-        "ph_etygora": "Enter top label...", "ph_etydol": "Enter bottom label..."
+        "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Recipient", "ph_ilosc": "enter quantity..."
     },
     "es": {
         "tytul": "Panel de Gestión de Producción",
@@ -542,7 +541,6 @@ HTML_TEMPLATE = """
             <div class="progress-section">
                 <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }}</h3>
                 
-                <!-- Poprawiony formularz z ukrytym polem linia=progress -->
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="progress">
                     <div style="flex: 1; max-width: 300px;">
@@ -604,7 +602,6 @@ HTML_TEMPLATE = """
                     <p style="color: #777; font-size: 13px;">{{ t.brak_planu_dzis }}</p>
                 {% endfor %}
 
-                <!-- Przycisk generowania raportu postępu dla wybranej daty -->
                 <form action="/generate?data={{ wybrana_data_progress }}&linia=1" method="POST" style="margin-top: 25px;">
                     <button type="submit" style="background: #28a745;">📥 {{ t.zapisz_excel }} (Postęp / Dzień: {{ wybrana_data_progress }})</button>
                 </form>
@@ -1017,8 +1014,13 @@ def index():
 
     dostepne_daty_wpisow_lub_planu = sorted(list(set(list(plan_produkcyjny.keys()) + [w['data'] for w in wpisy_baza_wszystkie] + [dzis])), reverse=True)
 
-    wybrana_data_progress = request.args.get('wybrana_data_progress', dzis if dzis in dostepne_daty_wpisow_lub_planu else (dostepne_daty_wpisow_lub_planu[0] if dostepne_daty_wpisow_lub_planu else dzis))
-    wybrana_data_wydajnosc = request.args.get('wybrana_data_wydajnosc', dzis if dzis in dostepne_daty_wpisow else (dostepne_daty_wpisow[0] if dostepne_daty_wpisow else dzis))
+    wybrana_data_progress = request.args.get('wybrana_data_progress', dzis)
+    if wybrana_data_progress not in dostepne_daty_wpisow_lub_planu and dostepne_daty_wpisow_lub_planu:
+        wybrana_data_progress = dostepne_daty_wpisow_lub_planu[0]
+
+    wybrana_data_wydajnosc = request.args.get('wybrana_data_wydajnosc', dzis)
+    if wybrana_data_wydajnosc not in dostepne_daty_wpisow and dostepne_daty_wpisow:
+        wybrana_data_wydajnosc = dostepne_daty_wpisow[0]
 
     wpisy_baza = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data]
     wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
