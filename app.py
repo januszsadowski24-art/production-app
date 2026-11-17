@@ -133,7 +133,7 @@ T = {
         "podsumowanie_dnia": "Podsumowanie Dnia (Wszystkie Artykuły)",
         "do_zrobienia": "Do zrobienia łącznie:", "wykonano": "Wykonano:", "pozostalo": "Pozostało:",
         "postep_art": "Postęp według poszczególnych artykułów:",
-        "brak_planu_dzis": "Brak planu produkcyjnego na ten dzień. Wybierz datę z planem lub przejdź do zakładki „Plan Produkcyjny”.",
+        "brak_planu_dzis": "Brak planu produkcyjnego na ten dzień.",
         "raport_wyd_tytul": "Raport Wydajności (Sztuk na Godzinę)",
         "raport_wyd_opis": "Poniższy raport przedstawia całkowity czas pracy oraz średnią produktywność w przeliczeniu na 1 godzinę dla każdej linii i zmiany.",
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
@@ -205,7 +205,8 @@ T = {
         "zmien_zm": "Cambiar turno",
         "zalog_op": "Operador conectado",
         "linia_1": "Línea 1", "linia_2": "Línea 2", "linia_3": "Línea 3", "linia_4": "Línea 4",
-        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización", "wydajnosc_tab": "Productividad (Pcs/h)", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
+        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización",
+        "wydajnosc_tab": "Productividad (Pcs/h)", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
         "zarejestruj": "Registrar lote para",
         "data_prod": "Fecha de producción:", "kod_art": "Código de artículo:", "wybierz_kod": "-- Seleccione código --",
         "ilosc_szt": "Cantidad:", "wpisz_ilosc": "ingrese cantidad...", "nazwa_ind": "Nombre del índice:",
@@ -230,8 +231,7 @@ T = {
         "czas_start_lbl": "Hora de inicio (Obligatorio):", "czas_koniec_lbl": "Hora de fin (Obligatorio):",
         "postep_tytul": "Progreso Total de Producción",
         "podsumowanie_dnia": "Resumen del Día (Todos los Artículos)",
-        "do_zrobienia": "Total por hacer:", "wykonano": "Completado:",
-        "pozostalo": "Restante:",
+        "do_zrobienia": "Total por hacer:", "wykonano": "Completado:", "pozostalo": "Restante:",
         "postep_art": "Progreso por artículos individuales:",
         "brak_planu_dzis": "No hay plan para este día.",
         "raport_wyd_tytul": "Informe de Productividad (Pcs por Hora)",
@@ -555,40 +555,26 @@ HTML_TEMPLATE = """
                     </div>
                 </form>
 
-                {% set plan_wybrany = plan_produkcyjny.get(wybrana_data_progress, {}) %}
-                {% set suma_planu_calkowita = plan_wybrany.values() | map('int') | sum %}
-                
-                {% set wykonane_dla_wybranej_daty = {} %}
-                {% for w in wpisy_baza_wszystkie %}
-                    {% if w.data == wybrana_data_progress %}
-                        {% set _ = wykonane_dla_wybranej_daty.update({w.kod: wykonane_dla_wybranej_daty.get(w.kod, 0) + int(w.ilosc)}) %}
-                    {% endif %}
-                {% endfor %}
-                
-                {% set suma_wykonana_calkowita = wykonane_dla_wybranej_daty.values() | map('int') | sum %}
-                {% set pozostalo_calkowite = [suma_planu_calkowita - suma_wykonana_calkowita, 0] | max %}
-                {% set procent_calkowity = (suma_wykonana_calkowita / suma_planu_calkowita * 100) | round | int if suma_planu_calkowita > 0 else 0 %}
-
                 <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid #28a745; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
                     <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #155724; display: flex; justify-content: space-between;">
                         <span>🚀 {{ t.podsumowanie_dnia }} (Dzień: {{ wybrana_data_progress }})</span>
-                        <span><b>{{ suma_wykonana_calkowita }}</b> / {{ suma_planu_calkowita }} szt. (<b>{{ procent_calkowity }}%</b>)</span>
+                        <span><b>{{ suma_wykonana_calkowita_prog }}</b> / {{ suma_planu_calkowita_prog }} szt. (<b>{{ procent_calkowity_prog }}%</b>)</span>
                     </div>
                     <div style="background: #e9ecef; border-radius: 8px; height: 26px; overflow: hidden; border: 1px solid #ced4da; margin-bottom: 10px;">
-                        <div style="background: {{ '#28a745' if procent_calkowity >= 100 else '#007bff' }}; width: {{ [procent_calkowity, 100] | min }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
-                            {{ procent_calkowity }}%
+                        <div style="background: {{ '#28a745' if procent_calkowity_prog >= 100 else '#007bff' }}; width: {{ [procent_calkowity_prog, 100] | min }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+                            {{ procent_calkowity_prog }}%
                         </div>
                     </div>
                     <div style="font-size: 14px; color: #333; display: flex; justify-content: space-between;">
-                        <span>📋 {{ t.do_zrobienia }} <b>{{ suma_planu_calkowita }} szt.</b></span>
-                        <span>✅ {{ t.wykonano }} <b>{{ suma_wykonana_calkowita }} szt.</b></span>
-                        <span>⚠️ {{ t.pozostalo }} <b style="color: #dc3545;">{{ pozostalo_calkowite }} szt.</b></span>
+                        <span>📋 {{ t.do_zrobienia }} <b>{{ suma_planu_calkowita_prog }} szt.</b></span>
+                        <span>✅ {{ t.wykonano }} <b>{{ suma_wykonana_calkowita_prog }} szt.</b></span>
+                        <span>⚠️ {{ t.pozostalo }} <b style="color: #dc3545;">{{ pozostalo_calkowite_prog }} szt.</b></span>
                     </div>
                 </div>
 
                 <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }}</h4>
-                {% for kod, plan_val in plan_wybrany.items() %}
-                    {% set wykonane = wykonane_dla_wybranej_daty.get(kod, 0) %}
+                {% for kod, plan_val in plan_wybrany_prog.items() %}
+                    {% set wykonane = wykonane_dla_wybranej_daty_prog.get(kod, 0) %}
                     {% set left_amt = [plan_val - wykonane, 0] | max %}
                     {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
                     <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd;">
@@ -1024,6 +1010,20 @@ def index():
     if wybrana_data_wydajnosc not in dostepne_daty_wpisow and dostepne_daty_wpisow:
         wybrana_data_wydajnosc = dostepne_daty_wpisow[0]
 
+    # Bezpieczne obliczanie postępu dla wybranej daty progress
+    plan_wybrany_prog = plan_produkcyjny.get(wybrana_data_progress, {})
+    suma_planu_calkowita_prog = sum(int(v) for v in plan_wybrany_prog.values())
+    
+    wykonane_dla_wybranej_daty_prog = {}
+    for w in wpisy_baza_wszystkie:
+        if w['data'] == wybrana_data_progress:
+            kod_w = w['kod']
+            wykonane_dla_wybranej_daty_prog[kod_w] = wykonane_dla_wybranej_daty_prog.get(kod_w, 0) + int(w['ilosc'])
+            
+    suma_wykonana_calkowita_prog = sum(int(v) for v in wykonane_dla_wybranej_daty_prog.values())
+    pozostalo_calkowite_prog = max(suma_planu_calkowita_prog - suma_wykonana_calkowita_prog, 0)
+    procent_calkowity_prog = round(suma_wykonana_calkowita_prog / suma_planu_calkowita_prog * 100) if suma_planu_calkowita_prog > 0 else 0
+
     wpisy_baza = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data]
     wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
     suma_sztuk = sum(int(w['ilosc']) for w in wpisy_dla_linii)
@@ -1081,6 +1081,12 @@ def index():
         produkty_json=json.dumps(produkty_baza),
         plan_json=json.dumps(plan_produkcyjny),
         plan_produkcyjny=plan_produkcyjny,
+        plan_wybrany_prog=plan_wybrany_prog,
+        wykonane_dla_wybranej_daty_prog=wykonane_dla_wybranej_daty_prog,
+        suma_planu_calkowita_prog=suma_planu_calkowita_prog,
+        suma_wykonana_calkowita_prog=suma_wykonana_calkowita_prog,
+        pozostalo_calkowite_prog=pozostalo_calkowite_prog,
+        procent_calkowity_prog=procent_calkowity_prog,
         wpisy_baza_wszystkie=wpisy_baza_wszystkie,
         wpisy_dla_linii=wpisy_dla_linii,
         suma_sztuk=suma_sztuk,
