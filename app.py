@@ -205,8 +205,7 @@ T = {
         "zmien_zm": "Cambiar turno",
         "zalog_op": "Operador conectado",
         "linia_1": "Línea 1", "linia_2": "Línea 2", "linia_3": "Línea 3", "linia_4": "Línea 4",
-        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización",
-        "wydajnosc_tab": "Productividad (Pcs/h)", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
+        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización", "wydajnosc_tab": "Productividad (Pcs/h)", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
         "zarejestruj": "Registrar lote para",
         "data_prod": "Fecha de producción:", "kod_art": "Código de artículo:", "wybierz_kod": "-- Seleccione código --",
         "ilosc_szt": "Cantidad:", "wpisz_ilosc": "ingrese cantidad...", "nazwa_ind": "Nombre del índice:",
@@ -392,7 +391,9 @@ HTML_TEMPLATE = """
             const nazwaInput = document.getElementById('nazwaInput');
             const odbiorcaInput = document.getElementById('odbiorcaInput');
             const infoBox = document.getElementById('planInfoBox');
-            const dataProd = document.getElementById('dataProdInput')?.value || "{{ dzis }}";
+            
+            const dataProdInput = document.getElementById('dataProdInput');
+            const dataProd = dataProdInput ? dataProdInput.value : "{{ dzis }}";
 
             if (kod && baza[kod]) {
                 nazwaInput.value = baza[kod].nazwa;
@@ -401,14 +402,14 @@ HTML_TEMPLATE = """
                 const planNaDzien = calyPlan[dataProd] || {};
                 if (planNaDzien[kod] !== undefined) {
                     const planKwota = planNaDzien[kod];
-                    const wykonaneKwota = zrealizowanoDzien[kod] || 0;
+                    const wykonaneKwota = (zrealizowanoDzien[dataProd] && zrealizowanoDzien[dataProd][kod]) ? zrealizowanoDzien[dataProd][kod] : (zrealizowanoDzien[kod] || 0);
                     const pozostalo = Math.max(planKwota - wykonaneKwota, 0);
 
                     infoBox.style.display = 'block';
-                    infoBox.innerHTML = '📋 <b>Plan:</b> ' + planKwota + ' | ✅ <b>Wykonano:</b> ' + wykonaneKwota + ' | ⚠️ <b>Pozostało:</b> <b>' + pozostalo + '</b>';
+                    infoBox.innerHTML = '📋 <b>Plan (' + dataProd + '):</b> ' + planKwota + ' | ✅ <b>Wykonano:</b> ' + wykonaneKwota + ' | ⚠️ <b>Pozostało:</b> <b>' + pozostalo + '</b>';
                 } else {
                     infoBox.style.display = 'block';
-                    infoBox.innerHTML = 'ℹ️ Brak zdefiniowanego planu na ten dzień dla tego kodu.';
+                    infoBox.innerHTML = 'ℹ️ Brak zdefiniowanego planu na dzień <b>' + dataProd + '</b> dla tego kodu.';
                 }
             } else {
                 nazwaInput.value = "";
@@ -416,6 +417,17 @@ HTML_TEMPLATE = """
                 infoBox.style.display = 'none';
             }
         }
+
+        window.onload = function() {
+            const dataInput = document.getElementById('dataProdInput');
+            if (dataInput) {
+                dataInput.addEventListener('change', aktualizujDane);
+            }
+            const kodSelect = document.getElementById('kodSelect');
+            if (kodSelect && kodSelect.value) {
+                aktualizujDane();
+            }
+        };
 
         function walidujFormularz(event) {
             const start = document.getElementById('czasStart').value;
@@ -1010,6 +1022,15 @@ def index():
     if wybrana_data_wydajnosc not in dostepne_daty_wpisow and dostepne_daty_wpisow:
         wybrana_data_wydajnosc = dostepne_daty_wpisow[0]
 
+    # Słownik zrealizowanych sztuk per dzień dla formularza wprowadzania palet
+    zrealizowane_z_datami = {}
+    for w in wpisy_baza_wszystkie:
+        d_w = w['data']
+        k_w = w['kod']
+        if d_w not in zrealizowane_z_datami:
+            zrealizowane_z_datami[d_w] = {}
+        zrealizowane_z_datami[d_w][k_w] = zrealizowane_z_datami[d_w].get(k_w, 0) + int(w['ilosc'])
+
     # Bezpieczne obliczanie postępu dla wybranej daty progress
     plan_wybrany_prog = plan_produkcyjny.get(wybrana_data_progress, {})
     suma_planu_calkowita_prog = sum(int(v) for v in plan_wybrany_prog.values())
@@ -1081,6 +1102,7 @@ def index():
         produkty_json=json.dumps(produkty_baza),
         plan_json=json.dumps(plan_produkcyjny),
         plan_produkcyjny=plan_produkcyjny,
+        zrealizowane_json=json.dumps(zrealizowane_z_datami),
         plan_wybrany_prog=plan_wybrany_prog,
         wykonane_dla_wybranej_daty_prog=wykonane_dla_wybranej_daty_prog,
         suma_planu_calkowita_prog=suma_planu_calkowita_prog,
