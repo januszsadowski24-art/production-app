@@ -63,9 +63,9 @@ with app.app_context():
     db.create_all()
     if UzytkownikModel.query.count() == 0:
         domyslni_uzyt = {
-            "admin": {"haslo": "admin123", "rola": "admin", "pelna_nazwa": "Administrator Systemu", "dostep": ["1", "2", "3", "4", "plan", "progress", "wydajnosc", "db_art", "admin"]},
-            "tetiana": {"haslo": "operator123", "rola": "operator", "pelna_nazwa": "Tetiana Kantymyr", "dostep": ["1", "2", "3", "4", "progress", "wydajnosc"]},
-            "iryna": {"haslo": "operator123", "rola": "operator", "pelna_nazwa": "Poberezhna Iryna", "dostep": ["1", "2", "3", "4", "progress", "wydajnosc"]}
+            "admin": {"haslo": "admin123", "rola": "admin", "pelna_nazwa": "Administrator Systemu", "dostep": ["1", "2", "3", "4", "plan", "progress", "wydajnosc", "raporty", "db_art", "admin"]},
+            "tetiana": {"haslo": "operator123", "rola": "operator", "pelna_nazwa": "Tetiana Kantymyr", "dostep": ["1", "2", "3", "4", "progress", "wydajnosc", "raporty"]},
+            "iryna": {"haslo": "operator123", "rola": "operator", "pelna_nazwa": "Poberezhna Iryna", "dostep": ["1", "2", "3", "4", "progress", "wydajnosc", "raporty"]}
         }
         for usr, info in domyslni_uzyt.items():
             u = UzytkownikModel(username=usr, haslo=info["haslo"], rola=info["rola"], pelna_nazwa=info["pelna_nazwa"], dostep=json.dumps(info["dostep"]))
@@ -107,7 +107,7 @@ T = {
         "zmien_zm": "Zmień zmianę",
         "zalog_op": "Zalogowany operator",
         "linia_1": "Linia 1", "linia_2": "Linia 2", "linia_3": "Linia 3", "linia_4": "Linia 4",
-        "plan_tab": "Plan Produkcyjny", "prog_tab": "Postęp / Realizacja", "wydajnosc_tab": "Wydajność (Szt/h)", "db_art_tab": "Baza Artykułów", "admin_tab": "Panel Administratora",
+        "plan_tab": "Plan Produkcyjny", "prog_tab": "Postęp / Realizacja", "wydajnosc_tab": "Wydajność (Szt/h)", "raporty_tab": "Centrum Raportów", "db_art_tab": "Baza Artykułów", "admin_tab": "Panel Administratora",
         "zarejestruj": "Zarejestruj wyprodukowaną partię dla",
         "data_prod": "Data produkcji:", "kod_art": "Kod artykułu:", "wybierz_kod": "-- Wybierz kod artykułu --",
         "ilosc_szt": "Ilość sztuk:", "wpisz_ilosc": "wpisz ilość...", "nazwa_ind": "Nazwa indeksu:",
@@ -156,7 +156,7 @@ T = {
         "zmien_zm": "Change shift",
         "zalog_op": "Logged operator",
         "linia_1": "Line 1", "linia_2": "Line 2", "linia_3": "Line 3", "linia_4": "Line 4",
-        "plan_tab": "Production Plan", "prog_tab": "Progress / Realization", "wydajnosc_tab": "Productivity (Pcs/h)", "db_art_tab": "Articles DB", "admin_tab": "Admin Panel",
+        "plan_tab": "Production Plan", "prog_tab": "Progress / Realization", "wydajnosc_tab": "Productivity (Pcs/h)", "raporty_tab": "Reports Center", "db_art_tab": "Articles DB", "admin_tab": "Admin Panel",
         "zarejestruj": "Register batch for",
         "data_prod": "Production date:", "kod_art": "Article code:", "wybierz_kod": "-- Select article code --",
         "ilosc_szt": "Quantity:", "wpisz_ilosc": "enter quantity...", "nazwa_ind": "Index name:",
@@ -206,7 +206,7 @@ T = {
         "zmien_zm": "Cambiar turno",
         "zalog_op": "Operador conectado",
         "linia_1": "Línea 1", "linia_2": "Línea 2", "linia_3": "Línea 3", "linia_4": "Línea 4",
-        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización", "wydajnosc_tab": "Productividad (Pcs/h)", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
+        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización", "wydajnosc_tab": "Productividad (Pcs/h)", "raporty_tab": "Centro de Informes", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
         "zarejestruj": "Registrar lote para",
         "data_prod": "Fecha de producción:", "kod_art": "Código de artículo:", "wybierz_kod": "-- Seleccione código --",
         "ilosc_szt": "Cantidad:", "wpisz_ilosc": "ingrese cantidad...", "nazwa_ind": "Nombre del índice:",
@@ -257,7 +257,7 @@ T = {
         "zmien_zm": "Змінити зміну",
         "zalog_op": "Зареєстрований оператор",
         "linia_1": "Лінія 1", "linia_2": "Лінія 2", "linia_3": "Лінія 3", "linia_4": "Лінія 4",
-        "plan_tab": "Виробничий план", "prog_tab": "Прогрес / Виконання", "wydajnosc_tab": "Продуктивність (Шт/год)", "db_art_tab": "База артикулів", "admin_tab": "Панель адміна",
+        "plan_tab": "Виробничий план", "prog_tab": "Прогрес / Виконання", "wydajnosc_tab": "Продуктивність (Шт/год)", "raporty_tab": "Центр звітів", "db_art_tab": "База артикулів", "admin_tab": "Панель адміна",
         "zarejestruj": "Зареєструвати партію для",
         "data_prod": "Дата виробництва:", "kod_art": "Код артикулу:", "wybierz_kod": "-- Виберіть код артикулу --",
         "ilosc_szt": "Кількість штук:", "wpisz_ilosc": "введіть кількість...", "nazwa_ind": "Назва індексу:",
@@ -362,6 +362,8 @@ HTML_TEMPLATE = """
         .tabs a.progress-tab.active { background: #1e7e34; color: white; }
         .tabs a.wydajnosc-tab { background: #6f42c1; color: white; }
         .tabs a.wydajnosc-tab.active { background: #5a32a3; color: white; }
+        .tabs a.raporty-tab { background: #fd7e14; color: white; }
+        .tabs a.raporty-tab.active { background: #e8590c; color: white; }
         .tabs a.db-tab { background: #ffc107; color: #333; }
         .tabs a.db-tab.active { background: #d39e00; color: white; }
         .tabs a.admin-tab { background: #dc3545; color: white; }
@@ -380,11 +382,11 @@ HTML_TEMPLATE = """
         .plan-section { background: #e2f0d9; padding: 20px; border-radius: 8px; border: 1px solid #c8e1b9; }
         .progress-section { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
         .wydajnosc-section { background: #f3eef8; padding: 20px; border-radius: 8px; border: 1px solid #dcd0e8; }
+        .raporty-section { background: #fff4e6; padding: 20px; border-radius: 8px; border: 1px solid #ffd8a8; }
         .db-section { background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; }
         .admin-section { background: #f8d7da; padding: 20px; border-radius: 8px; border: 1px solid #f5c6cb; }
         .error-banner { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #f5c6cb; font-weight: bold; text-align: center; }
         
-        /* Styl tabeli postępu i nagłówków sortowalnych */
         .progress-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 13px; }
         .progress-table th, .progress-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
         .progress-table th { background-color: #f1f5f9; cursor: pointer; user-select: none; }
@@ -428,7 +430,6 @@ HTML_TEMPLATE = """
             }
         }
 
-        # Filtrowanie tabeli postępu kolumna po kolumnie
         function filtrKolumnTabeli() {
             const fKod = document.getElementById('filterKod').value.toLowerCase();
             const fNazwa = document.getElementById('filterNazwa').value.toLowerCase();
@@ -462,7 +463,6 @@ HTML_TEMPLATE = """
             }
         }
 
-        # Funkcja sortowania tabeli rosnąco / malejąco po kliknięciu w nagłówek
         let sortDirections = {};
         function sortTable(columnIndex, isNumeric = false) {
             const table = document.getElementById("progressTable");
@@ -568,6 +568,9 @@ HTML_TEMPLATE = """
             {% endif %}
             {% if 'wydajnosc' in dostep %}
                 <a href="/?linia=wydajnosc" class="wydajnosc-tab {{ 'active' if linia == 'wydajnosc' else '' }}">{{ t.wydajnosc_tab }}</a>
+            {% endif %}
+            {% if 'raporty' in dostep %}
+                <a href="/?linia=raporty" class="raporty-tab {{ 'active' if linia == 'raporty' else '' }}">📈 {{ t.raporty_tab }}</a>
             {% endif %}
             {% if 'db_art' in dostep %}
                 <a href="/?linia=db_art" class="db-tab {{ 'active' if linia == 'db_art' else '' }}">{{ t.db_art_tab }}</a>
@@ -721,10 +724,6 @@ HTML_TEMPLATE = """
                         </tbody>
                     </table>
                 </div>
-
-                <form action="/generate?data={{ wybrana_data_progress }}&linia=1" method="POST" style="margin-top: 25px;">
-                    <button type="submit" style="background: #28a745;">📥 {{ t.zapisz_excel }} (Postęp / Dzień: {{ wybrana_data_progress }})</button>
-                </form>
             </div>
         {% elif linia == 'wydajnosc' and 'wydajnosc' in dostep %}
             <div class="wydajnosc-section">
@@ -763,10 +762,26 @@ HTML_TEMPLATE = """
                     <tr><td colspan="5" style="text-align: center; color: #777;">{{ t.brak_czasow }}</td></tr>
                     {% endfor %}
                 </table>
+            </div>
+        {% elif linia == 'raporty' and 'raporty' in dostep %}
+            <div class="raporty-section">
+                <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }}</h3>
+                <p style="font-size: 13px; color: #555;">Wybierz dzień oraz rodzaj raportu, który chcesz wygenerować i pobrać w formacie Excel:</p>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ffd8a8; max-width: 600px;">
+                    <form action="/generate" method="GET">
+                        <label><b>📅 Wybierz dzień raportu:</b></label>
+                        <input type="date" name="data" value="{{ wybrana_data }}" style="margin-bottom: 15px;" required>
+                        
+                        <label><b>📑 Rodzaj raportu:</b></label>
+                        <select name="typ_raportu" style="margin-bottom: 20px;">
+                            <option value="produkcja">📦 Raport Produkcji / Linii (Rozchód wewnętrzny & ocena)</option>
+                            <option value="wydajnosc">⏱️ Raport Wydajności (Sztuk na godzinę)</option>
+                        </select>
 
-                <form action="/generate?data={{ wybrana_data_wydajnosc }}&linia=1" method="POST" style="margin-top: 25px;">
-                    <button type="submit" style="background: #6f42c1;">📥 {{ t.zapisz_excel }} (Wydajność / Dzień: {{ wybrana_data_wydajnosc }})</button>
-                </form>
+                        <button type="submit" style="background: #fd7e14; color: white;">📥 Pobierz wygenerowany raport Excel</button>
+                    </form>
+                </div>
             </div>
         {% elif linia == 'db_art' and 'db_art' in dostep %}
             <div class="db-section">
@@ -839,6 +854,7 @@ HTML_TEMPLATE = """
                         <label><input type="checkbox" name="dostep" value="plan"> {{ t.plan_tab }}</label>
                         <label><input type="checkbox" name="dostep" value="progress" checked> {{ t.prog_tab }}</label>
                         <label><input type="checkbox" name="dostep" value="wydajnosc" checked> {{ t.wydajnosc_tab }}</label>
+                        <label><input type="checkbox" name="dostep" value="raporty" checked> {{ t.raporty_tab }}</label>
                         <label><input type="checkbox" name="dostep" value="db_art"> {{ t.db_art_tab }}</label>
                         <label><input type="checkbox" name="dostep" value="admin"> {{ t.admin_tab }}</label>
                     </div>
@@ -1117,7 +1133,6 @@ def index():
     if wybrana_data_planu not in plan_produkcyjny and dostepne_daty_planu:
         wybrana_data_planu = dostepne_daty_planu[0]
 
-    # Pobieranie wszystkich wpisów historycznych dla widoków postępu i wydajności
     wpisy_baza_wszystkie_obj = WpisProdukcyjnyModel.query.all()
     wpisy_baza_wszystkie = [{
         "id": w.id, "data": w.data, "linia": w.linia, "zmiana": w.zmiana, "kod": w.kod,
@@ -1142,7 +1157,6 @@ def index():
     if wybrana_data_wydajnosc not in dostepne_daty_wpisow and dostepne_daty_wpisow:
         wybrana_data_wydajnosc = dostepne_daty_wpisow[0]
 
-    # Słownik zrealizowanych sztuk per dzień dla formularza wprowadzania palet
     zrealizowane_z_datami = {}
     for w in wpisy_baza_wszystkie:
         d_w = w['data']
@@ -1151,7 +1165,6 @@ def index():
             zrealizowane_z_datami[d_w] = {}
         zrealizowane_z_datami[d_w][k_w] = zrealizowane_z_datami[d_w].get(k_w, 0) + int(w['ilosc'])
 
-    # Bezpieczne obliczanie postępu dla wybranej daty progress
     plan_wybrany_prog = plan_produkcyjny.get(wybrana_data_progress, {})
     suma_planu_calkowita_prog = sum(int(v) for v in plan_wybrany_prog.values())
     
@@ -1169,7 +1182,6 @@ def index():
     wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
     suma_sztuk = sum(int(w['ilosc']) for w in wpisy_dla_linii)
 
-    # Statystyki wydajności dla wybranej daty w zakładce wydajności
     wpisy_dla_wydajnosci = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data_wydajnosc]
     statystyki_wydajnosci_wybrana = {}
     for item in wpisy_dla_wydajnosci:
@@ -1411,14 +1423,14 @@ def admin_usun_uzytkownika(username):
             db.session.commit()
     return redirect(url_for('index', linia='admin'))
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['GET', 'POST'])
 def generate():
     if 'user' not in session:
         return redirect(url_for('login'))
     
     dzis = datetime.now().strftime('%Y-%m-%d')
-    role = session.get('rola')
-    wybrana_data = request.args.get('data', dzis) if role == 'admin' else dzis
+    wybrana_data = request.args.get('data', dzis)
+    typ_raportu = request.args.get('typ_raportu', 'produkcja')
     
     wpisy_baza = WpisProdukcyjnyModel.query.filter_by(data=wybrana_data).all()
     wpisy_dla_dnia = [{
@@ -1430,259 +1442,268 @@ def generate():
         "operator": w.operator
     } for w in wpisy_baza]
 
-    if not wpisy_dla_dnia:
-        return f"Brak wpisów do wygenerowania dla daty {wybrana_data}!"
-
     wb = openpyxl.Workbook()
     
-    # ----------------------------------------------------
-    # 1. ARKUSZ: RAPORT WYDAJNOŚCI (TABELE OBOK SIEBIE)
-    # ----------------------------------------------------
-    ws_wyd = wb.active
-    ws_wyd.title = "Raport Wydajności"
-    ws_wyd.views.sheetView[0].showGridLines = True
+    if typ_raportu == 'wydajnosc':
+        ws_wyd = wb.active
+        ws_wyd.title = "Raport Wydajności"
+        ws_wyd.views.sheetView[0].showGridLines = True
 
-    font_title = Font(name="Calibri", size=15, bold=True, color="1F497D")
-    font_header = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
-    font_bold = Font(name="Calibri", size=10, bold=True)
-    font_normal = Font(name="Calibri", size=10)
-    
-    fill_header = PatternFill(start_color="1F497D", end_color="1F497D", fill_type="solid")
-    thin_border = Border(
-        left=Side(style='thin', color='D9D9D9'), right=Side(style='thin', color='D9D9D9'),
-        top=Side(style='thin', color='D9D9D9'), bottom=Side(style='thin', color='D9D9D9')
-    )
+        font_title = Font(name="Calibri", size=15, bold=True, color="1F497D")
+        font_header = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+        font_bold = Font(name="Calibri", size=10, bold=True)
+        font_normal = Font(name="Calibri", size=10)
+        
+        fill_header = PatternFill(start_color="1F497D", end_color="1F497D", fill_type="solid")
+        thin_border = Border(
+            left=Side(style='thin', color='D9D9D9'), right=Side(style='thin', color='D9D9D9'),
+            top=Side(style='thin', color='D9D9D9'), bottom=Side(style='thin', color='D9D9D9')
+        )
 
-    ws_wyd['A1'] = f"SZCZEGÓŁOWY RAPORT WYDAJNOŚCI GODZINOWEJ - {wybrana_data}"
-    ws_wyd['A1'].font = font_title
+        ws_wyd['A1'] = f"SZCZEGÓŁOWY RAPORT WYDAJNOŚCI GODZINOWEJ - {wybrana_data}"
+        ws_wyd['A1'].font = font_title
 
-    struktura_wyd = {"1": {}, "2": {}}
-    for item in wpisy_dla_dnia:
-        zm = str(item['zmiana'])
-        ln = str(item['linia'])
-        if zm not in struktura_wyd:
-            struktura_wyd[zm] = {}
-        if ln not in struktura_wyd[zm]:
-            struktura_wyd[zm][ln] = []
-        struktura_wyd[zm][ln].append(item)
+        struktura_wyd = {"1": {}, "2": {}}
+        for item in wpisy_dla_dnia:
+            zm = str(item['zmiana'])
+            ln = str(item['linia'])
+            if zm not in struktura_wyd:
+                struktura_wyd[zm] = {}
+            if ln not in struktura_wyd[zm]:
+                struktura_wyd[zm][ln] = []
+            struktura_wyd[zm][ln].append(item)
 
-    start_col = 1
-    for zmiana_nr in ["1", "2"]:
-        linia_dict = struktura_wyd.get(zmiana_nr, {})
-        if not any(linia_dict.values()):
-            continue
-
-        ws_wyd.cell(row=3, column=start_col, value=f"⭐ ZMIANA {zmiana_nr}").font = Font(name="Calibri", size=12, bold=True, color="1F497D")
-
-        for l_num in ['1', '2', '3', '4']:
-            wpisy_l = linia_dict.get(l_num, [])
-            if not wpisy_l:
+        start_col = 1
+        for zmiana_nr in ["1", "2"]:
+            linia_dict = struktura_wyd.get(zmiana_nr, {})
+            if not any(linia_dict.values()):
                 continue
 
-            ws_wyd.cell(row=4, column=start_col, value=f"📅 Linia {l_num} | Zmiana {zmiana_nr}").font = Font(name="Calibri", size=10, bold=True, color="1F497D")
+            ws_wyd.cell(row=3, column=start_col, value=f"⭐ ZMIANA {zmiana_nr}").font = Font(name="Calibri", size=12, bold=True, color="1F497D")
 
-            h_tab = ["Godzina rozpoczęcia", "Godzina zakończenia", "Wyprodukowana ilość sztuk"]
-            for c_offset, h_t in enumerate(h_tab):
-                cell = ws_wyd.cell(row=5, column=start_col + c_offset, value=h_t)
-                cell.font = font_header
-                cell.fill = fill_header
-                cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-                cell.border = thin_border
-            ws_wyd.row_dimensions[5].height = 25
+            for l_num in ['1', '2', '3', '4']:
+                wpisy_l = linia_dict.get(l_num, [])
+                if not wpisy_l:
+                    continue
 
-            r_idx = 6
-            suma_l_sztuk = 0
-            for w_g in wpisy_l:
-                g_start = w_g['czas_start']
-                g_koniec = w_g['czas_koniec']
-                szt = int(w_g['ilosc'])
-                suma_l_sztuk += szt
+                ws_wyd.cell(row=4, column=start_col, value=f"📅 Linia {l_num} | Zmiana {zmiana_nr}").font = Font(name="Calibri", size=10, bold=True, color="1F497D")
 
-                c1 = ws_wyd.cell(row=r_idx, column=start_col, value=g_start)
-                c2 = ws_wyd.cell(row=r_idx, column=start_col + 1, value=g_koniec)
-                c3 = ws_wyd.cell(row=r_idx, column=start_col + 2, value=szt)
-                
-                for c_cell in [c1, c2, c3]:
-                    c_cell.font = font_normal
-                    c_cell.border = thin_border
-                    c_cell.alignment = Alignment(horizontal="center", vertical="center")
-                r_idx += 1
+                h_tab = ["Godzina rozpoczęcia", "Godzina zakończenia", "Wyprodukowana ilość sztuk"]
+                for c_offset, h_t in enumerate(h_tab):
+                    cell = ws_wyd.cell(row=5, column=start_col + c_offset, value=h_t)
+                    cell.font = font_header
+                    cell.fill = fill_header
+                    cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+                    cell.border = thin_border
+                ws_wyd.row_dimensions[5].height = 25
 
-            sum_l_label = ws_wyd.cell(row=r_idx, column=start_col, value="Suma łączna:")
-            sum_l_label.font = font_bold
-            sum_l_label.border = thin_border
-            sum_l_label.alignment = Alignment(horizontal="right", vertical="center")
+                r_idx = 6
+                suma_l_sztuk = 0
+                for w_g in wpisy_l:
+                    g_start = w_g['czas_start']
+                    g_koniec = w_g['czas_koniec']
+                    szt = int(w_g['ilosc'])
+                    suma_l_sztuk += szt
 
-            ws_wyd.cell(row=r_idx, column=start_col + 1, value="-").border = thin_border
-            ws_wyd.cell(row=r_idx, column=start_col + 1).alignment = Alignment(horizontal="center", vertical="center")
+                    c1 = ws_wyd.cell(row=r_idx, column=start_col, value=g_start)
+                    c2 = ws_wyd.cell(row=r_idx, column=start_col + 1, value=g_koniec)
+                    c3 = ws_wyd.cell(row=r_idx, column=start_col + 2, value=szt)
+                    
+                    for c_cell in [c1, c2, c3]:
+                        c_cell.font = font_normal
+                        c_cell.border = thin_border
+                        c_cell.alignment = Alignment(horizontal="center", vertical="center")
+                    r_idx += 1
 
-            sum_l_val = ws_wyd.cell(row=r_idx, column=start_col + 2, value=suma_l_sztuk)
-            sum_l_val.font = font_bold
-            sum_l_val.border = thin_border
-            sum_l_val.alignment = Alignment(horizontal="center", vertical="center")
-            sum_l_val.fill = PatternFill(start_color="EAECEE", end_color="EAECEE", fill_type="solid")
+                sum_l_label = ws_wyd.cell(row=r_idx, column=start_col, value="Suma łączna:")
+                sum_l_label.font = font_bold
+                sum_l_label.border = thin_border
+                sum_l_label.alignment = Alignment(horizontal="right", vertical="center")
 
-            start_col += 4
+                ws_wyd.cell(row=r_idx, column=start_col + 1, value="-").border = thin_border
+                ws_wyd.cell(row=r_idx, column=start_col + 1).alignment = Alignment(horizontal="center", vertical="center")
 
-    for col in ws_wyd.columns:
-        max_l = max(len(str(cell.value or '')) for cell in col)
-        ws_wyd.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 3, 18)
+                sum_l_val = ws_wyd.cell(row=r_idx, column=start_col + 2, value=suma_l_sztuk)
+                sum_l_val.font = font_bold
+                sum_l_val.border = thin_border
+                sum_l_val.alignment = Alignment(horizontal="center", vertical="center")
+                sum_l_val.fill = PatternFill(start_color="EAECEE", end_color="EAECEE", fill_type="solid")
 
-    # ----------------------------------------------------
-    # 2. ARKUSZE DLA KAŻDEJ LINII
-    # ----------------------------------------------------
-    linie_numery = ['1', '2', '3', '4']
-    wybrana_zmiana = session.get('wybrana_zmiana')
+                start_col += 4
 
-    for l_nr in linie_numery:
-        wpisy_linii = [w for w in wpisy_dla_dnia if str(w['linia']) == l_nr and (not wybrana_zmiana or str(w['zmiana']) == str(wybrana_zmiana))]
-        if not wpisy_linii:
-            continue
+        for col in ws_wyd.columns:
+            max_l = max(len(str(cell.value or '')) for cell in col)
+            ws_wyd.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 3, 18)
 
-        ws_linia = wb.create_sheet(title=f"Linia {l_nr}")
-        ws_linia.views.sheetView[0].showGridLines = True
+        output_path = f"Raport_Wydajnosci_{wybrana_data}.xlsx"
+    else:
+        if not wpisy_dla_dnia:
+            return f"Brak wpisów do wygenerowania dla daty {wybrana_data}!"
 
-        logo_path = 'logo.png'
-        if os.path.exists(logo_path):
-            try:
-                img = Image(logo_path)
-                img.width = 110
-                img.height = 40
-                ws_linia.add_image(img, 'A1')
-            except Exception:
-                pass
+        linie_numery = ['1', '2', '3', '4']
+        wybrana_zmiana = session.get('wybrana_zmiana')
 
-        ws_linia.cell(row=1, column=6, value="Nr dok: CP4/F01").font = Font(name="Calibri", size=9, bold=True)
-        ws_linia.cell(row=1, column=8, value="Nr wydania: 3").font = Font(name="Calibri", size=9, bold=True)
-        ws_linia.cell(row=1, column=10, value="Data wydania: 18.11.2026").font = Font(name="Calibri", size=9, bold=True)
-        ws_linia.cell(row=1, column=12, value="Sporządził: Barbara Łogin").font = Font(name="Calibri", size=9, bold=True)
+        first_sheet = True
+        for l_nr in linie_numery:
+            wpisy_linii = [w for w in wpisy_dla_dnia if str(w['linia']) == l_nr and (not wybrana_zmiana or str(w['zmiana']) == str(wybrana_zmiana))]
+            if not wpisy_linii:
+                continue
 
-        thick_black = Side(style='medium', color='000000')
-        thin_black = Side(style='thin', color='000000')
+            if first_sheet:
+                ws_linia = wb.active
+                ws_linia.title = f"Linia {l_nr}"
+                first_sheet = False
+            else:
+                ws_linia = wb.create_sheet(title=f"Linia {l_nr}")
 
-        for c_idx in range(6, 13):
-            ws_linia.cell(row=1, column=c_idx).border = Border(
-                top=thick_black, bottom=thick_black,
-                left=thick_black if c_idx == 6 else None,
-                right=thick_black if c_idx == 12 else None
-            )
+            ws_linia.views.sheetView[0].showGridLines = True
 
-        d_z = datetime.strptime(wybrana_data, '%Y-%m-%d')
-        dzien_roku = d_z.timetuple().tm_yday
+            logo_path = 'logo.png'
+            if os.path.exists(logo_path):
+                try:
+                    img = Image(logo_path)
+                    img.width = 110
+                    img.height = 40
+                    ws_linia.add_image(img, 'A1')
+                except Exception:
+                    pass
 
-        ws_linia.cell(row=5, column=1, value="Data produkcji:").font = font_bold
-        ws_linia.cell(row=5, column=2, value=wybrana_data).font = font_normal
-        ws_linia.cell(row=5, column=4, value="Dzień roku:").font = font_bold
-        ws_linia.cell(row=5, column=5, value=dzien_roku).font = font_normal
-        ws_linia.cell(row=5, column=6, value="Zmiana:").font = font_bold
-        ws_linia.cell(row=5, column=7, value=wybrana_zmiana or "1").font = font_normal
-        ws_linia.cell(row=5, column=8, value="Nr linii:").font = font_bold
-        ws_linia.cell(row=5, column=9, value=l_nr).font = font_normal
+            ws_linia.cell(row=1, column=6, value="Nr dok: CP4/F01").font = Font(name="Calibri", size=9, bold=True)
+            ws_linia.cell(row=1, column=8, value="Nr wydania: 3").font = Font(name="Calibri", size=9, bold=True)
+            ws_linia.cell(row=1, column=10, value="Data wydania: 18.11.2026").font = Font(name="Calibri", size=9, bold=True)
+            ws_linia.cell(row=1, column=12, value="Sporządził: Barbara Łogin").font = Font(name="Calibri", size=9, bold=True)
 
-        for c_idx in range(1, 10):
-            ws_linia.cell(row=5, column=c_idx).border = Border(
-                top=thick_black, bottom=thick_black,
-                left=thick_black if c_idx == 1 else thin_black,
-                right=thick_black if c_idx == 9 else thin_black
-            )
+            thick_black = Side(style='medium', color='000000')
+            thin_black = Side(style='thin', color='000000')
 
-        ws_linia.cell(row=7, column=1, value="Kontrola pracowników przed przystąpieniem do pracy (jeśli N - powód):").font = Font(name="Calibri", size=9)
-        ws_linia.cell(row=7, column=12, value="+").font = font_bold
-        ws_linia.cell(row=8, column=1, value="Sprawdzenie sprawności/czystości urządzeń przed rozpoczęciem pracy:").font = Font(name="Calibri", size=9)
-        ws_linia.cell(row=8, column=12, value="+").font = font_bold
-
-        for r_idx in [7, 8]:
-            for c_idx in range(1, 13):
-                ws_linia.cell(row=r_idx, column=c_idx).border = Border(
-                    top=thick_black if r_idx == 7 else None,
-                    bottom=thick_black if r_idx == 8 else None,
-                    left=thick_black if c_idx == 1 else None,
+            for c_idx in range(6, 13):
+                ws_linia.cell(row=1, column=c_idx).border = Border(
+                    top=thick_black, bottom=thick_black,
+                    left=thick_black if c_idx == 6 else None,
                     right=thick_black if c_idx == 12 else None
                 )
 
-        ws_linia['A3'] = "ROZCHÓD WEWNĘTRZNY - OCENA PRODUKTU - WYRÓB GOTOWY"
-        ws_linia['A3'].font = Font(name="Calibri", size=13, bold=True, color="1F497D")
+            d_z = datetime.strptime(wybrana_data, '%Y-%m-%d')
+            dzien_roku = d_z.timetuple().tm_yday
 
-        ws_linia.merge_cells('F10:H10')
-        ws_linia.cell(row=10, column=6, value="Ocena i zwolnienie partii produktu*\nCP4 Wygląd produktu, prawidłowa, czytelna etykieta***")
+            font_bold = Font(name="Calibri", size=10, bold=True)
+            font_normal = Font(name="Calibri", size=10)
+            fill_header = PatternFill(start_color="1F497D", end_color="1F497D", fill_type="solid")
 
-        for r in range(10, 12):
-            for c in range(1, 15):
-                cell_curr = ws_linia.cell(row=r, column=c)
-                cell_curr.fill = fill_header
-                cell_curr.border = Border(
-                    top=thick_black if r == 10 else thin_black,
-                    bottom=thick_black if r == 11 else thin_black,
-                    left=thick_black if c == 1 else thin_black,
-                    right=thick_black if c == 14 else thin_black
+            ws_linia.cell(row=5, column=1, value="Data produkcji:").font = font_bold
+            ws_linia.cell(row=5, column=2, value=wybrana_data).font = font_normal
+            ws_linia.cell(row=5, column=4, value="Dzień roku:").font = font_bold
+            ws_linia.cell(row=5, column=5, value=dzien_roku).font = font_normal
+            ws_linia.cell(row=5, column=6, value="Zmiana:").font = font_bold
+            ws_linia.cell(row=5, column=7, value=wybrana_zmiana or "1").font = font_normal
+            ws_linia.cell(row=5, column=8, value="Nr linii:").font = font_bold
+            ws_linia.cell(row=5, column=9, value=l_nr).font = font_normal
+
+            for c_idx in range(1, 10):
+                ws_linia.cell(row=5, column=c_idx).border = Border(
+                    top=thick_black, bottom=thick_black,
+                    left=thick_black if c_idx == 1 else thin_black,
+                    right=thick_black if c_idx == 9 else thin_black
                 )
-                cell_curr.font = Font(name="Calibri", size=9, bold=True, color="FFFFFF")
-                cell_curr.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
-        ws_linia.cell(row=10, column=1, value="Kod")
-        ws_linia.cell(row=10, column=2, value="Nazwa produktu")
-        ws_linia.cell(row=10, column=3, value="Odbiorca")
-        ws_linia.cell(row=10, column=4, value="Data przydatności / Nr partii")
-        ws_linia.cell(row=10, column=5, value="Ilość")
-        
-        ws_linia.cell(row=11, column=6, value="P")
-        ws_linia.cell(row=11, column=7, value="S")
-        ws_linia.cell(row=11, column=8, value="K")
-        
-        ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ/OKUB")
-        ws_linia.cell(row=10, column=10, value="Nr partii etykiety DOLNEJ")
-        ws_linia.cell(row=10, column=11, value="Godz. rozpoczęcia")
-        ws_linia.cell(row=10, column=12, value="Godz. zakończenia")
-        ws_linia.cell(row=10, column=13, value="Prawidłowe oczyszczenie linii z pozostałych etykiet, banderol, kartonów przed rozpoczęciem produkcji kolejnego produktu*")
-        ws_linia.cell(row=10, column=14, value="Operator")
+            ws_linia.cell(row=7, column=1, value="Kontrola pracowników przed przystąpieniem do pracy (jeśli N - powód):").font = Font(name="Calibri", size=9)
+            ws_linia.cell(row=7, column=12, value="+").font = font_bold
+            ws_linia.cell(row=8, column=1, value="Sprawdzenie sprawności/czystości urządzeń przed rozpoczęciem pracy:").font = Font(name="Calibri", size=9)
+            ws_linia.cell(row=8, column=12, value="+").font = font_bold
 
-        ws_linia.row_dimensions[10].height = 45
-        ws_linia.row_dimensions[11].height = 20
+            for r_idx in [7, 8]:
+                for c_idx in range(1, 13):
+                    ws_linia.cell(row=r_idx, column=c_idx).border = Border(
+                        top=thick_black if r_idx == 7 else None,
+                        bottom=thick_black if r_idx == 8 else None,
+                        left=thick_black if c_idx == 1 else None,
+                        right=thick_black if c_idx == 12 else None
+                    )
 
-        curr_r = 12
-        for item in wpisy_linii:
-            w_dane = [
-                str(item['kod']),
-                item['nazwa'],
-                item['odbiorca'],
-                f"{item['data_przyd']} / {item['partia_prod']}",
-                int(item['ilosc']),
-                "+", "+", "+",
-                item['etykieta_gora'],
-                item['etykieta_dol'],
-                item['czas_start'],
-                item['czas_koniec'],
-                " + ",
-                item['operator']
-            ]
+            ws_linia['A3'] = "ROZCHÓD WEWNĘTRZNY - OCENA PRODUKTU - WYRÓB GOTOWY"
+            ws_linia['A3'].font = Font(name="Calibri", size=13, bold=True, color="1F497D")
 
-            for col_idx, val in enumerate(w_dane, start=1):
-                cell = ws_linia.cell(row=curr_r, column=col_idx, value=val)
-                cell.font = font_normal
-                cell.border = Border(
-                    top=thin_black,
-                    bottom=thick_black if len(wpisy_linii) == (curr_r - 11) else thin_black,
-                    left=thick_black if col_idx == 1 else thin_black,
-                    right=thick_black if col_idx == 14 else thin_black
-                )
-                cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            ws_linia.merge_cells('F10:H10')
+            ws_linia.cell(row=10, column=6, value="Ocena i zwolnienie partii produktu*\nCP4 Wygląd produktu, prawidłowa, czytelna etykieta***")
 
-            ws_linia.row_dimensions[curr_r].height = 24
-            curr_r += 1
+            for r in range(10, 12):
+                for c in range(1, 15):
+                    cell_curr = ws_linia.cell(row=r, column=c)
+                    cell_curr.fill = fill_header
+                    cell_curr.border = Border(
+                        top=thick_black if r == 10 else thin_black,
+                        bottom=thick_black if r == 11 else thin_black,
+                        left=thick_black if c == 1 else thin_black,
+                        right=thick_black if c == 14 else thin_black
+                    )
+                    cell_curr.font = Font(name="Calibri", size=9, bold=True, color="FFFFFF")
+                    cell_curr.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
-        foot_r = curr_r + 2
-        ws_linia.cell(row=foot_r, column=1, value="***kontrola na początku P, w środku S i na końcu K produkcji danego produktu").font = Font(name="Calibri", size=8, italic=True)
-        ws_linia.cell(row=foot_r+1, column=1, value="dodatkowo (3 pomiary) przy zmianie rolki etykiet/kartonu, po awarii sprzętu").font = Font(name="Calibri", size=8, italic=True)
-        ws_linia.cell(row=foot_r+3, column=1, value="Weryfikacja brygadzisty / kierownika (podpis): ........................................................................").font = font_bold
+            ws_linia.cell(row=10, column=1, value="Kod")
+            ws_linia.cell(row=10, column=2, value="Nazwa produktu")
+            ws_linia.cell(row=10, column=3, value="Odbiorca")
+            ws_linia.cell(row=10, column=4, value="Data przydatności / Nr partii")
+            ws_linia.cell(row=10, column=5, value="Ilość")
+            
+            ws_linia.cell(row=11, column=6, value="P")
+            ws_linia.cell(row=11, column=7, value="S")
+            ws_linia.cell(row=11, column=8, value="K")
+            
+            ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ/OKUB")
+            ws_linia.cell(row=10, column=10, value="Nr partii etykiety DOLNEJ")
+            ws_linia.cell(row=10, column=11, value="Godz. rozpoczęcia")
+            ws_linia.cell(row=10, column=12, value="Godz. zakończenia")
+            ws_linia.cell(row=10, column=13, value="Prawidłowe oczyszczenie linii z pozostałych etykiet, banderol, kartonów przed rozpoczęciem produkcji kolejnego produktu*")
+            ws_linia.cell(row=10, column=14, value="Operator")
 
-        kolumny_szerokosci = {
-            'A': 12, 'B': 26, 'C': 16, 'D': 24, 'E': 10, 
-            'F': 6, 'G': 6, 'H': 6, 'I': 18, 'J': 18, 'K': 14, 'L': 14, 'M': 24, 'N': 20
-        }
-        for let, szer in kolumny_szerokosci.items():
-            ws_linia.column_dimensions[let].width = szer
+            ws_linia.row_dimensions[10].height = 45
+            ws_linia.row_dimensions[11].height = 20
 
-    output_path = f"Raport_Kompletny_{wybrana_data}.xlsx"
+            curr_r = 12
+            for item in wpisy_linii:
+                w_dane = [
+                    str(item['kod']),
+                    item['nazwa'],
+                    item['odbiorca'],
+                    f"{item['data_przyd']} / {item['partia_prod']}",
+                    int(item['ilosc']),
+                    "+", "+", "+",
+                    item['etykieta_gora'],
+                    item['etykieta_dol'],
+                    item['czas_start'],
+                    item['czas_koniec'],
+                    " + ",
+                    item['operator']
+                ]
+
+                for col_idx, val in enumerate(w_dane, start=1):
+                    cell = ws_linia.cell(row=curr_r, column=col_idx, value=val)
+                    cell.font = font_normal
+                    cell.border = Border(
+                        top=thin_black,
+                        bottom=thick_black if len(wpisy_linii) == (curr_r - 11) else thin_black,
+                        left=thick_black if col_idx == 1 else thin_black,
+                        right=thick_black if col_idx == 14 else thin_black
+                    )
+                    cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+                ws_linia.row_dimensions[curr_r].height = 24
+                curr_r += 1
+
+            foot_r = curr_r + 2
+            ws_linia.cell(row=foot_r, column=1, value="***kontrola na początku P, w środku S i na końcu K produkcji danego produktu").font = Font(name="Calibri", size=8, italic=True)
+            ws_linia.cell(row=foot_r+1, column=1, value="dodatkowo (3 pomiary) przy zmianie rolki etykiet/kartonu, po awarii sprzętu").font = Font(name="Calibri", size=8, italic=True)
+            ws_linia.cell(row=foot_r+3, column=1, value="Weryfikacja brygadzisty / kierownika (podpis): ........................................................................").font = font_bold
+
+            kolumny_szerokosci = {
+                'A': 12, 'B': 26, 'C': 16, 'D': 24, 'E': 10, 
+                'F': 6, 'G': 6, 'H': 6, 'I': 18, 'J': 18, 'K': 14, 'L': 14, 'M': 24, 'N': 20
+            }
+            for let, szer in kolumny_szerokosci.items():
+                ws_linia.column_dimensions[let].width = szer
+
+        output_path = f"Raport_Produkcji_{wybrana_data}.xlsx"
+
     wb.save(output_path)
     return send_file(output_path, as_attachment=True)
 
