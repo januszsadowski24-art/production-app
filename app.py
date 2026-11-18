@@ -145,8 +145,8 @@ T = {
         "wybierz_dzien_hist": "Wybierz dzień do podglądu historii i generowania raportu (Admin):",
         "data_raportu_hist": "Data raportu / historii:", "tabela_nr": "#", "tabela_ilosc": "Ilość", "tabela_czas": "Czas pracy",
         "tabela_bhp": "Potwierdzenia BHP", "tabela_szczegoly": "Szczegóły",
-        "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość...",
-        "ph_etygora": "Wpisz etykietę górną...", "ph_etydol": "Wpisz etykietę dolną..."
+        "nadwyzka": "Nadwyżka", "wybierz_dzien_prog": "Wybierz dzień do podglądu postępu:", "kliknij_naglowek": "Kliknij nagłówek kolumny, aby sortować ↕️",
+        "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość..."
     },
     "en": {
         "tytul": "Production Management Panel",
@@ -195,6 +195,7 @@ T = {
         "wybierz_dzien_hist": "Select day to view history and generate report (Admin):",
         "data_raportu_hist": "Report / history date:", "tabela_nr": "#", "tabela_ilosc": "Quantity", "tabela_czas": "Working time",
         "tabela_bhp": "OHS Confirmations", "tabela_szczegoly": "Details",
+        "nadwyzka": "Surplus", "wybierz_dzien_prog": "Select day to view progress:", "kliknij_naglowek": "Click column header to sort ↕️",
         "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Recipient", "ph_ilosc": "enter quantity..."
     },
     "es": {
@@ -245,6 +246,7 @@ T = {
         "wybierz_dzien_hist": "Seleccionar día para ver historial e informe (Admin):",
         "data_raportu_hist": "Fecha de informe / historial:", "tabela_nr": "#", "tabela_ilosc": "Cantidad", "tabela_czas": "Tiempo de trabajo",
         "tabela_bhp": "Confirmaciones SST", "tabela_szczegoly": "Detalles",
+        "nadwyzka": "Excedente", "wybierz_dzien_prog": "Seleccionar día para ver progreso:", "kliknij_naglowek": "Haga clic en el encabezado de la columna para ordenar ↕️",
         "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Destinatario", "ph_ilosc": "ingrese cantidad..."
     },
     "uk": {
@@ -295,6 +297,7 @@ T = {
         "wybierz_dzien_hist": "Виберіть день для перегляду історії та створення звіту (Адмін):",
         "data_raportu_hist": "Дата звіту / історії:", "tabela_nr": "#", "tabela_ilosc": "Кількість", "tabela_czas": "Час роботи",
         "tabela_bhp": "Підтвердження ОП", "tabela_szczegoly": "Деталі",
+        "nadwyzka": "Надлишок", "wybierz_dzien_prog": "Виберіть день для перегляду прогресу:", "kliknij_naglowek": "Клацніть заголовку стовпця, щоб сортувати ↕️",
         "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Одержувач", "ph_ilosc": "введіть кількість..."
     }
 }
@@ -344,7 +347,7 @@ HTML_TEMPLATE = """
     <title>{{ t.tytul }}</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 1150px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        .container { max-width: 1200px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
         h2, h3 { color: #333; text-align: center; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; }
         .lang-switcher { display: flex; gap: 5px; }
@@ -425,7 +428,7 @@ HTML_TEMPLATE = """
             }
         }
 
-        // Filtrowanie tabeli postępu kolumna po kolumnie
+        # Filtrowanie tabeli postępu kolumna po kolumnie
         function filtrKolumnTabeli() {
             const fKod = document.getElementById('filterKod').value.toLowerCase();
             const fNazwa = document.getElementById('filterNazwa').value.toLowerCase();
@@ -459,7 +462,7 @@ HTML_TEMPLATE = """
             }
         }
 
-        // Funkcja sortowania tabeli rosnąco / malejąco po kliknięciu w nagłówek
+        # Funkcja sortowania tabeli rosnąco / malejąco po kliknięciu w nagłówek
         let sortDirections = {};
         function sortTable(columnIndex, isNumeric = false) {
             const table = document.getElementById("progressTable");
@@ -626,7 +629,7 @@ HTML_TEMPLATE = """
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="progress">
                     <div style="flex: 1; max-width: 300px;">
-                        <label><b>Wybierz dzień do podglądu postępu:</b></label>
+                        <label><b>{{ t.wybierz_dzien_prog }}</b></label>
                         <select name="wybrana_data_progress" onchange="this.form.submit()">
                             {% for data_d in dostepne_daty_wpisow_lub_planu %}
                                 <option value="{{ data_d }}" {{ 'selected' if data_d == wybrana_data_progress else '' }}>📅 {{ data_d }}</option>
@@ -652,34 +655,34 @@ HTML_TEMPLATE = """
                     </div>
                 </div>
 
-                <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }} (Kliknij nagłówek kolumny, aby sortować ↕️):</h4>
+                <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }}</h4>
                 
                 <div style="max-height: 500px; overflow-y: auto; background: white; border-radius: 6px; border: 1px solid #cbd5e1;">
                     <table class="progress-table" id="progressTable">
                         <thead>
                             <tr>
                                 <th onclick="sortTable(0, false)">
-                                    Kod artykułu ↕️
-                                    <input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj kod...">
+                                    {{ t.kol_kod }} ↕️
+                                    <input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj...">
                                 </th>
                                 <th onclick="sortTable(1, false)">
-                                    Nazwa produktu ↕️
-                                    <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj nazwę...">
+                                    {{ t.kol_nazwa }} ↕️
+                                    <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj...">
                                 </th>
                                 <th style="width: 90px;" onclick="sortTable(2, true)">
                                     Plan ↕️
                                     <input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Plan...">
                                 </th>
                                 <th style="width: 90px;" onclick="sortTable(3, true)">
-                                    Wykonano ↕️
+                                    {{ t.tabela_ilosc }} ↕️
                                     <input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Wykonano...">
                                 </th>
                                 <th style="width: 90px;" onclick="sortTable(4, true)">
-                                    Pozostało ↕️
+                                    {{ t.pozostalo }} ↕️
                                     <input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Pozostało...">
                                 </th>
                                 <th style="width: 90px;" onclick="sortTable(5, true)">
-                                    Nadwyżka ↕️
+                                    {{ t.nadwyzka }} ↕️
                                     <input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Nadwyżka...">
                                 </th>
                                 <th style="width: 120px;" onclick="sortTable(6, true)">
