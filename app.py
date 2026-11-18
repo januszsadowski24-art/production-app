@@ -418,6 +418,22 @@ HTML_TEMPLATE = """
             }
         }
 
+        // Funkcja do filtrowania elementów postępu po kodzie lub nazwie
+        function filtrPostepu() {
+            const input = document.getElementById('searchInputProgress');
+            const filter = input.value.toLowerCase();
+            const items = document.getElementsByClassName('progress-item');
+
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].getAttribute('data-search') || '';
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+
         window.onload = function() {
             const dataInput = document.getElementById('dataProdInput');
             if (dataInput) {
@@ -555,17 +571,24 @@ HTML_TEMPLATE = """
             <div class="progress-section">
                 <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }}</h3>
                 
-                <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
-                    <input type="hidden" name="linia" value="progress">
-                    <div style="flex: 1; max-width: 300px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <form method="GET" action="/" style="flex: 1; min-width: 250px; margin: 0;">
+                        <input type="hidden" name="linia" value="progress">
+                        <input type="hidden" name="wybrana_data_progress" value="{{ wybrana_data_progress }}">
                         <label><b>Wybierz dzień do podglądu postępu:</b></label>
-                        <select name="wybrana_data_progress" onchange="this.form.submit()">
+                        <select name="wybrana_data_progress_select" onchange="this.form.wybrana_data_progress.value=this.value; this.form.submit()">
                             {% for data_d in dostepne_daty_wpisow_lub_planu %}
                                 <option value="{{ data_d }}" {{ 'selected' if data_d == wybrana_data_progress else '' }}>📅 {{ data_d }}</option>
                             {% endfor %}
                         </select>
+                    </form>
+
+                    <!-- Pole wyszukiwania / filtrowania po numerze lub nazwie -->
+                    <div style="flex: 1; min-width: 250px;">
+                        <label><b>🔍 Szukaj po kodzie lub nazwie:</b></label>
+                        <input type="text" id="searchInputProgress" onkeyup="filtrPostepu()" placeholder="Wpisz numer lub nazwę artykułu..." style="margin-top: 4px;">
                     </div>
-                </form>
+                </div>
 
                 <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid #28a745; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
                     <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #155724; display: flex; justify-content: space-between;">
@@ -585,22 +608,28 @@ HTML_TEMPLATE = """
                 </div>
 
                 <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }}</h4>
-                {% for kod, plan_val in plan_wybrany_prog.items() %}
-                    {% set wykonane = wykonane_dla_wybranej_daty_prog.get(kod, 0) %}
-                    {% set left_amt = [plan_val - wykonane, 0] | max %}
-                    {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
-                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd;">
-                        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 6px;">
-                            <span>{{ kod }} - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}</span>
-                            <span>{{ t.wykonano }} {{ wykonane }} / {{ plan_val }} | <b>{{ t.pozostalo }} {{ left_amt }}</b> ({{ procent }}%)</span>
+                
+                <div id="progressListContainer">
+                    {% for kod, plan_val in plan_wybrany_prog.items() %}
+                        {% set wykonane = wykonane_dla_wybranej_daty_prog.get(kod, 0) %}
+                        {% set left_amt = [plan_val - wykonane, 0] | max %}
+                        {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
+                        {% set nazwa_art = produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') %}
+                        
+                        <!-- Każdy element posiada atrybut data-search ułatwiający filtrowanie -->
+                        <div class="progress-item" data-search="{{ kod }} {{ nazwa_art }}" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd;">
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 6px;">
+                                <span>{{ kod }} - {{ nazwa_art }}</span>
+                                <span>{{ t.wykonano }} {{ wykonane }} / {{ plan_val }} | <b>{{ t.pozostalo }} {{ left_amt }}</b> ({{ procent }}%)</span>
+                            </div>
+                            <div style="background: #e9ecef; border-radius: 6px; height: 18px; overflow: hidden; border: 1px solid #ced4da;">
+                                <div style="background: {{ '#28a745' if procent >= 100 else '#007bff' }}; width: {{ [procent, 100] | min }}%; height: 100%;"></div>
+                            </div>
                         </div>
-                        <div style="background: #e9ecef; border-radius: 6px; height: 18px; overflow: hidden; border: 1px solid #ced4da;">
-                            <div style="background: {{ '#28a745' if procent >= 100 else '#007bff' }}; width: {{ [procent, 100] | min }}%; height: 100%;"></div>
-                        </div>
-                    </div>
-                {% else %}
-                    <p style="color: #777; font-size: 13px;">{{ t.brak_planu_dzis }}</p>
-                {% endfor %}
+                    {% else %}
+                        <p style="color: #777; font-size: 13px;">{{ t.brak_planu_dzis }}</p>
+                    {% endfor %}
+                </div>
 
                 <form action="/generate?data={{ wybrana_data_progress }}&linia=1" method="POST" style="margin-top: 25px;">
                     <button type="submit" style="background: #28a745;">📥 {{ t.zapisz_excel }} (Postęp / Dzień: {{ wybrana_data_progress }})</button>
