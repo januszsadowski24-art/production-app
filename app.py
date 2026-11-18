@@ -381,11 +381,12 @@ HTML_TEMPLATE = """
         .admin-section { background: #f8d7da; padding: 20px; border-radius: 8px; border: 1px solid #f5c6cb; }
         .error-banner { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #f5c6cb; font-weight: bold; text-align: center; }
         
-        /* Style dla tabeli postępu w stylu Excela */
+        /* Styl tabeli postępu i nagłówków sortowalnych */
         .progress-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 13px; }
         .progress-table th, .progress-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
-        .progress-table th { background-color: #f1f5f9; position: relative; }
-        .filter-input { width: 100%; padding: 5px 6px; margin-top: 5px; font-size: 12px; border: 1px solid #94a3b8; border-radius: 4px; box-sizing: border-box; font-weight: normal; }
+        .progress-table th { background-color: #f1f5f9; cursor: pointer; user-select: none; }
+        .progress-table th:hover { background-color: #e2e8f0; }
+        .filter-input { width: 100%; padding: 5px 6px; margin-top: 5px; font-size: 12px; border: 1px solid #94a3b8; border-radius: 4px; box-sizing: border-box; font-weight: normal; cursor: text; }
     </style>
     <script>
         const baza = {{ produkty_json | safe }};
@@ -424,7 +425,7 @@ HTML_TEMPLATE = """
             }
         }
 
-        // Filtrowanie tabeli postępu kolumna po kolumnie (styl Excela)
+        // Filtrowanie tabeli postępu kolumna po kolumnie
         function filtrKolumnTabeli() {
             const fKod = document.getElementById('filterKod').value.toLowerCase();
             const fNazwa = document.getElementById('filterNazwa').value.toLowerCase();
@@ -453,6 +454,35 @@ HTML_TEMPLATE = """
 
                 rows[i].style.display = match ? "" : "none";
             }
+        }
+
+        // Funkcja sortowania tabeli rosnąco / malejąco po kliknięciu w nagłówek
+        let sortDirections = {};
+        function sortTable(columnIndex, isNumeric = false) {
+            const table = document.getElementById("progressTable");
+            const tbody = document.getElementById("progressTableBody");
+            const rowsArray = Array.from(tbody.querySelectorAll("tr"));
+            
+            // Określenie kierunku sortowania (przełączanie między rosnąco a malejąco)
+            let dir = sortDirections[columnIndex] || 'asc';
+            dir = dir === 'asc' ? 'desc' : 'asc';
+            sortDirections[columnIndex] = dir;
+
+            rowsArray.sort((rowA, rowB) => {
+                let cellA = rowA.children[columnIndex].innerText.trim();
+                let cellB = rowB.children[columnIndex].innerText.trim();
+
+                if (isNumeric) {
+                    cellA = parseFloat(cellA.replace(/[^0-9.-]+/g,"")) || 0;
+                    cellB = parseFloat(cellB.replace(/[^0-9.-]+/g,"")) || 0;
+                    return dir === 'asc' ? cellA - cellB : cellB - cellA;
+                } else {
+                    return dir === 'asc' ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                }
+            });
+
+            // Ponowne wstawienie posortowanych wierszy do tabeli
+            rowsArray.forEach(row => tbody.appendChild(row));
         }
 
         window.onload = function() {
@@ -621,36 +651,35 @@ HTML_TEMPLATE = """
                     </div>
                 </div>
 
-                <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }} (Filtrowanie kolumnami w stylu Excela):</h4>
+                <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }} (Kliknij nagłówek kolumny, aby sortować ↕️):</h4>
                 
-                <!-- Tabela z filtrami w nagłówkach (jak w Excelu) -->
                 <div style="max-height: 500px; overflow-y: auto; background: white; border-radius: 6px; border: 1px solid #cbd5e1;">
-                    <table class="progress-table">
+                    <table class="progress-table" id="progressTable">
                         <thead>
                             <tr>
-                                <th>
-                                    Kod artykułu
-                                    <input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="Filtruj kod...">
+                                <th onclick="sortTable(0, false)">
+                                    Kod artykułu ↕️
+                                    <input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj kod...">
                                 </th>
-                                <th>
-                                    Nazwa produktu
-                                    <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="Filtruj nazwę...">
+                                <th onclick="sortTable(1, false)">
+                                    Nazwa produktu ↕️
+                                    <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj nazwę...">
                                 </th>
-                                <th style="width: 100px;">
-                                    Plan
-                                    <input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="Plan...">
+                                <th style="width: 100px;" onclick="sortTable(2, true)">
+                                    Plan ↕️
+                                    <input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Plan...">
                                 </th>
-                                <th style="width: 100px;">
-                                    Wykonano
-                                    <input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="Wykonano...">
+                                <th style="width: 100px;" onclick="sortTable(3, true)">
+                                    Wykonano ↕️
+                                    <input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Wykonano...">
                                 </th>
-                                <th style="width: 100px;">
-                                    Pozostało
-                                    <input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="Pozostało...">
+                                <th style="width: 100px;" onclick="sortTable(4, true)">
+                                    Pozostało ↕️
+                                    <input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Pozostało...">
                                 </th>
-                                <th style="width: 130px;">
-                                    % Realizacji
-                                    <input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" placeholder="%...">
+                                <th style="width: 130px;" onclick="sortTable(5, true)">
+                                    % Realizacji ↕️
+                                    <input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="%...">
                                 </th>
                             </tr>
                         </thead>
