@@ -61,6 +61,15 @@ class WpisProdukcyjnyModel(db.Model):
 # Inicjalizacja domyślnych danych w bazie, jeśli jest pusta
 with app.app_context():
     db.create_all()
+    # Automatyczne dodanie uprawnienia 'raporty' dla istniejącego admina
+    admin_user = UzytkownikModel.query.filter_by(username="admin").first()
+    if admin_user:
+        dostepy = json.loads(admin_user.dostep)
+        if "raporty" not in dostepy:
+            dostepy.append("raporty")
+            admin_user.dostep = json.dumps(dostepy)
+            db.session.commit()
+
     if UzytkownikModel.query.count() == 0:
         domyslni_uzyt = {
             "admin": {"haslo": "admin123", "rola": "admin", "pelna_nazwa": "Administrator Systemu", "dostep": ["1", "2", "3", "4", "plan", "progress", "wydajnosc", "raporty", "db_art", "admin"]},
@@ -139,7 +148,8 @@ T = {
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
         "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla wybranej daty.",
         "wybierz_dzien_plan": "Wybierz dzień planu:", "podglad_planu": "Podgląd zaplanowanej produkcji:", "brak_planow": "Brak zdefiniowanych planów produkcyjnych.",
-        "dodaj_nowego_uzyt": "Dodaj nowego użytkownika / operatora", "imie_nazwisko": "Imię i Nazwisko operatora:", "rola": "Rola:",
+        "dodaj_nowego_uzyt": "Dodaj nowego użytkownika / operatora",
+        "imie_nazwisko": "Imię i Nazwisko operatora:", "rola": "Rola:",
         "uprawnienia_lbl": "Uprawnienia (wybierz zakładki):", "zapisz_uzyt_btn": "Zapisz użytkownika", "zarejestrowani_uzyt": "Zarejestrowani użytkownicy",
         "systemowy": "(systemowy)", "kol_kod": "Kod", "kol_nazwa": "Nazwa", "kol_odbiorca": "Odbiorca", "kol_akcja": "Akcja",
         "wybierz_dzien_hist": "Wybierz dzień do podglądu historii i generowania raportu (Admin):",
