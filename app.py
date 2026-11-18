@@ -344,7 +344,7 @@ HTML_TEMPLATE = """
     <title>{{ t.tytul }}</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 1100px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        .container { max-width: 1150px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
         h2, h3 { color: #333; text-align: center; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; }
         .lang-switcher { display: flex; gap: 5px; }
@@ -432,6 +432,7 @@ HTML_TEMPLATE = """
             const fPlan = document.getElementById('filterPlan').value.toLowerCase();
             const fWykonano = document.getElementById('filterWykonano').value.toLowerCase();
             const fPozostalo = document.getElementById('filterPozostalo').value.toLowerCase();
+            const fNadwyzka = document.getElementById('filterNadwyzka').value.toLowerCase();
             const fProcent = document.getElementById('filterProcent').value.toLowerCase();
 
             const rows = document.getElementById('progressTableBody').getElementsByTagName('tr');
@@ -442,6 +443,7 @@ HTML_TEMPLATE = """
                 const tdPlan = rows[i].getAttribute('data-plan') || '';
                 const tdWykonano = rows[i].getAttribute('data-wykonano') || '';
                 const tdPozostalo = rows[i].getAttribute('data-pozostalo') || '';
+                const tdNadwyzka = rows[i].getAttribute('data-nadwyzka') || '';
                 const tdProcent = rows[i].getAttribute('data-procent') || '';
 
                 const match = 
@@ -450,6 +452,7 @@ HTML_TEMPLATE = """
                     tdPlan.toLowerCase().includes(fPlan) &&
                     tdWykonano.toLowerCase().includes(fWykonano) &&
                     tdPozostalo.toLowerCase().includes(fPozostalo) &&
+                    tdNadwyzka.toLowerCase().includes(fNadwyzka) &&
                     tdProcent.toLowerCase().includes(fProcent);
 
                 rows[i].style.display = match ? "" : "none";
@@ -463,7 +466,6 @@ HTML_TEMPLATE = """
             const tbody = document.getElementById("progressTableBody");
             const rowsArray = Array.from(tbody.querySelectorAll("tr"));
             
-            // Określenie kierunku sortowania (przełączanie między rosnąco a malejąco)
             let dir = sortDirections[columnIndex] || 'asc';
             dir = dir === 'asc' ? 'desc' : 'asc';
             sortDirections[columnIndex] = dir;
@@ -481,7 +483,6 @@ HTML_TEMPLATE = """
                 }
             });
 
-            // Ponowne wstawienie posortowanych wierszy do tabeli
             rowsArray.forEach(row => tbody.appendChild(row));
         }
 
@@ -665,19 +666,23 @@ HTML_TEMPLATE = """
                                     Nazwa produktu ↕️
                                     <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj nazwę...">
                                 </th>
-                                <th style="width: 100px;" onclick="sortTable(2, true)">
+                                <th style="width: 90px;" onclick="sortTable(2, true)">
                                     Plan ↕️
                                     <input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Plan...">
                                 </th>
-                                <th style="width: 100px;" onclick="sortTable(3, true)">
+                                <th style="width: 90px;" onclick="sortTable(3, true)">
                                     Wykonano ↕️
                                     <input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Wykonano...">
                                 </th>
-                                <th style="width: 100px;" onclick="sortTable(4, true)">
+                                <th style="width: 90px;" onclick="sortTable(4, true)">
                                     Pozostało ↕️
                                     <input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Pozostało...">
                                 </th>
-                                <th style="width: 130px;" onclick="sortTable(5, true)">
+                                <th style="width: 90px;" onclick="sortTable(5, true)">
+                                    Nadwyżka ↕️
+                                    <input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Nadwyżka...">
+                                </th>
+                                <th style="width: 120px;" onclick="sortTable(6, true)">
                                     % Realizacji ↕️
                                     <input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="%...">
                                 </th>
@@ -687,15 +692,17 @@ HTML_TEMPLATE = """
                             {% for kod, plan_val in plan_wybrany_prog.items() %}
                                 {% set wykonane = wykonane_dla_wybranej_daty_prog.get(kod, 0) %}
                                 {% set left_amt = [plan_val - wykonane, 0] | max %}
+                                {% set nadwyzka_amt = [wykonane - plan_val, 0] | max %}
                                 {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
                                 {% set nazwa_art = produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') %}
                                 
-                                <tr data-kod="{{ kod }}" data-nazwa="{{ nazwa_art }}" data-plan="{{ plan_val }}" data-wykonano="{{ wykonane }}" data-pozostalo="{{ left_amt }}" data-procent="{{ procent }}%">
+                                <tr data-kod="{{ kod }}" data-nazwa="{{ nazwa_art }}" data-plan="{{ plan_val }}" data-wykonano="{{ wykonane }}" data-pozostalo="{{ left_amt }}" data-nadwyzka="{{ nadwyzka_amt }}" data-procent="{{ procent }}%">
                                     <td><b>{{ kod }}</b></td>
                                     <td>{{ nazwa_art }}</td>
                                     <td>{{ plan_val }} szt.</td>
                                     <td><b>{{ wykonane }}</b> szt.</td>
                                     <td><b style="color: #dc3545;">{{ left_amt }}</b> szt.</td>
+                                    <td><b style="color: #16a34a;">{{ nadwyzka_amt }}</b> szt.</td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span><b>{{ procent }}%</b></span>
@@ -706,7 +713,7 @@ HTML_TEMPLATE = """
                                     </td>
                                 </tr>
                             {% else %}
-                                <tr><td colspan="6" style="text-align: center; color: #777; padding: 20px;">{{ t.brak_planu_dzis }}</td></tr>
+                                <tr><td colspan="7" style="text-align: center; color: #777; padding: 20px;">{{ t.brak_planu_dzis }}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
