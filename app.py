@@ -29,7 +29,7 @@ class UzytkownikModel(db.Model):
     haslo = db.Column(db.String(100), nullable=False)
     rola = db.Column(db.String(50), nullable=False)
     pelna_nazwa = db.Column(db.String(100), nullable=False)
-    dostep = db.Column(db.Text, nullable=False) # przechowywane jako JSON string
+    dostep = db.Column(db.Text, nullable=False)
 
 class PlanModel(db.Model):
     __tablename__ = 'plan_produkcyjny'
@@ -58,7 +58,6 @@ class WpisProdukcyjnyModel(db.Model):
     potwierdzenie_oczyszczenia = db.Column(db.String(10), nullable=True)
     operator = db.Column(db.String(100), nullable=False)
 
-# Inicjalizacja domyślnych danych w bazie, jeśli jest pusta
 with app.app_context():
     db.create_all()
     admin_user = UzytkownikModel.query.filter_by(username="admin").first()
@@ -78,7 +77,7 @@ with app.app_context():
         for usr, info in domyslni_uzyt.items():
             u = UzytkownikModel(username=usr, haslo=info["haslo"], rola=info["rola"], pelna_nazwa=info["pelna_nazwa"], dostep=json.dumps(info["dostep"]))
             db.session.add(u)
-        
+
         domyslnie_produkty = {
             "1354": {"nazwa": "Hähnchen Teriyaki 190g", "odbiorca": "Aldi SUD"},
             "1378": {"nazwa": "Hähnchen Sweet Chili 190g", "odbiorca": "Aldi SUD"},
@@ -97,13 +96,13 @@ with app.app_context():
         for kod, info in domyslnie_produkty.items():
             p = ArtykulModel(kod=kod, nazwa=info["nazwa"], odbiorca=info["odbiorca"])
             db.session.add(p)
-            
+
         dzis_str = datetime.now().strftime('%Y-%m-%d')
         domyslny_plan = {"1354": 2500, "2690": 1500, "3101": 2000}
         for kod, szt in domyslny_plan.items():
             pl = PlanModel(data=dzis_str, kod=kod, ilosc=szt)
             db.session.add(pl)
-            
+
         db.session.commit()
 
 T = {
@@ -118,13 +117,13 @@ T = {
         "plan_tab": "Plan Produkcyjny", "prog_tab": "Postęp / Realizacja", "wydajnosc_tab": "Wydajność (Szt/h)", "raporty_tab": "Centrum Raportów", "db_art_tab": "Baza Artykułów", "admin_tab": "Panel Administratora",
         "zarejestruj": "Zarejestruj wyprodukowaną partię dla",
         "data_prod": "Data produkcji:", "kod_art": "Kod artykułu:", "wybierz_kod": "-- Wybierz kod artykułu --",
-        "ilosc_szt": "Ilość sztuk:", "wpisz_ilosc": "wpisz ilość...", "nazwa_ind": "Nazwa indeksu:",
+        "ilosc_szt": "Ilość sztuk (na koniec palety):", "wpisz_ilosc": "wpisz ilość na koniec...", "nazwa_ind": "Nazwa indeksu:",
         "odbiorca": "Odbiorca:", "data_przyd": "Data przydatności (min. +4 dni):", "nr_partii": "Nr partii produktu:",
         "ety_gora": "Etykieta GÓRNA:", "ety_dol": "Etykieta DOLNA:", "operator": "Operator:",
         "dodaj_btn": "Zarejestruj wyprodukowaną paletę / partię", "realizacja_biez": "Realizacja na bieżąco",
         "brak_wpisow": "Brak wpisów dla tej linii i daty.", "lacznie": "Łącznie wyprodukowano na linii:",
         "zapisz_excel": "Zapisz raport", "wklej_plan": "Zarządzanie Planem Produkcyjnym",
-        "instrukcja_plan": "Wybierz datę planu, wklej dane z Excela (Kod [Tab] Ilość) lub dodaj pojedynczą pozycję:",
+        "instrukcja_plan": "Wybierz datę planu, wklej dane z Excela (Kod [Tab] Ilość):",
         "zapisz_plan_btn": "Zapisz plan dla wybranej daty", "zarzadzanie_art": "Zarządzanie Bazą Artykułów",
         "dodaj_art": "Dodaj / Edytuj Artykuł", "nazwa": "Nazwa", "dodaj_art_btn": "Zapisz artykuł",
         "istniejace_art": "Istniejące Artykuły", "usun": "[Usuń]",
@@ -134,7 +133,7 @@ T = {
         "bhp_1": "Potwierdzam przeprowadzenie kontroli pracowników i czystości urządzeń przed przystąpieniem do pracy.",
         "bhp_2": "Potwierdzam prawidłowe oczyszczenie linii z pozostałych etykiet, banderol i kartonów przed rozpoczęciem produkcji kolejnego produktu.",
         "czas_pracy_tytul": "Czas pracy (WYMAGANE):",
-        "czas_opis": "Kliknij przyciski, aby pobrać aktualny czas startu i końca lub wpisz ręcznie.",
+        "czas_opis": "Kliknij Start Palety na początku (nie musisz podawać ilości). Koniec i ilość uzupełnisz na końcu.",
         "start_palety": "Start Palety", "koniec_palety": "Koniec Palety",
         "czas_start_lbl": "Czas Startu (Wymagane):", "czas_koniec_lbl": "Czas Końca (Wymagane):",
         "postep_tytul": "Łączny Postęp Produkcji",
@@ -154,8 +153,9 @@ T = {
         "wybierz_dzien_hist": "Wybierz dzień do podglądu historii i generowania raportu (Admin):",
         "data_raportu_hist": "Data raportu / historii:", "tabela_nr": "#", "tabela_ilosc": "Ilość", "tabela_czas": "Czas pracy",
         "tabela_bhp": "Potwierdzenia BHP", "tabela_szczegoly": "Szczegóły",
-        "nadwyzka": "Nadwyżka", "wybierz_dzien_prog": "Wybierz dzień do podglądu postępu:", "kliknij_naglowek": "Kliknij nagłówek kolumny, aby sortować ↕️",
-        "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość..."
+        "nadwyzka": "Nadwyżka", "wybierz_dzien_prog": "Wybierz dzień do podglądu postępu:",
+        "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość na koniec...",
+        "ph_etygora": "Wpisz etykietę górną...", "ph_etydol": "Wpisz etykietę dolną..."
     },
     "en": {
         "tytul": "Production Management Panel",
@@ -168,13 +168,13 @@ T = {
         "plan_tab": "Production Plan", "prog_tab": "Progress / Realization", "wydajnosc_tab": "Productivity (Pcs/h)", "raporty_tab": "Reports Center", "db_art_tab": "Articles DB", "admin_tab": "Admin Panel",
         "zarejestruj": "Register batch for",
         "data_prod": "Production date:", "kod_art": "Article code:", "wybierz_kod": "-- Select article code --",
-        "ilosc_szt": "Quantity:", "wpisz_ilosc": "enter quantity...", "nazwa_ind": "Index name:",
+        "ilosc_szt": "Quantity (at pallet end):", "wpisz_ilosc": "enter quantity at end...", "nazwa_ind": "Index name:",
         "odbiorca": "Recipient:", "data_przyd": "Expiry date (min. +4 days):", "nr_partii": "Batch number:",
         "ety_gora": "TOP label:", "ety_dol": "BOTTOM label:", "operator": "Operator:",
         "dodaj_btn": "Register produced palette / batch", "realizacja_biez": "Live progress",
         "brak_wpisow": "No entries for this line and date.", "lacznie": "Total produced on line:",
         "zapisz_excel": "Save report", "wklej_plan": "Production Plan Management",
-        "instrukcja_plan": "Select plan date, paste from Excel (Code [Tab] Qty) or add single item:",
+        "instrukcja_plan": "Select plan date, paste from Excel (Code [Tab] Qty):",
         "zapisz_plan_btn": "Save plan for selected date", "zarzadzanie_art": "Articles Management",
         "dodaj_art": "Add / Edit Article", "nazwa": "Name", "dodaj_art_btn": "Save Article",
         "istniejace_art": "Existing Articles", "usun": "[Delete]",
@@ -184,7 +184,7 @@ T = {
         "bhp_1": "I confirm the inspection of workers and equipment cleanliness before starting work.",
         "bhp_2": "I confirm the proper cleaning of the line from remaining labels, bands and cartons before starting the production of the next product.",
         "czas_pracy_tytul": "Working time (REQUIRED):",
-        "czas_opis": "Click buttons to fetch current start and end time or enter manually.",
+        "czas_opis": "Click Palette Start at the beginning (quantity not required yet). Fill end & quantity at the end.",
         "start_palety": "Palette Start", "koniec_palety": "Palette End",
         "czas_start_lbl": "Start Time (Required):", "czas_koniec_lbl": "End Time (Required):",
         "postep_tytul": "Total Production Progress",
@@ -204,8 +204,9 @@ T = {
         "wybierz_dzien_hist": "Select day to view history and generate report (Admin):",
         "data_raportu_hist": "Report / history date:", "tabela_nr": "#", "tabela_ilosc": "Quantity", "tabela_czas": "Working time",
         "tabela_bhp": "OHS Confirmations", "tabela_szczegoly": "Details",
-        "nadwyzka": "Surplus", "wybierz_dzien_prog": "Select day to view progress:", "kliknij_naglowek": "Click column header to sort ↕️",
-        "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Recipient", "ph_ilosc": "enter quantity..."
+        "nadwyzka": "Surplus", "wybierz_dzien_prog": "Select day to view progress:",
+        "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Recipient", "ph_ilosc": "enter quantity at end...",
+        "ph_etygora": "Enter top label...", "ph_etydol": "Enter bottom label..."
     },
     "es": {
         "tytul": "Panel de Gestión de Producción",
@@ -218,14 +219,14 @@ T = {
         "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Realización", "wydajnosc_tab": "Productividad (Pcs/h)", "raporty_tab": "Centro de Informes", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Admin",
         "zarejestruj": "Registrar lote para",
         "data_prod": "Fecha de producción:", "kod_art": "Código de artículo:", "wybierz_kod": "-- Seleccione código --",
-        "ilosc_szt": "Cantidad:", "wpisz_ilosc": "ingrese cantidad...", "nazwa_ind": "Nombre del índice:",
+        "ilosc_szt": "Cantidad (al final del palet):", "wpisz_ilosc": "ingrese cantidad al final...", "nazwa_ind": "Nombre del índice:",
         "odbiorca": "Destinatario:", "data_przyd": "Fecha de caducidad (mín. +4 días):", "nr_partii": "Nº de lote:",
         "ety_gora": "Etiqueta SUPERIOR:", "ety_dol": "Etiqueta INFERIOR:", "operator": "Operador:",
         "dodaj_btn": "Registrar palet / lote producido",
         "realizacja_biez": "Realización en curso",
         "brak_wpisow": "No hay entradas para esta línea y fecha.", "lacznie": "Total producido en la línea:",
         "zapisz_excel": "Guardar informe", "wklej_plan": "Gestión del Plan de Producción",
-        "instrukcja_plan": "Seleccione fecha, pegue desde Excel (Código [Tab] Cantidad) o añada:",
+        "instrukcja_plan": "Seleccione fecha, pegue desde Excel (Código [Tab] Cantidad):",
         "zapisz_plan_btn": "Guardar plan para la fecha", "zarzadzanie_art": "Gestión de Artículos",
         "dodaj_art": "Añadir / Editar Artículo", "nazwa": "Nombre", "dodaj_art_btn": "Guardar Artículo",
         "istniejace_art": "Artículos Existentes", "usun": "[Eliminar]",
@@ -235,7 +236,7 @@ T = {
         "bhp_1": "Confirmo la inspección de trabajadores y limpieza de equipos antes de comenzar el trabajo.",
         "bhp_2": "Confirmo la limpieza adecuada de la línea de etiquetas, bandas y cartones restantes antes de iniciar la producción del siguiente producto.",
         "czas_pracy_tytul": "Tiempo de trabajo (OBLIGATORIO):",
-        "czas_opis": "Haga clic en los botones para obtener la hora actual o ingrese manualmente.",
+        "czas_opis": "Pulse Inicio de Palet al empezar (cantidad no requerida aún). Rellene fin y cantidad al final.",
         "start_palety": "Inicio de Palet", "koniec_palety": "Fin de Palet",
         "czas_start_lbl": "Hora de inicio (Obligatorio):", "czas_koniec_lbl": "Hora de fin (Obligatorio):",
         "postep_tytul": "Progreso Total de Producción",
@@ -255,8 +256,9 @@ T = {
         "wybierz_dzien_hist": "Seleccionar día para ver historial e informe (Admin):",
         "data_raportu_hist": "Fecha de informe / historial:", "tabela_nr": "#", "tabela_ilosc": "Cantidad", "tabela_czas": "Tiempo de trabajo",
         "tabela_bhp": "Confirmaciones SST", "tabela_szczegoly": "Detalles",
-        "nadwyzka": "Excedente", "wybierz_dzien_prog": "Seleccionar día para ver progreso:", "kliknij_naglowek": "Haga clic en el encabezado de la columna para ordenar ↕️",
-        "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Destinatario", "ph_ilosc": "ingrese cantidad..."
+        "nadwyzka": "Excedente", "wybierz_dzien_prog": "Seleccionar día para ver progreso:",
+        "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Destinatario", "ph_ilosc": "ingrese cantidad al final...",
+        "ph_etygora": "Etiqueta superior...", "ph_etydol": "Etiqueta inferior..."
     },
     "uk": {
         "tytul": "Панель управління виробництвом",
@@ -269,14 +271,14 @@ T = {
         "plan_tab": "Виробничий план", "prog_tab": "Прогрес / Виконання", "wydajnosc_tab": "Продуктивність (Шт/год)", "raporty_tab": "Центр звітів", "db_art_tab": "База артикулів", "admin_tab": "Панель адміна",
         "zarejestruj": "Зареєструвати партію для",
         "data_prod": "Дата виробництва:", "kod_art": "Код артикулу:", "wybierz_kod": "-- Виберіть код артикулу --",
-        "ilosc_szt": "Кількість штук:", "wpisz_ilosc": "введіть кількість...", "nazwa_ind": "Назва індексу:",
+        "ilosc_szt": "Кількість штук (наприкінці палети):", "wpisz_ilosc": "введіть кількість наприкінці...", "nazwa_ind": "Назва індексу:",
         "odbiorca": "Одержувач:", "data_przyd": "Термін придатності (мін. +4 дні):", "nr_partii": "Партія продукту:",
         "ety_gora": "Етикетка ВЕРХНЯ:", "ety_dol": "Етикетка НИЖНЯ:", "operator": "Оператор:",
         "dodaj_btn": "Зареєструвати вироблену палету / партію",
         "realizacja_biez": "Поточне виконання",
         "brak_wpisow": "Немає записів для цієї лінії та дати.", "lacznie": "Всього вироблено на лінії:",
         "zapisz_excel": "Зберегти звіт", "wklej_plan": "Управління виробничим планом",
-        "instrukcja_plan": "Виберіть дату, вставте з Excel (Код [Tab] Кількість) або додайте окремо:",
+        "instrukcja_plan": "Виберіть дату, вставте з Excel (Код [Tab] Кількість):",
         "zapisz_plan_btn": "Зберегти план на дату", "zarzadzanie_art": "Управління артикулами",
         "dodaj_art": "Додати / Редагувати артикул", "nazwa": "Назва", "dodaj_art_btn": "Зберегти артикул",
         "istniejace_art": "Існуючі артикули", "usun": "[Видалити]",
@@ -286,7 +288,7 @@ T = {
         "bhp_1": "Підтверджую проведення перевірки працівників та чистоти обладнання перед початком роботи.",
         "bhp_2": "Підтверджую належне очищення лінії від залишкових етикеток, бандеролей та картонів перед початком виробництва наступного продукту.",
         "czas_pracy_tytul": "Робочий час (ОБОВ'ЯЗКОВО):",
-        "czas_opis": "Натисніть кнопки, щоб отримати поточний час початку та кінця або введіть вручну.",
+        "czas_opis": "Натисніть Початок палети на початку (кількість не потрібна). Кінець і кількість введіть наприкінці.",
         "start_palety": "Початок палети", "koniec_palety": "Кінець палети",
         "czas_start_lbl": "Час початку (Обов'язково):", "czas_koniec_lbl": "Час кінця (Обов'язково):",
         "postep_tytul": "Загальний прогрес виробництва",
@@ -306,8 +308,9 @@ T = {
         "wybierz_dzien_hist": "Виберіть день для перегляду історії та створення звіту (Адмін):",
         "data_raportu_hist": "Дата звіту / історії:", "tabela_nr": "#", "tabela_ilosc": "Кількість", "tabela_czas": "Час роботи",
         "tabela_bhp": "Підтвердження ОП", "tabela_szczegoly": "Деталі",
-        "nadwyzka": "Надлишок", "wybierz_dzien_prog": "Виберіть день для перегляду прогресу:", "kliknij_naglowek": "Клацніть заголовку стовпця, щоб сортувати ↕️",
-        "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Одержувач", "ph_ilosc": "введіть кількість..."
+        "nadwyzka": "Надлишок", "wybierz_dzien_prog": "Виберіть день для перегляду прогресу:",
+        "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Одержувач", "ph_ilosc": "введіть кількість наприкінці...",
+        "ph_etygora": "Верхня етикетка...", "ph_etydol": "Нижня етикетка..."
     }
 }
 
@@ -356,7 +359,7 @@ HTML_TEMPLATE = """
     <title>{{ t.tytul }}</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        .container { max-width: 1250px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
         h2, h3 { color: #333; text-align: center; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; }
         .lang-switcher { display: flex; gap: 5px; }
@@ -395,7 +398,7 @@ HTML_TEMPLATE = """
         .db-section { background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; }
         .admin-section { background: #f8d7da; padding: 20px; border-radius: 8px; border: 1px solid #f5c6cb; }
         .error-banner { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #f5c6cb; font-weight: bold; text-align: center; }
-        
+
         .progress-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 13px; }
         .progress-table th, .progress-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
         .progress-table th { background-color: #f1f5f9; cursor: pointer; user-select: none; }
@@ -412,20 +415,73 @@ HTML_TEMPLATE = """
         const baza = {{ produkty_json | safe }};
         const calyPlan = {{ plan_json | safe }};
         const zrealizowanoDzien = {{ zrealizowane_json | safe }};
-        
+        const aktualnaLinia = "{{ linia }}";
+        const draftKey = "paleta_draft_linia_" + aktualnaLinia;
+
+        function zapiszSzkic() {
+            if (!['1', '2', '3', '4'].includes(aktualnaLinia)) return;
+            const draft = {
+                kod: document.getElementById('kodSelect')?.value || "",
+                ilosc: document.querySelector('input[name="ilosc"]')?.value || "",
+                data_przyd: document.querySelector('input[name="data_przyd"]')?.value || "",
+                etykieta_gora: document.querySelector('input[name="etykieta_gora"]')?.value || "",
+                etykieta_dol: document.querySelector('input[name="etykieta_dol"]')?.value || "",
+                czas_start: document.getElementById('czasStart')?.value || "",
+                czas_koniec: document.getElementById('czasKoniec')?.value || ""
+            };
+            localStorage.setItem(draftKey, JSON.stringify(draft));
+        }
+
+        function wczytajSzkic() {
+            if (!['1', '2', '3', '4'].includes(aktualnaLinia)) return;
+            const raw = localStorage.getItem(draftKey);
+            if (!raw) return;
+            try {
+                const draft = JSON.parse(raw);
+                if (draft.kod && document.getElementById('kodSelect')) {
+                    document.getElementById('kodSelect').value = draft.kod;
+                }
+                if (draft.ilosc && document.querySelector('input[name="ilosc"]')) {
+                    document.querySelector('input[name="ilosc"]').value = draft.ilosc;
+                }
+                if (draft.data_przyd && document.querySelector('input[name="data_przyd"]')) {
+                    document.querySelector('input[name="data_przyd"]').value = draft.data_przyd;
+                }
+                if (draft.etykieta_gora && document.querySelector('input[name="etykieta_gora"]')) {
+                    document.querySelector('input[name="etykieta_gora"]').value = draft.etykieta_gora;
+                }
+                if (draft.etykieta_dol && document.querySelector('input[name="etykieta_dol"]')) {
+                    document.querySelector('input[name="etykieta_dol"]').value = draft.etykieta_dol;
+                }
+                if (draft.czas_start && document.getElementById('czasStart')) {
+                    document.getElementById('czasStart').value = draft.czas_start;
+                }
+                if (draft.czas_koniec && document.getElementById('czasKoniec')) {
+                    document.getElementById('czasKoniec').value = draft.czas_koniec;
+                }
+                aktualizujDane();
+            } catch (e) {}
+        }
+
+        function wyczyscSzkicPoDodaniu() {
+            localStorage.removeItem(draftKey);
+        }
+
         function aktualizujDane() {
-            const kod = document.getElementById('kodSelect').value;
+            const kod = document.getElementById('kodSelect')?.value;
             const nazwaInput = document.getElementById('nazwaInput');
             const odbiorcaInput = document.getElementById('odbiorcaInput');
             const infoBox = document.getElementById('planInfoBox');
-            
+
+            if (!nazwaInput || !odbiorcaInput || !infoBox) return;
+
             const dataProdInput = document.getElementById('dataProdInput');
             const dataProd = dataProdInput ? dataProdInput.value : "{{ dzis }}";
 
             if (kod && baza[kod]) {
                 nazwaInput.value = baza[kod].nazwa;
                 odbiorcaInput.value = baza[kod].odbiorca;
-                
+
                 const planNaDzien = calyPlan[dataProd] || {};
                 if (planNaDzien[kod] !== undefined) {
                     const planKwota = planNaDzien[kod];
@@ -443,11 +499,13 @@ HTML_TEMPLATE = """
                 odbiorcaInput.value = "";
                 infoBox.style.display = 'none';
             }
+            zapiszSzkic();
         }
 
         function filtrKolumnTabeli() {
             const fKod = document.getElementById('filterKod').value.toLowerCase();
             const fNazwa = document.getElementById('filterNazwa').value.toLowerCase();
+            const fOdbiorca = document.getElementById('filterOdbiorca').value.toLowerCase();
             const fPlan = document.getElementById('filterPlan').value.toLowerCase();
             const fWykonano = document.getElementById('filterWykonano').value.toLowerCase();
             const fPozostalo = document.getElementById('filterPozostalo').value.toLowerCase();
@@ -459,15 +517,17 @@ HTML_TEMPLATE = """
             for (let i = 0; i < rows.length; i++) {
                 const tdKod = rows[i].getAttribute('data-kod') || '';
                 const tdNazwa = rows[i].getAttribute('data-nazwa') || '';
+                const tdOdbiorca = rows[i].getAttribute('data-odbiorca') || '';
                 const tdPlan = rows[i].getAttribute('data-plan') || '';
                 const tdWykonano = rows[i].getAttribute('data-wykonano') || '';
                 const tdPozostalo = rows[i].getAttribute('data-pozostalo') || '';
                 const tdNadwyzka = rows[i].getAttribute('data-nadwyzka') || '';
                 const tdProcent = rows[i].getAttribute('data-procent') || '';
 
-                const match = 
+                const match =
                     tdKod.toLowerCase().includes(fKod) &&
                     tdNazwa.toLowerCase().includes(fNazwa) &&
+                    tdOdbiorca.toLowerCase().includes(fOdbiorca) &&
                     tdPlan.toLowerCase().includes(fPlan) &&
                     tdWykonano.toLowerCase().includes(fWykonano) &&
                     tdPozostalo.toLowerCase().includes(fPozostalo) &&
@@ -480,10 +540,9 @@ HTML_TEMPLATE = """
 
         let sortDirections = {};
         function sortTable(columnIndex, isNumeric = false) {
-            const table = document.getElementById("progressTable");
             const tbody = document.getElementById("progressTableBody");
             const rowsArray = Array.from(tbody.querySelectorAll("tr"));
-            
+
             let dir = sortDirections[columnIndex] || 'asc';
             dir = dir === 'asc' ? 'desc' : 'asc';
             sortDirections[columnIndex] = dir;
@@ -505,17 +564,28 @@ HTML_TEMPLATE = """
         }
 
         window.onload = function() {
+            wczytajSzkic();
             const dataInput = document.getElementById('dataProdInput');
             if (dataInput) {
                 dataInput.addEventListener('change', aktualizujDane);
             }
-            const kodSelect = document.getElementById('kodSelect');
-            if (kodSelect && kodSelect.value) {
-                aktualizujDane();
-            }
+            const formInputs = ['ilosc', 'data_przyd', 'etykieta_gora', 'etykieta_dol'];
+            formInputs.forEach(name => {
+                const el = document.querySelector('input[name="' + name + '"]');
+                if (el) {
+                    el.addEventListener('input', zapiszSzkic);
+                    el.addEventListener('change', zapiszSzkic);
+                }
+            });
         };
 
         function walidujFormularz(event) {
+            const iloscVal = parseInt(document.querySelector('input[name="ilosc"]')?.value || "0", 10);
+            if (!iloscVal || iloscVal < 1) {
+                alert("Błąd: Podaj ilość sztuk na koniec palety (minimum 1)!");
+                event.preventDefault();
+                return false;
+            }
             const start = document.getElementById('czasStart').value;
             const koniec = document.getElementById('czasKoniec').value;
             if (start && koniec && koniec <= start) {
@@ -523,6 +593,7 @@ HTML_TEMPLATE = """
                 event.preventDefault();
                 return false;
             }
+            wyczyscSzkicPoDodaniu();
             return true;
         }
     </script>
@@ -531,9 +602,9 @@ HTML_TEMPLATE = """
 <div class="container">
     <div class="header-bar">
         <div>
-            <b>{{ t.zalog_op }}:</b> {{ pelna_nazwa }} ({{ role }}) | 
+            <b>{{ t.zalog_op }}:</b> {{ pelna_nazwa }} ({{ role }}) |
             {% if wypr_zmiana %}
-                <b>{{ t.zmiana }}:</b> {{ wypr_zmiana }} | 
+                <b>{{ t.zmiana }}:</b> {{ wypr_zmiana }} |
                 <a href="/reset-zmiana" style="color: #dc3545; font-weight: bold; text-decoration: none;">🔄 {{ t.zmien_zm }}</a>
             {% endif %}
         </div>
@@ -605,14 +676,14 @@ HTML_TEMPLATE = """
                 <form action="/zapisz-plan" method="POST" style="margin-bottom: 20px;">
                     <label><b>{{ t.wybierz_dzien_plan }}</b></label>
                     <input type="date" name="data_planu" value="{{ wybrana_data_planu or dzis }}" style="max-width: 250px; margin-bottom: 15px;" required>
-                    
+
                     <p style="font-size: 13px; color: #444;">{{ t.instrukcja_plan }}</p>
                     <textarea name="surowy_plan" rows="8" placeholder="Wklej skopiowane kolumny z Excela (Kod [Tab] Ilość)..." style="font-family: monospace; font-size: 13px;"></textarea>
                     <button type="submit" style="background: #385723;">{{ t.zapisz_plan_btn }}</button>
                 </form>
 
                 <h4 style="border-top: 1px solid #c8e1b9; padding-top: 15px;">{{ t.podglad_planu }}</h4>
-                
+
                 <form method="GET" action="/" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="plan">
                     <div style="flex: 1; max-width: 300px;">
@@ -630,7 +701,7 @@ HTML_TEMPLATE = """
                         <b>📅 Dzień: {{ wybrana_data_planu }}</b>
                         <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 13px;">
                             {% for kod, szt in plan_produkcyjny[wybrana_data_planu].items() %}
-                                <li style="margin-bottom: 5px;"><b>{{ kod }}</b> - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}: <b>{{ szt }} szt.</b> 
+                                <li style="margin-bottom: 5px;"><b>{{ kod }}</b> - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}: <b>{{ szt }} szt.</b>
                                     (<a href="/usun-z-planu?data={{ wybrana_data_planu }}&kod={{ kod }}" style="color: red; text-decoration: none;">{{ t.usun }}</a>)
                                 </li>
                             {% endfor %}
@@ -643,7 +714,7 @@ HTML_TEMPLATE = """
         {% elif linia == 'progress' and 'progress' in dostep %}
             <div class="progress-section">
                 <h3 style="margin-top: 0; color: #333;">📊 {{ t.postep_tytul }}</h3>
-                
+
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
                     <form method="GET" action="/" style="flex: 1; max-width: 300px; margin: 0;">
                         <input type="hidden" name="linia" value="progress">
@@ -678,7 +749,7 @@ HTML_TEMPLATE = """
                 </div>
 
                 <h4 style="margin-top: 20px; color: #333;">{{ t.postep_art }}</h4>
-                
+
                 <div style="max-height: 500px; overflow-y: auto; background: white; border-radius: 6px; border: 1px solid #cbd5e1;">
                     <table class="progress-table" id="progressTable">
                         <thead>
@@ -691,23 +762,27 @@ HTML_TEMPLATE = """
                                     {{ t.kol_nazwa }} ↕️
                                     <input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj...">
                                 </th>
-                                <th style="width: 90px;" onclick="sortTable(2, true)">
+                                <th onclick="sortTable(2, false)">
+                                    {{ t.kol_odbiorca }} ↕️
+                                    <input type="text" id="filterOdbiorca" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj...">
+                                </th>
+                                <th style="width: 90px;" onclick="sortTable(3, true)">
                                     Plan ↕️
                                     <input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Plan...">
                                 </th>
-                                <th style="width: 90px;" onclick="sortTable(3, true)">
+                                <th style="width: 90px;" onclick="sortTable(4, true)">
                                     {{ t.tabela_ilosc }} ↕️
                                     <input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Wykonano...">
                                 </th>
-                                <th style="width: 90px;" onclick="sortTable(4, true)">
+                                <th style="width: 90px;" onclick="sortTable(5, true)">
                                     {{ t.pozostalo }} ↕️
                                     <input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Pozostało...">
                                 </th>
-                                <th style="width: 90px;" onclick="sortTable(5, true)">
+                                <th style="width: 90px;" onclick="sortTable(6, true)">
                                     {{ t.nadwyzka }} ↕️
                                     <input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Nadwyżka...">
                                 </th>
-                                <th style="width: 120px;" onclick="sortTable(6, true)">
+                                <th style="width: 120px;" onclick="sortTable(7, true)">
                                     % Realizacji ↕️
                                     <input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="%...">
                                 </th>
@@ -719,11 +794,14 @@ HTML_TEMPLATE = """
                                 {% set left_amt = [plan_val - wykonane, 0] | max %}
                                 {% set nadwyzka_amt = [wykonane - plan_val, 0] | max %}
                                 {% set procent = (wykonane / plan_val * 100) | round | int if plan_val > 0 else 0 %}
-                                {% set nazwa_art = produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') %}
-                                
-                                <tr data-kod="{{ kod }}" data-nazwa="{{ nazwa_art }}" data-plan="{{ plan_val }}" data-wykonano="{{ wykonane }}" data-pozostalo="{{ left_amt }}" data-nadwyzka="{{ nadwyzka_amt }}" data-procent="{{ procent }}%">
+                                {% set prod_info = produkty_baza.get(kod, {}) %}
+                                {% set nazwa_art = prod_info.get('nazwa', 'Nieznany') %}
+                                {% set odbiorca_art = prod_info.get('odbiorca', '-') %}
+
+                                <tr data-kod="{{ kod }}" data-nazwa="{{ nazwa_art }}" data-odbiorca="{{ odbiorca_art }}" data-plan="{{ plan_val }}" data-wykonano="{{ wykonane }}" data-pozostalo="{{ left_amt }}" data-nadwyzka="{{ nadwyzka_amt }}" data-procent="{{ procent }}%">
                                     <td><b>{{ kod }}</b></td>
                                     <td>{{ nazwa_art }}</td>
+                                    <td>{{ odbiorca_art }}</td>
                                     <td>{{ plan_val }} szt.</td>
                                     <td><b>{{ wykonane }}</b> szt.</td>
                                     <td><b style="color: #dc3545;">{{ left_amt }}</b> szt.</td>
@@ -738,7 +816,7 @@ HTML_TEMPLATE = """
                                     </td>
                                 </tr>
                             {% else %}
-                                <tr><td colspan="7" style="text-align: center; color: #777; padding: 20px;">{{ t.brak_planu_dzis }}</td></tr>
+                                <tr><td colspan="8" style="text-align: center; color: #777; padding: 20px;">{{ t.brak_planu_dzis }}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -748,7 +826,7 @@ HTML_TEMPLATE = """
             <div class="wydajnosc-section">
                 <h3 style="margin-top: 0; color: #5a32a3;">⏱️ {{ t.raport_wyd_tytul }}</h3>
                 <p style="font-size: 13px; color: #555;">{{ t.raport_wyd_opis }}</p>
-                
+
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="wydajnosc">
                     <div style="flex: 1; max-width: 300px;">
@@ -786,18 +864,18 @@ HTML_TEMPLATE = """
             <div class="raporty-section">
                 <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }}</h3>
                 <p style="font-size: 13px; color: #555;">Wybierz dzień oraz rodzaj raportu, który chcesz wygenerować i pobrać:</p>
-                
+
                 <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ffd8a8; max-width: 700px;">
                     <form action="/generate" method="GET">
                         <label><b>📅 Wybierz dzień raportu:</b></label>
                         <input type="date" name="data" value="{{ wybrana_data }}" style="margin-bottom: 15px;" required>
-                        
+
                         <label><b>📑 Rodzaj raportu:</b></label>
                         <select name="typ_raportu" style="margin-bottom: 20px;">
                             <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1 (osobne arkusze linii)</option>
                             <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2 (osobne arkusze linii)</option>
                             <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (osobne arkusze Z1 i Z2)</option>
-                            <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu (Plan, Wykonano, Pozostało, Nadwyżka, %)</option>
+                            <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu (Kod, Nazwa, Odbiorca, Plan, Wykonano, Pozostało, Nadwyżka, %)</option>
                             <option value="wydajnosc">⏱️ Raport Wydajności (Sztuk na godzinę — Linie i Zmiany)</option>
                         </select>
 
@@ -843,7 +921,7 @@ HTML_TEMPLATE = """
         {% elif linia == 'admin' and 'admin' in dostep %}
             <div class="admin-section">
                 <h3 style="margin-top: 0; color: #721c24;">🔐 {{ t.zarzadzanie_uzyt }}</h3>
-                
+
                 <form action="/admin/dodaj-uzytkownika" method="POST" style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
                     <h4 style="margin-top:0;">{{ t.dodaj_nowego_uzyt }}</h4>
                     <div class="row">
@@ -928,7 +1006,7 @@ HTML_TEMPLATE = """
                     </div>
                     <div>
                         <label>{{ t.ilosc_szt }}</label>
-                        <input type="number" name="ilosc" min="1" required placeholder="{{ t.ph_ilosc }}">
+                        <input type="number" name="ilosc" min="1" placeholder="{{ t.ph_ilosc }}">
                     </div>
                 </div>
 
@@ -995,11 +1073,11 @@ HTML_TEMPLATE = """
                 <div class="row" style="margin-top: 10px;">
                     <div>
                         <label>{{ t.czas_start_lbl }}</label>
-                        <input type="time" id="czasStart" name="czas_start" required>
+                        <input type="time" id="czasStart" name="czas_start" onchange="zapiszSzkic()" required>
                     </div>
                     <div>
                         <label>{{ t.czas_koniec_lbl }}</label>
-                        <input type="time" id="czasKoniec" name="czas_koniec" required>
+                        <input type="time" id="czasKoniec" name="czas_koniec" onchange="zapiszSzkic()" required>
                     </div>
                 </div>
 
@@ -1014,6 +1092,7 @@ HTML_TEMPLATE = """
                         } else {
                             document.getElementById('czasKoniec').value = czasStr;
                         }
+                        zapiszSzkic();
                     }
                 </script>
 
@@ -1136,7 +1215,7 @@ def index():
     error_msg = session.pop('error_msg', None)
 
     produkty_baza = {p.kod: {"nazwa": p.nazwa, "odbiorca": p.odbiorca} for p in ArtykulModel.query.all()}
-    
+
     plan_baza_list = PlanModel.query.all()
     plan_produkcyjny = {}
     for pl in plan_baza_list:
@@ -1184,13 +1263,13 @@ def index():
 
     plan_wybrany_prog = plan_produkcyjny.get(wybrana_data_progress, {})
     suma_planu_calkowita_prog = sum(int(v) for v in plan_wybrany_prog.values())
-    
+
     wykonane_dla_wybranej_daty_prog = {}
     for w in wpisy_baza_wszystkie:
         if w['data'] == wybrana_data_progress:
             kod_w = w['kod']
             wykonane_dla_wybranej_daty_prog[kod_w] = wykonane_dla_wybranej_daty_prog.get(kod_w, 0) + int(w['ilosc'])
-            
+
     suma_wykonana_calkowita_prog = sum(int(v) for v in wykonane_dla_wybranej_daty_prog.values())
     pozostalo_calkowite_prog = max(suma_planu_calkowita_prog - suma_wykonana_calkowita_prog, 0)
     procent_calkowity_prog = round(suma_wykonana_calkowita_prog / suma_planu_calkowita_prog * 100) if suma_planu_calkowita_prog > 0 else 0
@@ -1284,7 +1363,7 @@ def reset_zmiana():
 def dodaj():
     if 'user' not in session:
         return redirect(url_for('login'))
-    
+
     dzis = datetime.now().strftime('%Y-%m-%d')
     role = session.get('rola')
     data_prod = request.form.get('data', dzis) if role == 'admin' else dzis
@@ -1301,7 +1380,7 @@ def dodaj():
     artykul = ArtykulModel.query.get(kod)
     nazwa_art = artykul.nazwa if artykul else ""
     odbiorca_art = artykul.odbiorca if artykul else ""
-    
+
     nowy_wpis = WpisProdukcyjnyModel(
         data=data_prod,
         linia=linia,
@@ -1328,11 +1407,11 @@ def dodaj():
 def usun(wpis_id):
     if 'user' not in session:
         return redirect(url_for('login'))
-    
+
     dzis = datetime.now().strftime('%Y-%m-%d')
     role = session.get('rola')
     data_p = request.args.get('data', dzis)
-    
+
     if role != 'admin' and data_p != dzis:
         return "Brak uprawnień!"
 
@@ -1536,11 +1615,11 @@ def stworz_arkusz_linii(wb, sheet_title, wpisy_linii, wybrana_data, zmiana_label
     ws_linia.cell(row=10, column=3, value="Odbiorca")
     ws_linia.cell(row=10, column=4, value="Data przydatności / Nr partii")
     ws_linia.cell(row=10, column=5, value="Ilość")
-    
+
     ws_linia.cell(row=11, column=6, value="P")
     ws_linia.cell(row=11, column=7, value="S")
     ws_linia.cell(row=11, column=8, value="K")
-    
+
     ws_linia.cell(row=10, column=9, value="Nr partii etykiety GÓRNEJ/OKUB")
     ws_linia.cell(row=10, column=10, value="Nr partii etykiety DOLNEJ")
     ws_linia.cell(row=10, column=11, value="Godz. rozpoczęcia")
@@ -1588,7 +1667,7 @@ def stworz_arkusz_linii(wb, sheet_title, wpisy_linii, wybrana_data, zmiana_label
     ws_linia.cell(row=foot_r+3, column=1, value="Weryfikacja brygadzisty / kierownika (podpis): ........................................................................").font = font_bold
 
     kolumny_szerokosci = {
-        'A': 12, 'B': 26, 'C': 16, 'D': 24, 'E': 10, 
+        'A': 12, 'B': 26, 'C': 16, 'D': 24, 'E': 10,
         'F': 6, 'G': 6, 'H': 6, 'I': 18, 'J': 18, 'K': 14, 'L': 14, 'M': 24, 'N': 20
     }
     for let, szer in kolumny_szerokosci.items():
@@ -1598,11 +1677,11 @@ def stworz_arkusz_linii(wb, sheet_title, wpisy_linii, wybrana_data, zmiana_label
 def generate():
     if 'user' not in session:
         return redirect(url_for('login'))
-    
+
     dzis = datetime.now().strftime('%Y-%m-%d')
     wybrana_data = request.args.get('data', dzis)
     typ_raportu = request.args.get('typ_raportu', 'rozchod_osobne_arkusze')
-    
+
     wpisy_baza = WpisProdukcyjnyModel.query.filter_by(data=wybrana_data).all()
     wpisy_dla_dnia = [{
         "linia": w.linia, "zmiana": w.zmiana, "kod": w.kod,
@@ -1640,7 +1719,7 @@ def generate():
             kod = item['kod']
             wykonane_map[kod] = wykonane_map.get(kod, 0) + int(item['ilosc'])
 
-        headers_p = ["Kod artykułu", "Nazwa produktu", "Plan", "Wykonano", "Pozostało", "Nadwyżka", "% Realizacji"]
+        headers_p = ["Kod artykułu", "Nazwa produktu", "Odbiorca", "Plan", "Wykonano", "Pozostało", "Nadwyżka", "% Realizacji"]
         ws_p.row_dimensions[3].height = 25
         for c_idx, h_text in enumerate(headers_p, start=1):
             c = ws_p.cell(row=3, column=c_idx, value=h_text)
@@ -1649,21 +1728,23 @@ def generate():
             c.alignment = Alignment(horizontal="center", vertical="center")
             c.border = thin_border
 
-        produkty_all = {p.kod: p.nazwa for p in ArtykulModel.query.all()}
+        produkty_all = {p.kod: {"nazwa": p.nazwa, "odbiorca": p.odbiorca} for p in ArtykulModel.query.all()}
         r_p = 4
         for kod, plan_val in plan_map.items():
             wyk = wykonane_map.get(kod, 0)
             poz = max(plan_val - wyk, 0)
             nad = max(wyk - plan_val, 0)
             proc = round(wyk / plan_val * 100) if plan_val > 0 else 0
-            nazwa_art = produkty_all.get(kod, "Nieznany")
+            p_info = produkty_all.get(kod, {})
+            nazwa_art = p_info.get("nazwa", "Nieznany")
+            odb_art = p_info.get("odbiorca", "-")
 
-            vals = [str(kod), nazwa_art, int(plan_val), int(wyk), int(poz), int(nad), f"{proc}%"]
+            vals = [str(kod), nazwa_art, odb_art, int(plan_val), int(wyk), int(poz), int(nad), f"{proc}%"]
             for c_idx, val in enumerate(vals, start=1):
                 cell = ws_p.cell(row=r_p, column=c_idx, value=val)
                 cell.font = font_normal
                 cell.border = thin_border
-                cell.alignment = Alignment(horizontal="center" if c_idx != 2 else "left", vertical="center")
+                cell.alignment = Alignment(horizontal="center" if c_idx not in [2, 3] else "left", vertical="center")
             r_p += 1
 
         for col in ws_p.columns:
