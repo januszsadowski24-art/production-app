@@ -1658,7 +1658,7 @@ def generate():
             proc = round(wyk / plan_val * 100) if plan_val > 0 else 0
             nazwa_art = produkty_all.get(kod, "Nieznany")
 
-            vals = [kod, nazwa_art, plan_val, wyk, poz, nad, f"{proc}%"]
+            vals = [str(kod), nazwa_art, int(plan_val), int(wyk), int(poz), int(nad), f"{proc}%"]
             for c_idx, val in enumerate(vals, start=1):
                 cell = ws_p.cell(row=r_p, column=c_idx, value=val)
                 cell.font = font_normal
@@ -1708,7 +1708,7 @@ def generate():
         for s in stats.values():
             godz = round(s["minuty"] / 60, 2)
             wyd = round(s["sztuki"] / godz, 1) if godz > 0 else 0
-            vals_w = [f"Linia {s['linia']}", f"Zmiana {s['zmiana']}", s["sztuki"], godz, f"{wyd} szt/h"]
+            vals_w = [f"Linia {s['linia']}", f"Zmiana {s['zmiana']}", int(s["sztuki"]), godz, f"{wyd} szt/h"]
             for c_idx, val in enumerate(vals_w, start=1):
                 cell = ws_wyd.cell(row=r_w, column=c_idx, value=val)
                 cell.font = font_bold if c_idx in [3, 5] else font_normal
@@ -1744,7 +1744,6 @@ def generate():
             output_path = f"Raport_Rozchod_Z2_{wybrana_data}.xlsx"
 
         else:
-            # Osobne arkusze dla Zmiany 1 i Zmiany 2 w jednym pliku Excel
             for zm_nr in ['1', '2']:
                 for l_nr in linie_numery:
                     wpisy_z = [w for w in wpisy_dla_dnia if str(w['linia']) == l_nr and str(w['zmiana']) == zm_nr]
@@ -1752,8 +1751,8 @@ def generate():
                         stworz_arkusz_linii(wb, f"Linia {l_nr} - Z{zm_nr}", wpisy_z, wybrana_data, zm_nr, l_nr, first_sheet_ref)
             output_path = f"Raport_Rozchod_Z1_Z2_{wybrana_data}.xlsx"
 
-    if first_sheet_ref[0] and typ_raportu.startswith('rozchod'):
-        return f"Brak wpisów dla wybranego kryterium zmiany w dniu {wybrana_data}!"
+        if first_sheet_ref[0]:
+            return f"Brak wpisów dla wybranego kryterium zmiany w dniu {wybrana_data}!"
 
     wb.save(output_path)
     return send_file(output_path, as_attachment=True)
