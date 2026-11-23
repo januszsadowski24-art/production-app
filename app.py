@@ -138,6 +138,8 @@ T = {
         "czas_start_lbl": "Czas Startu (Wymagane):", "czas_koniec_lbl": "Czas Końca (Wymagane):",
         "postep_tytul": "Łączny Postęp Produkcji",
         "podsumowanie_dnia": "Podsumowanie Dnia (Wszystkie Artykuły)",
+        "realizacja_podstawowa": "Realizacja planu podstawowego (bez nadwyżek):",
+        "realizacja_z_nadwyzka": "Realizacja łącznie z nadwyżkami:",
         "do_zrobienia": "Do zrobienia łącznie:", "wykonano": "Wykonano:", "pozostalo": "Pozostało:",
         "postep_art": "Postęp według poszczególnych artykułów:",
         "brak_planu_dzis": "Brak planu produkcyjnego na ten dzień.",
@@ -189,6 +191,8 @@ T = {
         "czas_start_lbl": "Start Time (Required):", "czas_koniec_lbl": "End Time (Required):",
         "postep_tytul": "Total Production Progress",
         "podsumowanie_dnia": "Day Summary (All Articles)",
+        "realizacja_podstawowa": "Base plan realization (excl. surplus):",
+        "realizacja_z_nadwyzka": "Total realization incl. surplus:",
         "do_zrobienia": "Total to do:", "wykonano": "Completed:", "pozostalo": "Remaining:",
         "postep_art": "Progress by individual articles:",
         "brak_planu_dzis": "No production plan for this day.",
@@ -241,6 +245,8 @@ T = {
         "czas_start_lbl": "Hora de inicio (Obligatorio):", "czas_koniec_lbl": "Hora de fin (Obligatorio):",
         "postep_tytul": "Progreso Total de Producción",
         "podsumowanie_dnia": "Resumen del Día (Todos los Artículos)",
+        "realizacja_podstawowa": "Realización del plan base (sin excedentes):",
+        "realizacja_z_nadwyzka": "Realización total con excedentes:",
         "do_zrobienia": "Total por hacer:", "wykonano": "Completado:", "pozostalo": "Restante:",
         "postep_art": "Progreso por artículos individuales:",
         "brak_planu_dzis": "No hay plan para este día.",
@@ -293,6 +299,8 @@ T = {
         "czas_start_lbl": "Час початку (Обов'язково):", "czas_koniec_lbl": "Час кінця (Обов'язково):",
         "postep_tytul": "Загальний прогрес виробництва",
         "podsumowanie_dnia": "Підсумок дня (Всі артикули)",
+        "realizacja_podstawowa": "Виконання базового плану (без надлишків):",
+        "realizacja_z_nadwyzka": "Загальне виконання з надлишками:",
         "do_zrobienia": "Загалом виконати:", "wykonano": "Виконано:", "pozostalo": "Залишилось:",
         "postep_art": "Прогрес за окремими артикулами:",
         "brak_planu_dzis": "Немає плану на цей день.",
@@ -732,19 +740,34 @@ HTML_TEMPLATE = """
                 </div>
 
                 <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid #28a745; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-                    <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #155724; display: flex; justify-content: space-between;">
+                    <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #155724; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                         <span>🚀 {{ t.podsumowanie_dnia }} (Dzień: {{ wybrana_data_progress }})</span>
-                        <span><b>{{ suma_wykonana_calkowita_prog }}</b> / {{ suma_planu_calkowita_prog }} szt. (<b>{{ procent_calkowity_prog }}%</b>)</span>
+                        <span>{{ t.realizacja_podstawowa }} <b>{{ procent_podstawowy_prog }}%</b> | {{ t.realizacja_z_nadwyzka }} <b>{{ procent_calkowity_prog }}%</b></span>
                     </div>
-                    <div style="background: #e9ecef; border-radius: 8px; height: 26px; overflow: hidden; border: 1px solid #ced4da; margin-bottom: 10px;">
-                        <div style="background: {{ '#28a745' if procent_calkowity_prog >= 100 else '#007bff' }}; width: {{ [procent_calkowity_prog, 100] | min }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+
+                    <div style="margin-bottom: 6px; font-size: 12px; color: #004085; font-weight: bold;">
+                        {{ t.realizacja_podstawowa }} {{ suma_wkladu_plan_prog }} / {{ suma_planu_calkowita_prog }} szt. ({{ procent_podstawowy_prog }}%)
+                    </div>
+                    <div style="background: #e9ecef; border-radius: 8px; height: 22px; overflow: hidden; border: 1px solid #ced4da; margin-bottom: 12px;">
+                        <div style="background: {{ '#28a745' if procent_podstawowy_prog >= 100 else '#007bff' }}; width: {{ [procent_podstawowy_prog, 100] | min }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+                            {{ procent_podstawowy_prog }}%
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 6px; font-size: 12px; color: #155724; font-weight: bold;">
+                        {{ t.realizacja_z_nadwyzka }} {{ suma_wykonana_calkowita_prog }} / {{ suma_planu_calkowita_prog }} szt. ({{ procent_calkowity_prog }}%)
+                    </div>
+                    <div style="background: #e9ecef; border-radius: 8px; height: 22px; overflow: hidden; border: 1px solid #ced4da; margin-bottom: 12px;">
+                        <div style="background: {{ '#16a34a' if procent_calkowity_prog >= 100 else '#17a2b8' }}; width: {{ [procent_calkowity_prog, 100] | min }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
                             {{ procent_calkowity_prog }}%
                         </div>
                     </div>
-                    <div style="font-size: 14px; color: #333; display: flex; justify-content: space-between;">
+
+                    <div style="font-size: 14px; color: #333; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <span>📋 {{ t.do_zrobienia }} <b>{{ suma_planu_calkowita_prog }} szt.</b></span>
                         <span>✅ {{ t.wykonano }} <b>{{ suma_wykonana_calkowita_prog }} szt.</b></span>
                         <span>⚠️ {{ t.pozostalo }} <b style="color: #dc3545;">{{ pozostalo_calkowite_prog }} szt.</b></span>
+                        <span>➕ {{ t.nadwyzka }}: <b style="color: #16a34a;">{{ nadwyzka_calkowita_prog }} szt.</b></span>
                     </div>
                 </div>
 
@@ -1271,7 +1294,11 @@ def index():
             wykonane_dla_wybranej_daty_prog[kod_w] = wykonane_dla_wybranej_daty_prog.get(kod_w, 0) + int(w['ilosc'])
 
     suma_wykonana_calkowita_prog = sum(int(v) for v in wykonane_dla_wybranej_daty_prog.values())
-    pozostalo_calkowite_prog = max(suma_planu_calkowita_prog - suma_wykonana_calkowita_prog, 0)
+    suma_wkladu_plan_prog = sum(min(int(wykonane_dla_wybranej_daty_prog.get(k, 0)), int(p_val)) for k, p_val in plan_wybrany_prog.items())
+    nadwyzka_calkowita_prog = sum(max(int(wykonane_dla_wybranej_daty_prog.get(k, 0)) - int(p_val), 0) for k, p_val in plan_wybrany_prog.items())
+    pozostalo_calkowite_prog = max(suma_planu_calkowita_prog - suma_wkladu_plan_prog, 0)
+
+    procent_podstawowy_prog = round(suma_wkladu_plan_prog / suma_planu_calkowita_prog * 100) if suma_planu_calkowita_prog > 0 else 0
     procent_calkowity_prog = round(suma_wykonana_calkowita_prog / suma_planu_calkowita_prog * 100) if suma_planu_calkowita_prog > 0 else 0
 
     wpisy_baza = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data]
@@ -1335,7 +1362,10 @@ def index():
         wykonane_dla_wybranej_daty_prog=wykonane_dla_wybranej_daty_prog,
         suma_planu_calkowita_prog=suma_planu_calkowita_prog,
         suma_wykonana_calkowita_prog=suma_wykonana_calkowita_prog,
+        suma_wkladu_plan_prog=suma_wkladu_plan_prog,
+        nadwyzka_calkowita_prog=nadwyzka_calkowita_prog,
         pozostalo_calkowite_prog=pozostalo_calkowite_prog,
+        procent_podstawowy_prog=procent_podstawowy_prog,
         procent_calkowity_prog=procent_calkowity_prog,
         wpisy_baza_wszystkie=wpisy_baza_wszystkie,
         wpisy_dla_linii=wpisy_dla_linii,
