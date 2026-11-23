@@ -146,6 +146,7 @@ T = {
         "raport_wyd_tytul": "Raport Wydajności (Sztuk na Godzinę)",
         "raport_wyd_opis": "Poniższy raport przedstawia całkowity czas pracy oraz średnią produktywność w przeliczeniu na 1 godzinę dla każdej linii i zmiany.",
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
+        "laczna_suma_wypr": "Łączna suma wyprodukowana:", "laczny_czas": "Łączny czas pracy:", "srednia_wyd": "Średnia wydajność:",
         "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla wybranej daty.",
         "wybierz_dzien_plan": "Wybierz dzień planu:", "podglad_planu": "Podgląd zaplanowanej produkcji:", "brak_planow": "Brak zdefiniowanych planów produkcyjnych.",
         "dodaj_nowego_uzyt": "Dodaj nowego użytkownika / operatora",
@@ -199,6 +200,7 @@ T = {
         "raport_wyd_tytul": "Productivity Report (Pcs per Hour)",
         "raport_wyd_opis": "The report below shows total working time and average productivity per 1 hour for each line and shift.",
         "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Productivity (pcs/h)",
+        "laczna_suma_wypr": "Total produced sum:", "laczny_czas": "Total working time:", "srednia_wyd": "Average productivity:",
         "brak_czasow": "No recorded working times for selected date.",
         "wybierz_dzien_plan": "Select plan day:", "podglad_planu": "Preview of planned production:", "brak_planow": "No production plans defined.",
         "dodaj_nowego_uzyt": "Add new user / operator",
@@ -253,6 +255,7 @@ T = {
         "raport_wyd_tytul": "Informe de Productividad (Pcs por Hora)",
         "raport_wyd_opis": "El informe muestra el tiempo total de trabajo y la productividad promedio por hora para cada línea.",
         "th_linia": "Línea", "th_zmiana": "Turno", "th_wyprodukowano": "Pcs producidas", "th_czas_pracy": "Tiempo de trabajo (horas)", "th_wydajnosc": "Productividad (pcs/h)",
+        "laczna_suma_wypr": "Suma total producida:", "laczny_czas": "Tiempo total:", "srednia_wyd": "Productividad media:",
         "brak_czasow": "No hay tiempos registrados.",
         "wybierz_dzien_plan": "Seleccionar día del plan:", "podglad_planu": "Vista previa de producción planificada:", "brak_planow": "No hay planes definidos.",
         "dodaj_nowego_uzyt": "Añadir nuevo usuario / operador",
@@ -307,6 +310,7 @@ T = {
         "raport_wyd_tytul": "Звіт про продуктивність (Шт за годину)",
         "raport_wyd_opis": "Звіт нижче показує загальний час роботи та середню продуктивність за 1 годину для кожної лінії та зміни.",
         "th_linia": "Лінія", "th_zmiana": "Зміна", "th_wyprodukowano": "Вироблено штук", "th_czas_pracy": "Час роботи (години)", "th_wydajnosc": "Продуктивність (шт/год)",
+        "laczna_suma_wypr": "Загальна сума виробленого:", "laczny_czas": "Загальний час роботи:", "srednia_wyd": "Середня продуктивність:",
         "brak_czasow": "Немає зареєстрованого часу.",
         "wybierz_dzien_plan": "Виберіть день плану:", "podglad_planu": "Попередній перегляд спланованого виробництва:", "brak_planow": "Немає визначених планів.",
         "dodaj_nowego_uzyt": "Додати нового користувача / оператора",
@@ -412,6 +416,12 @@ HTML_TEMPLATE = """
         .progress-table th { background-color: #f1f5f9; cursor: pointer; user-select: none; }
         .progress-table th:hover { background-color: #e2e8f0; }
         .filter-input { width: 100%; padding: 5px 6px; margin-top: 5px; font-size: 12px; border: 1px solid #94a3b8; border-radius: 4px; box-sizing: border-box; font-weight: normal; cursor: text; }
+
+        .wyd-layout { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+        .wyd-table-col { flex: 3; min-width: 550px; }
+        .wyd-side-summary { flex: 1; min-width: 240px; background: white; border: 2px solid #6f42c1; border-radius: 8px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .wyd-stat-row { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .wyd-stat-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
         @media print {
             .header-bar, .tabs, form, button, .filter-input { display: none !important; }
@@ -546,6 +556,61 @@ HTML_TEMPLATE = """
             }
         }
 
+        function filtrWydajnosci() {
+            const fLinia = (document.getElementById('filterWydLinia')?.value || '').toLowerCase();
+            const fZmiana = (document.getElementById('filterWydZmiana')?.value || '').toLowerCase();
+            const fSztuki = (document.getElementById('filterWydSztuki')?.value || '').toLowerCase();
+            const fCzas = (document.getElementById('filterWydCzas')?.value || '').toLowerCase();
+            const fWyd = (document.getElementById('filterWydSztH')?.value || '').toLowerCase();
+
+            const tbody = document.getElementById('wydajnoscTableBody');
+            if (!tbody) return;
+
+            const rows = tbody.getElementsByTagName('tr');
+            let sumaSztuk = 0;
+            let sumaCzas = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row.hasAttribute('data-sztuki')) continue;
+
+                const dLinia = (row.getAttribute('data-linia') || '').toLowerCase();
+                const dZmiana = (row.getAttribute('data-zmiana') || '').toLowerCase();
+                const dSztukiRaw = parseFloat(row.getAttribute('data-sztuki') || '0') || 0;
+                const dCzasRaw = parseFloat(row.getAttribute('data-czas') || '0') || 0;
+                const dWydRaw = (row.getAttribute('data-wyd') || '').toLowerCase();
+
+                const dSztukiStr = String(dSztukiRaw);
+                const dCzasStr = String(dCzasRaw);
+
+                const match =
+                    dLinia.includes(fLinia) &&
+                    dZmiana.includes(fZmiana) &&
+                    dSztukiStr.includes(fSztuki) &&
+                    dCzasStr.includes(fCzas) &&
+                    dWydRaw.includes(fWyd);
+
+                if (match) {
+                    row.style.display = "";
+                    sumaSztuk += dSztukiRaw;
+                    sumaCzas += dCzasRaw;
+                } else {
+                    row.style.display = "none";
+                }
+            }
+
+            const sumSztEl = document.getElementById('wydSumaSztuk');
+            const sumCzasEl = document.getElementById('wydSumaCzas');
+            const avgWydEl = document.getElementById('wydSrednia');
+
+            if (sumSztEl) sumSztEl.innerText = sumaSztuk + " szt.";
+            if (sumCzasEl) sumCzasEl.innerText = sumaCzas.toFixed(2) + " h";
+            if (avgWydEl) {
+                const avg = sumaCzas > 0 ? (sumaSztuk / sumaCzas).toFixed(1) : "0.0";
+                avgWydEl.innerText = avg + " szt/h";
+            }
+        }
+
         let sortDirections = {};
         function sortTable(columnIndex, isNumeric = false) {
             const tbody = document.getElementById("progressTableBody");
@@ -571,8 +636,35 @@ HTML_TEMPLATE = """
             rowsArray.forEach(row => tbody.appendChild(row));
         }
 
+        let sortWydDirections = {};
+        function sortWydTable(columnIndex, isNumeric = false) {
+            const tbody = document.getElementById("wydajnoscTableBody");
+            if (!tbody) return;
+            const rowsArray = Array.from(tbody.querySelectorAll("tr")).filter(r => r.hasAttribute('data-sztuki'));
+
+            let dir = sortWydDirections[columnIndex] || 'asc';
+            dir = dir === 'asc' ? 'desc' : 'asc';
+            sortWydDirections[columnIndex] = dir;
+
+            rowsArray.sort((rowA, rowB) => {
+                let cellA = rowA.children[columnIndex].innerText.trim();
+                let cellB = rowB.children[columnIndex].innerText.trim();
+
+                if (isNumeric) {
+                    cellA = parseFloat(cellA.replace(/[^0-9.-]+/g,"")) || 0;
+                    cellB = parseFloat(cellB.replace(/[^0-9.-]+/g,"")) || 0;
+                    return dir === 'asc' ? cellA - cellB : cellB - cellA;
+                } else {
+                    return dir === 'asc' ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                }
+            });
+
+            rowsArray.forEach(row => tbody.appendChild(row));
+        }
+
         window.onload = function() {
             wczytajSzkic();
+            filtrWydajnosci();
             const dataInput = document.getElementById('dataProdInput');
             if (dataInput) {
                 dataInput.addEventListener('change', aktualizujDane);
@@ -862,26 +954,65 @@ HTML_TEMPLATE = """
                     </div>
                 </form>
 
-                <table>
-                    <tr>
-                        <th>{{ t.th_linia }}</th>
-                        <th>{{ t.th_zmiana }}</th>
-                        <th>{{ t.th_wyprodukowano }}</th>
-                        <th>{{ t.th_czas_pracy }}</th>
-                        <th>{{ t.th_wydajnosc }}</th>
-                    </tr>
-                    {% for klucz, stat in statystyki_wydajnosci_wybrana.items() %}
-                    <tr>
-                        <td><b>{{ t.linia_1.split()[0] }} {{ stat.linia }}</b></td>
-                        <td>{{ t.th_zmiana }} {{ stat.zmiana }}</td>
-                        <td><b>{{ stat.suma_sztuk }} szt.</b></td>
-                        <td>{{ stat.czas_godz }} h</td>
-                        <td><b style="color: #6f42c1; font-size: 15px;">{{ stat.sztuk_na_godzine }} szt/h</b></td>
-                    </tr>
-                    {% else %}
-                    <tr><td colspan="5" style="text-align: center; color: #777;">{{ t.brak_czasow }}</td></tr>
-                    {% endfor %}
-                </table>
+                <div class="wyd-layout">
+                    <div class="wyd-table-col">
+                        <table class="progress-table" id="wydajnoscTable" style="margin-top: 0;">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortWydTable(0, false)">
+                                        {{ t.th_linia }} ↕️
+                                        <input type="text" id="filterWydLinia" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj linię...">
+                                    </th>
+                                    <th onclick="sortWydTable(1, false)">
+                                        {{ t.th_zmiana }} ↕️
+                                        <input type="text" id="filterWydZmiana" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj zmianę...">
+                                    </th>
+                                    <th onclick="sortWydTable(2, true)">
+                                        {{ t.th_wyprodukowano }} ↕️
+                                        <input type="text" id="filterWydSztuki" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj szt...">
+                                    </th>
+                                    <th onclick="sortWydTable(3, true)">
+                                        {{ t.th_czas_pracy }} ↕️
+                                        <input type="text" id="filterWydCzas" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj godz...">
+                                    </th>
+                                    <th onclick="sortWydTable(4, true)">
+                                        {{ t.th_wydajnosc }} ↕️
+                                        <input type="text" id="filterWydSztH" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj szt/h...">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="wydajnoscTableBody">
+                                {% for klucz, stat in statystyki_wydajnosci_wybrana.items() %}
+                                <tr data-linia="{{ t.linia_1.split()[0] }} {{ stat.linia }}" data-zmiana="{{ t.th_zmiana }} {{ stat.zmiana }}" data-sztuki="{{ stat.suma_sztuk }}" data-czas="{{ stat.czas_godz }}" data-wyd="{{ stat.sztuk_na_godzine }}">
+                                    <td><b>{{ t.linia_1.split()[0] }} {{ stat.linia }}</b></td>
+                                    <td>{{ t.th_zmiana }} {{ stat.zmiana }}</td>
+                                    <td><b>{{ stat.suma_sztuk }} szt.</b></td>
+                                    <td>{{ stat.czas_godz }} h</td>
+                                    <td><b style="color: #6f42c1; font-size: 15px;">{{ stat.sztuk_na_godzine }} szt/h</b></td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="5" style="text-align: center; color: #777;">{{ t.brak_czasow }}</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="wyd-side-summary">
+                        <h4 style="margin-top: 0; color: #5a32a3; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">📌 Podsumowanie filtrów</h4>
+                        <div class="wyd-stat-row">
+                            <div style="font-size: 12px; color: #555;">{{ t.laczna_suma_wypr }}</div>
+                            <div id="wydSumaSztuk" style="font-size: 20px; font-weight: bold; color: #28a745; margin-top: 2px;">0 szt.</div>
+                        </div>
+                        <div class="wyd-stat-row">
+                            <div style="font-size: 12px; color: #555;">{{ t.laczny_czas }}</div>
+                            <div id="wydSumaCzas" style="font-size: 15px; font-weight: bold; color: #333; margin-top: 2px;">0.00 h</div>
+                        </div>
+                        <div class="wyd-stat-row">
+                            <div style="font-size: 12px; color: #555;">{{ t.srednia_wyd }}</div>
+                            <div id="wydSrednia" style="font-size: 16px; font-weight: bold; color: #6f42c1; margin-top: 2px;">0.0 szt/h</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         {% elif linia == 'raporty' and 'raporty' in dostep %}
             <div class="raporty-section">
