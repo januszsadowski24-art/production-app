@@ -158,7 +158,7 @@ T = {
         "postep_art": "Postęp według poszczególnych artykułów:",
         "brak_planu_dzis": "Brak planu produkcyjnego na ten dzień.",
         "raport_wyd_tytul": "Raport Wydajności (Sztuk na Godzinę)",
-        "raport_wyd_opis": "Poniższy raport przedstawia łączny czas pracy linii (bez podwójnego liczenia nakładających się palet) oraz średnią produktywność w przeliczeniu na 1 godzinę.",
+        "raport_wyd_opis": "Poniższy raport przedstawia podział na poszczególne linie i zmiany (bez podwójnego liczenia nakładających się palet) oraz średnią produktywność w przeliczeniu na 1 godzinę.",
         "th_linia": "Linia", "th_zmiana": "Zmiana", "th_wyprodukowano": "Wyprodukowano sztuk", "th_czas_pracy": "Czas pracy (godziny)", "th_wydajnosc": "Wydajność (szt/h)",
         "laczna_suma_wypr": "Łączna suma wyprodukowana:", "laczny_czas": "Łączny czas pracy:", "srednia_wyd": "Średnia wydajność:",
         "brak_czasow": "Brak zarejestrowanych czasów pracy i palet dla wybranej daty.",
@@ -212,7 +212,7 @@ T = {
         "postep_art": "Progress by individual articles:",
         "brak_planu_dzis": "No production plan for this day.",
         "raport_wyd_tytul": "Productivity Report (Pcs per Hour)",
-        "raport_wyd_opis": "The report below shows line working time (without double-counting overlapping palettes) and average productivity per hour.",
+        "raport_wyd_opis": "The report below shows breakdown by line and shift (without double-counting overlapping palettes) and average productivity per hour.",
         "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Productivity (pcs/h)",
         "laczna_suma_wypr": "Total produced sum:", "laczny_czas": "Total working time:", "srednia_wyd": "Average productivity:",
         "brak_czasow": "No recorded working times for selected date.",
@@ -267,7 +267,7 @@ T = {
         "postep_art": "Progreso por artículos individuales:",
         "brak_planu_dzis": "No hay plan para este día.",
         "raport_wyd_tytul": "Informe de Productividad (Pcs por Hora)",
-        "raport_wyd_opis": "El informe muestra el tiempo de línea (sin duplicar intervalos superpuestos) y la productividad media por hora.",
+        "raport_wyd_opis": "El informe muestra el desglose por línea y turno (sin duplicar intervalos) y la productividad media por hora.",
         "th_linia": "Línea", "th_zmiana": "Turno", "th_wyprodukowano": "Pcs producidas", "th_czas_pracy": "Tiempo de trabajo (horas)", "th_wydajnosc": "Productividad (pcs/h)",
         "laczna_suma_wypr": "Suma total producida:", "laczny_czas": "Tiempo total:", "srednia_wyd": "Productividad media:",
         "brak_czasow": "No hay tiempos registrados.",
@@ -322,7 +322,7 @@ T = {
         "postep_art": "Прогрес за окремими артикулами:",
         "brak_planu_dzis": "Немає плану на цей день.",
         "raport_wyd_tytul": "Звіт про продуктивність (Шт за годину)",
-        "raport_wyd_opis": "Звіт нижче показує час роботи лінії (без подвійного обліку інтервалів) та середню продуктивність за годину.",
+        "raport_wyd_opis": "Звіт показує розподіл за лініями та змінами (без подвійного обліку) і середню продуктивність за годину.",
         "th_linia": "Лінія", "th_zmiana": "Зміна", "th_wyprodukowano": "Вироблено штук", "th_czas_pracy": "Час роботи (години)", "th_wydajnosc": "Продуктивність (шт/год)",
         "laczna_suma_wypr": "Загальна сума виробленого:", "laczny_czas": "Загальний час роботи:", "srednia_wyd": "Середня продуктивність:",
         "brak_czasow": "Немає зареєстрованого часу.",
@@ -996,7 +996,7 @@ HTML_TEMPLATE = """
                                 </tr>
                             </thead>
                             <tbody id="wydajnoscTableBody">
-                                {% for klucz, stat in statystyki_wydajnosci_wybrana.items() %}
+                                {% for stat in statystyki_wydajnosci_lista %}
                                 <tr data-linia="{{ t.linia_1.split()[0] }} {{ stat.linia }}" data-zmiana="{{ t.th_zmiana }} {{ stat.zmiana }}" data-sztuki="{{ stat.suma_sztuk }}" data-czas="{{ stat.czas_godz }}" data-wyd="{{ stat.sztuk_na_godzine }}">
                                     <td><b>{{ t.linia_1.split()[0] }} {{ stat.linia }}</b></td>
                                     <td>{{ t.th_zmiana }} {{ stat.zmiana }}</td>
@@ -1450,37 +1450,40 @@ def index():
     wpisy_dla_linii = [w for w in wpisy_baza if w['linia'] == linia and w['zmiana'] == wypr_zmiana]
     suma_sztuk = sum(int(w['ilosc']) for w in wpisy_dla_linii)
 
-    # Statystyki wydajności dla wybranej daty bez podwójnego liczenia nakładających się przedziałów
+    # Statystyki wydajności z podziałem na Linia 1..4 i Zmiana 1..2 w stałej kolejności
     wpisy_dla_wydajnosci = [w for w in wpisy_baza_wszystkie if w['data'] == wybrana_data_wydajnosc]
-    statystyki_wydajnosci_wybrana = {}
+    grupy_wyd = {}
     for item in wpisy_dla_wydajnosci:
-        key = f"L{item['linia']}_Z{item['zmiana']}"
-        if key not in statystyki_wydajnosci_wybrana:
-            statystyki_wydajnosci_wybrana[key] = {
-                "linia": item['linia'],
-                "zmiana": item['zmiana'],
-                "suma_sztuk": 0,
-                "przedzialy": []
-            }
-        statystyki_wydajnosci_wybrana[key]["suma_sztuk"] += int(item['ilosc'])
+        key = f"L{str(item['linia'])}_Z{str(item['zmiana'])}"
+        if key not in grupy_wyd:
+            grupy_wyd[key] = {"suma_sztuk": 0, "przedzialy": []}
+        grupy_wyd[key]["suma_sztuk"] += int(item['ilosc'])
         try:
             t1 = datetime.strptime(item['czas_start'], '%H:%M')
             t2 = datetime.strptime(item['czas_koniec'], '%H:%M')
             m1 = t1.hour * 60 + t1.minute
             m2 = t2.hour * 60 + t2.minute
             if m2 > m1:
-                statystyki_wydajnosci_wybrana[key]["przedzialy"].append((m1, m2))
+                grupy_wyd[key]["przedzialy"].append((m1, m2))
         except Exception:
             pass
 
-    for key, stat in statystyki_wydajnosci_wybrana.items():
-        czas_minut = oblicz_czas_bez_nakladania(stat["przedzialy"])
-        godziny = czas_minut / 60.0
-        stat["czas_godz"] = round(godziny, 2)
-        if godziny > 0:
-            stat["sztuk_na_godzine"] = round(stat["suma_sztuk"] / godziny, 1)
-        else:
-            stat["sztuk_na_godzine"] = 0
+    statystyki_wydajnosci_lista = []
+    for l_nr in ['1', '2', '3', '4']:
+        for z_nr in ['1', '2']:
+            key = f"L{l_nr}_Z{z_nr}"
+            dane_g = grupy_wyd.get(key, {"suma_sztuk": 0, "przedzialy": []})
+            czas_minut = oblicz_czas_bez_nakladania(dane_g["przedzialy"])
+            godziny = czas_minut / 60.0
+            czas_godz = round(godziny, 2)
+            sztuk_na_godzine = round(dane_g["suma_sztuk"] / godziny, 1) if godziny > 0 else 0
+            statystyki_wydajnosci_lista.append({
+                "linia": l_nr,
+                "zmiana": z_nr,
+                "suma_sztuk": dane_g["suma_sztuk"],
+                "czas_godz": czas_godz,
+                "sztuk_na_godzine": sztuk_na_godzine
+            })
 
     uzytkownicy_baza_dict = {u.username: {"pelna_nazwa": u.pelna_nazwa, "rola": u.rola, "dostep": json.loads(u.dostep)} for u in UzytkownikModel.query.all()}
 
@@ -1518,7 +1521,7 @@ def index():
         wpisy_baza_wszystkie=wpisy_baza_wszystkie,
         wpisy_dla_linii=wpisy_dla_linii,
         suma_sztuk=suma_sztuk,
-        statystyki_wydajnosci_wybrana=statystyki_wydajnosci_wybrana,
+        statystyki_wydajnosci_lista=statystyki_wydajnosci_lista,
         user=user,
         role=role,
         pelna_nazwa=pelna_nazwa,
@@ -1965,17 +1968,19 @@ def generate():
             c.border = thin_border
 
         r_w = 4
-        for s in stats.values():
-            czas_minut = oblicz_czas_bez_nakladania(s["przedzialy"])
-            godz = round(czas_minut / 60.0, 2)
-            wyd = round(s["sztuki"] / godz, 1) if godz > 0 else 0
-            vals_w = [f"Linia {s['linia']}", f"Zmiana {s['zmiana']}", int(s["sztuki"]), godz, f"{wyd} szt/h"]
-            for c_idx, val in enumerate(vals_w, start=1):
-                cell = ws_wyd.cell(row=r_w, column=c_idx, value=val)
-                cell.font = font_bold if c_idx in [3, 5] else font_normal
-                cell.border = thin_border
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            r_w += 1
+        for l_nr in ['1', '2', '3', '4']:
+            for z_nr in ['1', '2']:
+                s = stats.get(f"L{l_nr}_Z{z_nr}", {"sztuki": 0, "przedzialy": []})
+                czas_minut = oblicz_czas_bez_nakladania(s["przedzialy"])
+                godz = round(czas_minut / 60.0, 2)
+                wyd = round(s["sztuki"] / godz, 1) if godz > 0 else 0
+                vals_w = [f"Linia {l_nr}", f"Zmiana {z_nr}", int(s["sztuki"]), godz, f"{wyd} szt/h"]
+                for c_idx, val in enumerate(vals_w, start=1):
+                    cell = ws_wyd.cell(row=r_w, column=c_idx, value=val)
+                    cell.font = font_bold if c_idx in [3, 5] else font_normal
+                    cell.border = thin_border
+                    cell.alignment = Alignment(horizontal="center", vertical="center")
+                r_w += 1
 
         for col in ws_wyd.columns:
             max_l = max(len(str(cell.value or '')) for cell in col)
