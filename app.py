@@ -7,6 +7,7 @@ import os
 import json
 import io
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.secret_key = 'tajny_klucz_sesji_produkcyjnej'
@@ -78,6 +79,7 @@ class LiniaMonitorStanModel(db.Model):
     status = db.Column(db.String(20), nullable=False, default='IDLE')
     start_time_iso = db.Column(db.String(50), nullable=True)
     reason = db.Column(db.String(250), nullable=False, default='')
+    started_by_login = db.Column(db.String(80), nullable=True)
 
 class LiniaMonitorZdarzenieModel(db.Model):
     __tablename__ = 'linie_monitor_zdarzenia'
@@ -89,6 +91,8 @@ class LiniaMonitorZdarzenieModel(db.Model):
     duration_sec = db.Column(db.Integer, nullable=False, default=0)
     reason = db.Column(db.String(250), nullable=False, default='-')
     iso_date = db.Column(db.String(20), nullable=False)
+    started_by_login = db.Column(db.String(80), nullable=True)
+    ended_by_login = db.Column(db.String(80), nullable=True)
 
 class PracownikSesjaAktywnaModel(db.Model):
     __tablename__ = 'pracownicy_sesje_aktywne'
@@ -276,6 +280,15 @@ DEFAULT_EMPLOYEES_LIST = [
 with app.app_context():
     db.create_all()
 
+    # Bezpieczne dopisanie kolumn loginów do istniejących tabel w PostgreSQL
+    try:
+        with db.engine.begin() as conn:
+            conn.execute(text("ALTER TABLE linie_monitor_stan ADD COLUMN IF NOT EXISTS started_by_login VARCHAR(80)"))
+            conn.execute(text("ALTER TABLE linie_monitor_zdarzenia ADD COLUMN IF NOT EXISTS started_by_login VARCHAR(80)"))
+            conn.execute(text("ALTER TABLE linie_monitor_zdarzenia ADD COLUMN IF NOT EXISTS ended_by_login VARCHAR(80)"))
+    except Exception:
+        pass
+
     admin_user = UzytkownikModel.query.filter_by(username="admin").first()
     if admin_user:
         dostepy = json.loads(admin_user.dostep)
@@ -342,7 +355,7 @@ with app.app_context():
 
     for lid in [1, 2, 3, 4, 5, 6]:
         if not LiniaMonitorStanModel.query.get(lid):
-            db.session.add(LiniaMonitorStanModel(linia_id=lid, status='IDLE', start_time_iso=None, reason=''))
+            db.session.add(LiniaMonitorStanModel(linia_id=lid, status='IDLE', start_time_iso=None, reason='', started_by_login=None))
     db.session.commit()
 
 # --- FUNKCJE POMOCNICZE ---
@@ -399,6 +412,7 @@ def build_monitor_snapshot(target_date=None):
         status = s.status if s else 'IDLE'
         start_iso = s.start_time_iso if s else None
         reason = s.reason if s else ''
+        started_by = s.started_by_login if s else None
 
         current_elapsed = 0
         start_dt = parse_iso_dt(start_iso)
@@ -446,7 +460,9 @@ def build_monitor_snapshot(target_date=None):
                 "endIso": h.end_iso,
                 "durationSec": h.duration_sec,
                 "reason": h.reason,
-                "isoDate": h.iso_date
+                "isoDate": h.iso_date,
+                "startedByLogin": h.started_by_login,
+                "endedByLogin": h.ended_by_login
             }
             for h in zdarzenia_db if h.linia_id == lid
         ]
@@ -457,6 +473,7 @@ def build_monitor_snapshot(target_date=None):
             "status": status,
             "startTimeIso": start_iso,
             "reason": reason,
+            "startedByLogin": started_by,
             "currentElapsedSec": current_elapsed,
             "dailyWorkSec": daily_work_sec,
             "dailyStopSec": daily_stop_sec,
@@ -470,6 +487,8 @@ def build_monitor_snapshot(target_date=None):
         "todayIso": today_iso,
         "lines": lines_payload
     }
+
+# --- SZABLONY I WIDOKI (NIEZMIENIONE DLA LOGOWANIA, KONCÓWEK I UI LINII) ---
 
 T = {
     "pl": {
@@ -1087,7 +1106,8 @@ PRODUKCJA_MODULE_TEMPLATE = """
         } else {
           histEl.innerHTML = events.map(function(h) {
             const tStr = new Date(h.startIso).toLocaleTimeString();
-            return '<div class="history-item">[' + tStr + '] <strong>' + escapeHtml(h.type) + '</strong> (' + formatTime(h.durationSec) + ')' + (h.reason && h.reason !== '-' ? ' - ' + escapeHtml(h.reason) : '') + '</div>';
+            const who = (h.startedByLogin || h.endedByLogin) ? ' [' + escapeHtml(h.startedByLogin || '-') + ' → ' + escapeHtml(h.endedByLogin || '-') + ']' : '';
+            return '<div class="history-item">[' + tStr + '] <strong>' + escapeHtml(h.type) + '</strong> (' + formatTime(h.durationSec) + ')' + who + (h.reason && h.reason !== '-' ? ' - ' + escapeHtml(h.reason) : '') + '</div>';
           }).join('');
         }
       }
@@ -2084,7 +2104,7 @@ KONCOWKI_TEMPLATE = """
                             </optgroup>
                             <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
                                 <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Wyprodukowane szt. / Suma czasów pracowników / szt. na rbh)</option>
-                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Zdarzenia, Przyczyny, Pracownicy)</option>
+                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Kto rozpoczął / zakończył, Zdarzenia, Przyczyny, Pracownicy)</option>
                             </optgroup>
                         </select>
 
@@ -2409,6 +2429,7 @@ def api_produkcja_linia_akcja():
     if 'user' not in session:
         return jsonify({"error": "Brak sesji"}), 401
 
+    login_uzytkownika = session.get('user') or '-'
     payload = request.get_json(silent=True) or {}
     line_id = int(payload.get('lineId', 0))
     action = payload.get('action')
@@ -2419,7 +2440,7 @@ def api_produkcja_linia_akcja():
 
     stan = LiniaMonitorStanModel.query.get(line_id)
     if not stan:
-        stan = LiniaMonitorStanModel(linia_id=line_id, status='IDLE', start_time_iso=None, reason='')
+        stan = LiniaMonitorStanModel(linia_id=line_id, status='IDLE', start_time_iso=None, reason='', started_by_login=None)
         db.session.add(stan)
 
     now_dt = datetime.now()
@@ -2437,11 +2458,14 @@ def api_produkcja_linia_akcja():
                 end_iso=now_iso,
                 duration_sec=dur,
                 reason=stan.reason or '-',
-                iso_date=stan.start_time_iso[:10]
+                iso_date=stan.start_time_iso[:10],
+                started_by_login=stan.started_by_login or login_uzytkownika,
+                ended_by_login=login_uzytkownika
             ))
         stan.status = 'RUNNING'
         stan.start_time_iso = now_iso
         stan.reason = ''
+        stan.started_by_login = login_uzytkownika
 
     elif action == 'stop':
         if not reason:
@@ -2456,11 +2480,14 @@ def api_produkcja_linia_akcja():
                 end_iso=now_iso,
                 duration_sec=dur,
                 reason=stan.reason or '-',
-                iso_date=stan.start_time_iso[:10]
+                iso_date=stan.start_time_iso[:10],
+                started_by_login=stan.started_by_login or login_uzytkownika,
+                ended_by_login=login_uzytkownika
             ))
         stan.status = 'STOPPED'
         stan.start_time_iso = now_iso
         stan.reason = reason
+        stan.started_by_login = login_uzytkownika
 
     elif action == 'end':
         if stan.status != 'IDLE' and stan.start_time_iso:
@@ -2473,7 +2500,9 @@ def api_produkcja_linia_akcja():
                 end_iso=now_iso,
                 duration_sec=dur,
                 reason=stan.reason or '-',
-                iso_date=stan.start_time_iso[:10]
+                iso_date=stan.start_time_iso[:10],
+                started_by_login=stan.started_by_login or login_uzytkownika,
+                ended_by_login=login_uzytkownika
             ))
 
         aktywne_na_linii = PracownikSesjaAktywnaModel.query.filter_by(line_id=line_id).all()
@@ -2494,6 +2523,7 @@ def api_produkcja_linia_akcja():
         stan.status = 'IDLE'
         stan.start_time_iso = None
         stan.reason = ''
+        stan.started_by_login = None
     else:
         return jsonify({"error": "Nieznana akcja"}), 400
 
@@ -3329,7 +3359,16 @@ def generate():
         sesje_hist = PracownikSesjaHistoriaModel.query.filter_by(iso_date=wybrana_data).order_by(PracownikSesjaHistoriaModel.start_time_iso.desc()).all()
         prac_meta = {p.emp_id: p.stanowisko for p in PracownikQrModel.query.all()}
 
-        headers_m = ["Linia", "Typ zdarzenia", "Rozpoczęcie", "Zakończenie", "Czas trwania", "Przyczyna postoju"]
+        headers_m = [
+            "Linia",
+            "Typ zdarzenia",
+            "Rozpoczęcie",
+            "Zakończenie",
+            "Czas trwania",
+            "Przyczyna postoju",
+            "Rozpoczął (login)",
+            "Zakończył (login)"
+        ]
         ws_m.row_dimensions[3].height = 24
         for c_idx, h_text in enumerate(headers_m, start=1):
             c = ws_m.cell(row=3, column=c_idx, value=h_text)
@@ -3341,8 +3380,14 @@ def generate():
         rm = 4
         for z in zdarzenia:
             vals_m = [
-                f"Linia {z.linia_id}", z.event_type, z.start_iso, z.end_iso,
-                format_sec_hhmmss(z.duration_sec), z.reason or '-'
+                f"Linia {z.linia_id}",
+                z.event_type,
+                z.start_iso,
+                z.end_iso,
+                format_sec_hhmmss(z.duration_sec),
+                z.reason or '-',
+                z.started_by_login or '-',
+                z.ended_by_login or '-'
             ]
             for c_idx, val in enumerate(vals_m, start=1):
                 cell = ws_m.cell(row=rm, column=c_idx, value=val)
@@ -3383,7 +3428,7 @@ def generate():
         for sheet_curr in [ws_m, ws_emp]:
             for col in sheet_curr.columns:
                 max_l = max(len(str(cell.value or '')) for cell in col)
-                sheet_curr.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 4, 16)
+                sheet_curr.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 4, 18)
 
         download_name = f"Raport_Monitoring_Pracownicy_{wybrana_data}.xlsx"
 
