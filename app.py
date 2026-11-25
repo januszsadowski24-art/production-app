@@ -75,7 +75,7 @@ class PracownikQrModel(db.Model):
 class LiniaMonitorStanModel(db.Model):
     __tablename__ = 'linie_monitor_stan'
     linia_id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(20), nullable=False, default='IDLE')  # IDLE, RUNNING, STOPPED
+    status = db.Column(db.String(20), nullable=False, default='IDLE')
     start_time_iso = db.Column(db.String(50), nullable=True)
     reason = db.Column(db.String(250), nullable=False, default='')
 
@@ -83,7 +83,7 @@ class LiniaMonitorZdarzenieModel(db.Model):
     __tablename__ = 'linie_monitor_zdarzenia'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     linia_id = db.Column(db.Integer, nullable=False)
-    event_type = db.Column(db.String(20), nullable=False)  # PRACA, POSTÓJ
+    event_type = db.Column(db.String(20), nullable=False)
     start_iso = db.Column(db.String(50), nullable=False)
     end_iso = db.Column(db.String(50), nullable=False)
     duration_sec = db.Column(db.Integer, nullable=False, default=0)
@@ -332,7 +332,6 @@ with app.app_context():
 
         db.session.commit()
 
-    # Inicjalizacja wspólnej bazy pracowników (bez nadpisywania istniejących rekordów)
     if PracownikQrModel.query.count() == 0:
         for idx, (eid, ename) in enumerate(DEFAULT_EMPLOYEES_LIST):
             if not PracownikQrModel.query.get(eid):
@@ -341,7 +340,6 @@ with app.app_context():
                 ))
         db.session.commit()
 
-    # Inicjalizacja linii 1-6 dla Modułu Produkcyjnego
     for lid in [1, 2, 3, 4, 5, 6]:
         if not LiniaMonitorStanModel.query.get(lid):
             db.session.add(LiniaMonitorStanModel(linia_id=lid, status='IDLE', start_time_iso=None, reason=''))
@@ -378,6 +376,13 @@ def parse_iso_dt(iso_str):
         return datetime.fromisoformat(iso_str.replace('Z', '+00:00')).replace(tzinfo=None)
     except Exception:
         return None
+
+def format_sec_hhmmss(seconds):
+    seconds = max(0, int(seconds or 0))
+    h = seconds // 3600
+    m = (seconds % 3600) // 60
+    s = seconds % 60
+    return f"{h:02d}:{m:02d}:{s:02d}"
 
 def build_monitor_snapshot(target_date=None):
     today_iso = target_date or datetime.now().strftime('%Y-%m-%d')
@@ -460,40 +465,10 @@ def build_monitor_snapshot(target_date=None):
             "recentEvents": line_events[:3]
         }
 
-    all_events_sorted = [
-        {
-            "lineId": h.linia_id,
-            "type": h.event_type,
-            "startIso": h.start_iso,
-            "endIso": h.end_iso,
-            "durationSec": h.duration_sec,
-            "reason": h.reason,
-            "isoDate": h.iso_date
-        }
-        for h in zdarzenia_db
-    ]
-    all_events_sorted.sort(key=lambda x: x["startIso"], reverse=True)
-
-    all_emp_history = [
-        {
-            "empId": eh.emp_id,
-            "empName": eh.emp_name,
-            "lineId": eh.line_id,
-            "startTime": eh.start_time_iso,
-            "endIso": eh.end_time_iso,
-            "durationSec": eh.duration_sec,
-            "isoDate": eh.iso_date
-        }
-        for eh in historia_emp_db
-    ]
-    all_emp_history.sort(key=lambda x: x["startTime"], reverse=True)
-
     return {
         "serverNowIso": now_dt.isoformat(),
         "todayIso": today_iso,
-        "lines": lines_payload,
-        "globalHistory": all_events_sorted,
-        "empHistory": all_emp_history
+        "lines": lines_payload
     }
 
 T = {
@@ -594,7 +569,7 @@ LOGIN_TEMPLATE = """
                 <input type="radio" name="modul" value="koncowki" {{ 'checked' if wybrany_modul != 'produkcja' else '' }}>
                 <div>
                     <div class="module-title">{{ t.mod_koncowki_nazwa }}</div>
-                    <div class="module-desc">Kompletacja / palety, plan, postęp, wydajność, raporty</div>
+                    <div class="module-desc">Kompletacja / palety, plan, postęp, wydajność, centrum raportów</div>
                 </div>
             </label>
             <label class="module-card">
@@ -624,22 +599,20 @@ PRODUKCJA_MODULE_TEMPLATE = """
   <meta charset="UTF-8">
   <title>Moduł Produkcyjny — Monitorowanie Linii i Pracowników</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
     .container { max-width: 1320px; margin: auto; }
 
     .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: white; padding: 14px 22px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 10px; }
-    h1 { margin: 0; color: #0f172a; font-size: 1.35rem; }
     .header-meta { font-size: 0.9rem; color: #334155; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .mod-badge { background: #0284c7; color: white; padding: 3px 9px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; }
     .header-buttons { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
     .btn-switch { background-color: #16a34a; color: white; padding: 9px 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; text-decoration: none; display: inline-block; }
     .btn-switch:hover { background-color: #15803d; }
-    .btn-report { background-color: #0284c7; color: white; padding: 9px 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
-    .btn-report:hover { background-color: #0369a1; }
+    .btn-report { background-color: #ea580c; color: white; padding: 9px 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; text-decoration: none; display: inline-block; }
+    .btn-report:hover { background-color: #c2410c; }
     .btn-logout { background-color: #dc2626; color: white; padding: 9px 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; text-decoration: none; display: inline-block; }
     .btn-logout:hover { background-color: #b91c1c; }
 
@@ -726,19 +699,6 @@ PRODUKCJA_MODULE_TEMPLATE = """
     .sortable-th { cursor: pointer; user-select: none; }
     .sortable-th:hover { background-color: #e2e8f0; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-    .modal.active { display: flex; }
-    .modal-content { background: white; border-radius: 12px; width: 92%; max-width: 1000px; max-height: 88vh; padding: 25px; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px; }
-    .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
-
-    .report-filter-bar { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
-    .filter-group { display: flex; align-items: center; gap: 8px; }
-    .filter-group label { font-size: 0.85rem; font-weight: bold; color: #334155; }
-    .filter-group select, .filter-group input { width: auto; font-size: 0.85rem; padding: 6px 10px; }
-
-    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 25px; }
-    .sum-card { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 0.85rem; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size: 0.85rem; }
     th { background-color: #f1f5f9; color: #475569; }
@@ -771,7 +731,9 @@ PRODUKCJA_MODULE_TEMPLATE = """
       {% if role == 'admin' or can_access_koncowki %}
         <a href="/przelacz-modul/koncowki" class="btn-switch">🔀 Końcówki Linii</a>
       {% endif %}
-      <button class="btn-report" onclick="openReport()">📊 Generuj Raport</button>
+      {% if role == 'admin' or 'raporty' in dostep %}
+        <a href="/przelacz-modul/koncowki?linia=raporty" class="btn-report">📈 Centrum Raportów</a>
+      {% endif %}
       <a href="/logout" class="btn-logout">🔒 Wyloguj</a>
     </div>
   </div>
@@ -784,12 +746,10 @@ PRODUKCJA_MODULE_TEMPLATE = """
     {% endif %}
   </div>
 
-  <!-- SEKCJA 1: LINIE 1-6 -->
   <div id="subtabLines">
     <div class="grid" id="linesContainer"></div>
   </div>
 
-  <!-- SEKCJA 2: WSPÓLNA BAZA PRACOWNIKÓW + QR -->
   <div id="subtabEmployees" style="display:none;">
     <div class="panel-card">
       <h3 style="margin-top:0;">👤 Wspólna Baza Pracowników & Generator Kodów QR (54 mm × 85 mm)</h3>
@@ -888,7 +848,6 @@ PRODUKCJA_MODULE_TEMPLATE = """
     </div>
   </div>
 
-  <!-- SEKCJA 3: WSPÓLNY PANEL ADMINISTRATORA (LOGINY I HASŁA) -->
   {% if role == 'admin' %}
   <div id="subtabAdmin" style="display:none;">
     <div class="panel-card" style="background: #fef2f2; border: 1px solid #fecaca;">
@@ -963,50 +922,6 @@ PRODUKCJA_MODULE_TEMPLATE = """
     </div>
   </div>
   {% endif %}
-
-  <!-- MODAL RAPORTU -->
-  <div class="modal" id="reportModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 style="margin:0;">Pełny Raport Produkcyjny i Czasu Pracy (Moduł Produkcyjny)</h3>
-        <button type="button" class="close-btn" onclick="closeReport()">&times;</button>
-      </div>
-
-      <div class="report-filter-bar">
-        <div class="filter-group">
-          <label for="reportDaySelect">📅 Wybierz dzień (ostatnie 30 dni):</label>
-          <select id="reportDaySelect" onchange="handleReportDateModeChange()"></select>
-        </div>
-
-        <div class="filter-group" id="customDateRangeGroup" style="display: none;">
-          <label>Od:</label>
-          <input type="date" id="reportStartDate" onchange="renderReportData()">
-          <label>Do:</label>
-          <input type="date" id="reportEndDate" onchange="renderReportData()">
-        </div>
-
-        <button type="button" onclick="exportToExcel()" style="background-color: #16a34a; color: white; padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">📥 Pobierz raport (.XLSX)</button>
-      </div>
-
-      <div class="summary-cards" id="summaryCards"></div>
-
-      <h3>Czas Pracy Pracowników</h3>
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Pracownik</th><th>Stanowisko</th><th>Linia</th><th>Rozpoczęcie</th><th>Zakończenie</th><th>Łączny Czas</th></tr>
-        </thead>
-        <tbody id="reportEmpTableBody"></tbody>
-      </table>
-
-      <h3 style="margin-top: 25px;">Dziennik Zdarzeń Linii</h3>
-      <table>
-        <thead>
-          <tr><th>Linia</th><th>Typ zdarzenia</th><th>Rozpoczęcie</th><th>Zakończenie</th><th>Czas trwania</th><th>Przyczyna postoju</th></tr>
-        </thead>
-        <tbody id="reportTableBody"></tbody>
-      </table>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -1140,13 +1055,10 @@ PRODUKCJA_MODULE_TEMPLATE = """
       if (btnStart) btnStart.className = 'action-btn btn-start ' + (lData.status === 'RUNNING' ? 'btn-disabled' : '');
       if (btnEnd) btnEnd.className = 'action-btn btn-end ' + (lData.status === 'IDLE' ? 'btn-disabled' : '');
 
-      // Nie nadpisuj pól przyczyny, gdy użytkownik właśnie w nich pisze
       const selectEl = document.getElementById('reason-select-' + id);
       const customEl = document.getElementById('custom-reason-' + id);
-      if (selectEl && document.activeElement !== selectEl && lData.reason) {
-        if (defaultReasons.includes(lData.reason)) {
-          selectEl.value = lData.reason;
-        }
+      if (selectEl && document.activeElement !== selectEl && lData.reason && defaultReasons.includes(lData.reason)) {
+        selectEl.value = lData.reason;
       }
       if (customEl && document.activeElement !== customEl && lData.reason && !defaultReasons.includes(lData.reason)) {
         customEl.value = lData.reason;
@@ -1188,6 +1100,9 @@ PRODUKCJA_MODULE_TEMPLATE = """
   function tickLiveTimers() {
     if (!snapshotData || !snapshotData.lines) return;
     const nowMs = getSyncedNow().getTime();
+    const snapAgeSec = snapshotData.serverNowIso
+      ? Math.max(0, Math.floor((nowMs - new Date(snapshotData.serverNowIso).getTime()) / 1000))
+      : 0;
 
     lines.forEach(function(id) {
       const lData = snapshotData.lines[String(id)];
@@ -1219,31 +1134,16 @@ PRODUKCJA_MODULE_TEMPLATE = """
         }
       }
 
-      const baseDailyWork = lData.dailyWorkSec || 0;
-      const baseDailyStop = lData.dailyStopSec || 0;
-      const liveDailyWork = baseDailyWork + (lData.status === 'RUNNING' ? Math.max(0, liveElapsed - (lData.currentElapsedSec || 0)) : 0);
-      const liveDailyStop = baseDailyStop + (lData.status === 'STOPPED' ? Math.max(0, liveElapsed - (lData.currentElapsedSec || 0)) : 0);
+      const liveDailyWork = (lData.dailyWorkSec || 0) + (lData.status === 'RUNNING' ? Math.max(0, liveElapsed - (lData.currentElapsedSec || 0)) : 0);
+      const liveDailyStop = (lData.dailyStopSec || 0) + (lData.status === 'STOPPED' ? Math.max(0, liveElapsed - (lData.currentElapsedSec || 0)) : 0);
 
       const dwEl = document.getElementById('daily-work-timer-' + id);
       const dsEl = document.getElementById('daily-stop-timer-' + id);
       if (dwEl) dwEl.innerText = formatTime(liveDailyWork);
       if (dsEl) dsEl.innerText = formatTime(liveDailyStop);
 
-      let extraEmpSec = 0;
-      (lData.activeEmployees || []).forEach(function(act) {
-        if (act.startTimeIso) {
-          const fullSec = Math.max(0, Math.floor((nowMs - new Date(act.startTimeIso).getTime()) / 1000));
-          extraEmpSec += fullSec;
-        }
-      });
-
-      // Przelicz sumę czasu pracowników wiarygodnie z aktywnych sesji + historii dnia
       const teEl = document.getElementById('total-emp-timer-' + id);
       if (teEl) {
-        // lData.totalEmpSec zawiera już czas historii dnia + czas aktywnych na moment snapshotu
-        const snapAgeSec = snapshotData.serverNowIso
-          ? Math.max(0, Math.floor((nowMs - new Date(snapshotData.serverNowIso).getTime()) / 1000))
-          : 0;
         const activeCount = (lData.activeEmployees || []).length;
         teEl.innerText = formatTime((lData.totalEmpSec || 0) + (activeCount * snapAgeSec));
       }
@@ -1386,12 +1286,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     const empName = name !== undefined ? name : (rec ? rec.imie_nazwisko : '');
     const container = document.getElementById('qrcode');
     container.innerHTML = '';
-    new QRCode(container, {
-      text: id,
-      width: 160,
-      height: 160,
-      correctLevel: QRCode.CorrectLevel.M
-    });
+    new QRCode(container, { text: id, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
     document.getElementById('qrEmpId').textContent = id;
     document.getElementById('qrEmpName').textContent = empName;
     document.getElementById('qrResultContainer').style.display = 'flex';
@@ -1434,18 +1329,12 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
       infoBox.appendChild(idEl);
       infoBox.appendChild(nameEl);
-
       badge.appendChild(header);
       badge.appendChild(qrBox);
       badge.appendChild(infoBox);
       grid.appendChild(badge);
 
-      new QRCode(qrBox, {
-        text: id,
-        width: 160,
-        height: 160,
-        correctLevel: QRCode.CorrectLevel.M
-      });
+      new QRCode(qrBox, { text: id, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
     });
 
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1517,9 +1406,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     lines.forEach(function(lid) {
       const lData = snapshotData.lines[String(lid)];
       if (lData && lData.activeEmployees) {
-        lData.activeEmployees.forEach(function(act) {
-          map[act.empId] = lid;
-        });
+        lData.activeEmployees.forEach(function(act) { map[act.empId] = lid; });
       }
     });
     return map;
@@ -1531,13 +1418,9 @@ PRODUKCJA_MODULE_TEMPLATE = """
   }
 
   function toggleSort(field) {
-    if (field === 'id') {
-      currentSortMode = currentSortMode === 'id-asc' ? 'id-desc' : 'id-asc';
-    } else if (field === 'name') {
-      currentSortMode = currentSortMode === 'name-asc' ? 'name-desc' : 'name-asc';
-    } else if (field === 'pos') {
-      currentSortMode = currentSortMode === 'pos-asc' ? 'default' : 'pos-asc';
-    }
+    if (field === 'id') currentSortMode = currentSortMode === 'id-asc' ? 'id-desc' : 'id-asc';
+    else if (field === 'name') currentSortMode = currentSortMode === 'name-asc' ? 'name-desc' : 'name-asc';
+    else if (field === 'pos') currentSortMode = currentSortMode === 'pos-asc' ? 'default' : 'pos-asc';
     document.getElementById('sortSelect').value = currentSortMode;
     renderRegisteredEmployeesTable();
   }
@@ -1556,18 +1439,13 @@ PRODUKCJA_MODULE_TEMPLATE = """
         return k.toLowerCase().includes(searchVal) || String(rec.imie_nazwisko || '').toLowerCase().includes(searchVal);
       });
     }
-
     if (posFilterVal) {
       keys = keys.filter(function(k) {
         return String(employees[k].stanowisko || '').toLowerCase().includes(posFilterVal);
       });
     }
-
-    if (sessionFilter === 'active') {
-      keys = keys.filter(function(k) { return Boolean(activeMap[k]); });
-    } else if (sessionFilter === 'inactive') {
-      keys = keys.filter(function(k) { return !activeMap[k]; });
-    }
+    if (sessionFilter === 'active') keys = keys.filter(function(k) { return Boolean(activeMap[k]); });
+    else if (sessionFilter === 'inactive') keys = keys.filter(function(k) { return !activeMap[k]; });
 
     keys.sort(function(a, b) {
       const recA = employees[a];
@@ -1651,226 +1529,8 @@ PRODUKCJA_MODULE_TEMPLATE = """
     });
   }
 
-  function openReport() {
-    document.getElementById('reportModal').classList.add('active');
-    renderReportData();
-  }
-
-  function closeReport() {
-    document.getElementById('reportModal').classList.remove('active');
-  }
-
-  function populateReportDateOptions() {
-    const select = document.getElementById('reportDaySelect');
-    let optionsHtml = '<option value="today">Dzisiaj</option><option value="all">Wszystkie dane</option><option value="custom">Zakres niestandardowy...</option>';
-    for (let i = 1; i <= 30; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const iso = d.toISOString().slice(0, 10);
-      optionsHtml += '<option value="' + iso + '">' + iso + '</option>';
-    }
-    select.innerHTML = optionsHtml;
-  }
-
-  function handleReportDateModeChange() {
-    const val = document.getElementById('reportDaySelect').value;
-    document.getElementById('customDateRangeGroup').style.display = val === 'custom' ? 'flex' : 'none';
-    renderReportData();
-  }
-
-  function renderReportData() {
-    const mode = document.getElementById('reportDaySelect').value;
-    const todayIso = (snapshotData && snapshotData.todayIso) || new Date().toISOString().slice(0, 10);
-    const gHist = (snapshotData && snapshotData.globalHistory) || [];
-    const eHist = (snapshotData && snapshotData.empHistory) || [];
-
-    const filteredGlobalHistory = gHist.filter(function(h) {
-      if (mode === 'today') return h.isoDate === todayIso;
-      if (mode === 'all') return true;
-      if (mode === 'custom') {
-        const start = document.getElementById('reportStartDate').value;
-        const end = document.getElementById('reportEndDate').value;
-        if (!start || !end) return true;
-        return h.isoDate >= start && h.isoDate <= end;
-      }
-      return h.isoDate === mode;
-    });
-
-    const filteredEmpHistory = eHist.filter(function(h) {
-      if (mode === 'today') return h.isoDate === todayIso;
-      if (mode === 'all') return true;
-      if (mode === 'custom') {
-        const start = document.getElementById('reportStartDate').value;
-        const end = document.getElementById('reportEndDate').value;
-        if (!start || !end) return true;
-        return h.isoDate >= start && h.isoDate <= end;
-      }
-      return h.isoDate === mode;
-    });
-
-    let totalWorkSec = 0;
-    let totalStopSec = 0;
-    filteredGlobalHistory.forEach(function(h) {
-      if (h.type === 'PRACA') totalWorkSec += (h.durationSec || 0);
-      if (h.type === 'POSTÓJ') totalStopSec += (h.durationSec || 0);
-    });
-
-    document.getElementById('summaryCards').innerHTML =
-      '<div class="sum-card"><strong>Łączny Czas Pracy</strong><div style="font-size:1.2rem; font-family:monospace; color:#047857; margin-top:5px;">' + formatTime(totalWorkSec) + '</div></div>' +
-      '<div class="sum-card"><strong>Łączny Czas Postojów</strong><div style="font-size:1.2rem; font-family:monospace; color:#b91c1c; margin-top:5px;">' + formatTime(totalStopSec) + '</div></div>' +
-      '<div class="sum-card"><strong>Liczba Zdarzeń Linii</strong><div style="font-size:1.2rem; font-weight:bold; margin-top:5px;">' + filteredGlobalHistory.length + '</div></div>' +
-      '<div class="sum-card"><strong>Sesje Pracowników</strong><div style="font-size:1.2rem; font-weight:bold; margin-top:5px;">' + filteredEmpHistory.length + '</div></div>';
-
-    const empBody = document.getElementById('reportEmpTableBody');
-    if (filteredEmpHistory.length === 0) {
-      empBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">Brak danych w wybranym okresie</td></tr>';
-    } else {
-      empBody.innerHTML = filteredEmpHistory.map(function(s) {
-        const pos = (employees[s.empId] && employees[s.empId].stanowisko) || '-';
-        return '<tr>' +
-          '<td>' + escapeHtml(s.empId) + '</td>' +
-          '<td><strong>' + escapeHtml(s.empName) + '</strong></td>' +
-          '<td>' + escapeHtml(pos) + '</td>' +
-          '<td>Linia ' + escapeHtml(s.lineId) + '</td>' +
-          '<td>' + new Date(s.startTime).toLocaleString() + '</td>' +
-          '<td>' + (s.endIso ? new Date(s.endIso).toLocaleString() : 'Trwa sesja') + '</td>' +
-          '<td><code style="font-weight:bold;">' + formatTime(s.durationSec || 0) + '</code></td>' +
-        '</tr>';
-      }).join('');
-    }
-
-    const lineBody = document.getElementById('reportTableBody');
-    if (filteredGlobalHistory.length === 0) {
-      lineBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Brak danych w wybranym okresie</td></tr>';
-    } else {
-      lineBody.innerHTML = filteredGlobalHistory.map(function(h) {
-        return '<tr>' +
-          '<td>Linia ' + escapeHtml(h.lineId) + '</td>' +
-          '<td><strong>' + escapeHtml(h.type) + '</strong></td>' +
-          '<td>' + new Date(h.startIso).toLocaleTimeString() + '</td>' +
-          '<td>' + new Date(h.endIso).toLocaleTimeString() + '</td>' +
-          '<td><code style="font-weight:bold;">' + formatTime(h.durationSec || 0) + '</code></td>' +
-          '<td>' + escapeHtml(h.reason || '-') + '</td>' +
-        '</tr>';
-      }).join('');
-    }
-  }
-
-  async function exportToExcel() {
-    const mode = document.getElementById('reportDaySelect').value;
-    const todayIso = (snapshotData && snapshotData.todayIso) || new Date().toISOString().slice(0, 10);
-    const gHist = (snapshotData && snapshotData.globalHistory) || [];
-    const eHist = (snapshotData && snapshotData.empHistory) || [];
-
-    const filteredGlobalHistory = gHist.filter(function(h) {
-      if (mode === 'today') return h.isoDate === todayIso;
-      if (mode === 'all') return true;
-      if (mode === 'custom') {
-        const start = document.getElementById('reportStartDate').value;
-        const end = document.getElementById('reportEndDate').value;
-        if (!start || !end) return true;
-        return h.isoDate >= start && h.isoDate <= end;
-      }
-      return h.isoDate === mode;
-    });
-
-    const filteredEmpHistory = eHist.filter(function(h) {
-      if (mode === 'today') return h.isoDate === todayIso;
-      if (mode === 'all') return true;
-      if (mode === 'custom') {
-        const start = document.getElementById('reportStartDate').value;
-        const end = document.getElementById('reportEndDate').value;
-        if (!start || !end) return true;
-        return h.isoDate >= start && h.isoDate <= end;
-      }
-      return h.isoDate === mode;
-    });
-
-    const workbook = new ExcelJS.Workbook();
-    workbook.creator = "System Monitorowania";
-    const sheet = workbook.addWorksheet("Raport Zbiorczy");
-
-    sheet.getCell('A1').value = "Linia";
-    sheet.getCell('B1').value = "Typ Zdarzenia";
-    sheet.getCell('C1').value = "Rozpoczęcie";
-    sheet.getCell('D1').value = "Zakończenie";
-    sheet.getCell('E1').value = "Czas Trwania";
-    sheet.getCell('F1').value = "Przyczyna Postoju";
-
-    sheet.getCell('H1').value = "Linia";
-    sheet.getCell('I1').value = "Łączny Czas Pracy";
-    sheet.getCell('J1').value = "Łączny Czas Postoju";
-
-    sheet.getCell('L1').value = "Pracownik (ID, Nazwisko, Stanowisko)";
-    sheet.getCell('M1').value = "Łączny Czas Pracy";
-
-    ['A1','B1','C1','D1','E1','F1','H1','I1','J1','L1','M1'].forEach(cellKey => {
-      sheet.getCell(cellKey).font = { bold: true };
-      sheet.getCell(cellKey).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
-      sheet.getCell(cellKey).border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
-    });
-
-    filteredGlobalHistory.forEach((h, index) => {
-      const rowNum = index + 2;
-      sheet.getCell('A' + rowNum).value = "Linia " + h.lineId;
-      sheet.getCell('B' + rowNum).value = h.type;
-      sheet.getCell('C' + rowNum).value = new Date(h.startIso).toTimeString().split(' ')[0];
-      sheet.getCell('D' + rowNum).value = new Date(h.endIso).toTimeString().split(' ')[0];
-      sheet.getCell('E' + rowNum).value = formatTime(h.durationSec || 0);
-      sheet.getCell('F' + rowNum).value = h.reason || '-';
-    });
-
-    const lineStats = {};
-    lines.forEach(id => { lineStats[id] = { work: 0, stop: 0 }; });
-    filteredGlobalHistory.forEach(h => {
-      if (lineStats[h.lineId]) {
-        if (h.type === 'PRACA') lineStats[h.lineId].work += (h.durationSec || 0);
-        if (h.type === 'POSTÓJ') lineStats[h.lineId].stop += (h.durationSec || 0);
-      }
-    });
-
-    lines.forEach((id, index) => {
-      const rowNum = index + 2;
-      sheet.getCell('H' + rowNum).value = "Linia " + id;
-      sheet.getCell('I' + rowNum).value = formatTime(lineStats[id].work);
-      sheet.getCell('J' + rowNum).value = formatTime(lineStats[id].stop);
-    });
-
-    const empStats = {};
-    filteredEmpHistory.forEach(s => {
-      const pos = (employees[s.empId] && employees[s.empId].stanowisko) || '-';
-      const key = `[${s.empId}] ${s.empName} (${pos})`;
-      if (!empStats[key]) empStats[key] = 0;
-      empStats[key] += (s.durationSec || 0);
-    });
-
-    Object.keys(empStats).forEach((empKey, index) => {
-      const rowNum = index + 2;
-      sheet.getCell('L' + rowNum).value = empKey;
-      sheet.getCell('M' + rowNum).value = formatTime(empStats[empKey]);
-    });
-
-    sheet.columns = [
-      { width: 12 }, { width: 15 }, { width: 14 }, { width: 14 }, { width: 15 }, { width: 22 },
-      { width: 4 },
-      { width: 10 }, { width: 18 }, { width: 18 },
-      { width: 4 },
-      { width: 46 }, { width: 18 }
-    ];
-
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Raport_Zbiorczy_Produkcja_" + new Date().toISOString().slice(0, 10) + ".xlsx";
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
   window.addEventListener('DOMContentLoaded', function() {
     renderLinesSkeleton();
-    populateReportDateOptions();
     applySnapshotToUI(snapshotData);
     setInterval(tickLiveTimers, 1000);
     setInterval(refreshFromServer, 4000);
@@ -2173,7 +1833,7 @@ KONCOWKI_TEMPLATE = """
             {% endif %}
         </div>
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            {% if role == 'admin' or 'mod_produkcja' in dostep %}
+            {% if role == 'admin' or can_access_produkcja %}
                 <a href="/przelacz-modul/produkcja" style="background: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">🔀 Moduł Produkcyjny</a>
             {% endif %}
             <a href="/logout" style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">{{ t.wyloguj }}</a>
@@ -2406,21 +2066,29 @@ KONCOWKI_TEMPLATE = """
             </div>
         {% elif linia == 'raporty' and 'raporty' in dostep %}
             <div class="raporty-section">
-                <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }}</h3>
-                <p style="font-size: 13px; color: #555;">Wybierz dzień oraz rodzaj raportu, który chcesz wygenerować i pobrać:</p>
-                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ffd8a8; max-width: 700px;">
+                <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }} (Wspólne dla obu modułów)</h3>
+                <p style="font-size: 13px; color: #555;">Wybierz dzień oraz rodzaj raportu z dowolnego obszaru (końcówki linii, monitoring linii 1–6, czasy pracowników oraz wydajność na roboczogodzinę):</p>
+                <div style="background: white; padding: 22px; border-radius: 8px; border: 1px solid #ffd8a8; max-width: 780px;">
                     <form action="/generate" method="GET">
                         <label><b>📅 Wybierz dzień raportu:</b></label>
-                        <input type="date" name="data" value="{{ wybrana_data }}" style="margin-bottom: 15px;" required>
+                        <input type="date" name="data" value="{{ wybrana_data }}" style="margin-bottom: 15px; max-width: 280px;" required>
+
                         <label><b>📑 Rodzaj raportu:</b></label>
                         <select name="typ_raportu" style="margin-bottom: 20px;">
-                            <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1 (osobne arkusze linii)</option>
-                            <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2 (osobne arkusze linii)</option>
-                            <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (osobne arkusze Z1 i Z2)</option>
-                            <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu (Kod, Nazwa, Odbiorca, Plan, Wykonano, Pozostało, Nadwyżka, %)</option>
-                            <option value="wydajnosc">⏱️ Raport Wydajności (Sztuk na godzinę — Linie i Zmiany)</option>
+                            <optgroup label="Końcówki Linii / Rozchód i Plan">
+                                <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1 (osobne arkusze linii)</option>
+                                <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2 (osobne arkusze linii)</option>
+                                <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (osobne arkusze Z1 i Z2)</option>
+                                <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu (Kod, Nazwa, Odbiorca, Plan, Wykonano, Pozostało, Nadwyżka, %)</option>
+                                <option value="wydajnosc">⏱️ Raport Wydajności Linii i Zmian (Sztuk na godzinę — szt/h)</option>
+                            </optgroup>
+                            <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
+                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Wyprodukowane szt. / Suma czasów pracowników / szt. na rbh)</option>
+                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Zdarzenia, Przyczyny, Pracownicy)</option>
+                            </optgroup>
                         </select>
-                        <button type="submit" style="background: #fd7e14; color: white;">📥 Pobierz wygenerowany raport Excel</button>
+
+                        <button type="submit" style="background: #fd7e14; color: white;">📥 Pobierz wygenerowany raport Excel (.xlsx)</button>
                     </form>
                 </div>
             </div>
@@ -2671,6 +2339,11 @@ def przelacz_modul(modul):
     session['modul'] = modul
     if modul == 'produkcja':
         return redirect(url_for('produkcja_view'))
+
+    target_linia = request.args.get('linia')
+    if target_linia:
+        session['aktywna_linia'] = target_linia
+        return redirect(url_for('index', linia=target_linia))
     return redirect(url_for('index'))
 
 @app.route('/logout')
@@ -2716,6 +2389,7 @@ def produkcja_view():
         PRODUKCJA_MODULE_TEMPLATE,
         pelna_nazwa=session.get('pelna_nazwa'),
         role=rola,
+        dostep=dostep_lista,
         can_access_koncowki=can_access_koncowki,
         employees_json=json.dumps(employees_dict),
         initial_snapshot_json=json.dumps(snapshot),
@@ -2852,7 +2526,6 @@ def api_produkcja_skan_pracownika():
     now_iso = now_dt.isoformat()
     today_iso = now_dt.strftime('%Y-%m-%d')
 
-    # Jeśli już zalogowany na tej linii -> wymelduj z tej linii
     same_line_act = PracownikSesjaAktywnaModel.query.filter_by(emp_id=emp_id, line_id=line_id).first()
     if same_line_act:
         act_dt = parse_iso_dt(same_line_act.start_time_iso)
@@ -2868,7 +2541,6 @@ def api_produkcja_skan_pracownika():
         ))
         db.session.delete(same_line_act)
     else:
-        # Zamknij ewentualną sesję na innej linii
         other_acts = PracownikSesjaAktywnaModel.query.filter_by(emp_id=emp_id).all()
         for act in other_acts:
             act_dt = parse_iso_dt(act.start_time_iso)
@@ -2965,7 +2637,6 @@ def api_pracownicy_zapisz():
         prac = PracownikQrModel(emp_id=emp_id, imie_nazwisko=imie_nazwisko, stanowisko=stanowisko, kolejnosc=max_kol + 1)
         db.session.add(prac)
 
-    # Aktualizuj nazwisko w aktywnych sesjach, jeśli pracownik jest na linii
     for act in PracownikSesjaAktywnaModel.query.filter_by(emp_id=emp_id).all():
         act.emp_name = imie_nazwisko
 
@@ -3007,7 +2678,7 @@ def api_pracownicy_usun():
     }
     return jsonify({"ok": True, "employees": employees_dict})
 
-# --- MODUŁ KOŃCÓWKI LINII / KOMPLETACJA ---
+# --- MODUŁ KOŃCÓWKI LINII / KOMPLETACJA / CENTRUM RAPORTÓW ---
 
 @app.route('/')
 def index():
@@ -3024,11 +2695,13 @@ def index():
     user = session.get('user')
     pelna_nazwa = session.get('pelna_nazwa')
     wypr_zmiana = session.get('wybrana_zmiana')
+    can_access_produkcja = czy_ma_dostep_do_modulu(dostep, role, 'produkcja')
 
     if not wypr_zmiana:
         return render_template_string(
             KONCOWKI_TEMPLATE, t=t, wypr_zmiana=None, user=user, role=role,
-            pelna_nazwa=pelna_nazwa, dostep=dostep, produkty_json="{}", plan_json="{}", zrealizowane_json="{}"
+            pelna_nazwa=pelna_nazwa, dostep=dostep, can_access_produkcja=can_access_produkcja,
+            produkty_json="{}", plan_json="{}", zrealizowane_json="{}"
         )
 
     linia = request.args.get('linia', session.get('aktywna_linia', '1'))
@@ -3147,6 +2820,7 @@ def index():
         procent_calkowity_prog=procent_calkowity_prog, wpisy_dla_linii=wpisy_dla_linii,
         suma_sztuk=suma_sztuk, statystyki_wydajnosci_lista=statystyki_wydajnosci_lista,
         user=user, role=role, pelna_nazwa=pelna_nazwa, dostep=dostep,
+        can_access_produkcja=can_access_produkcja,
         uzytkownicy_baza=uzytkownicy_baza_dict, error_msg=error_msg
     )
 
@@ -3315,6 +2989,8 @@ def admin_usun_uzytkownika(username):
     if powrot_modul == 'produkcja':
         return redirect(url_for('produkcja_view'))
     return redirect(url_for('index', linia='admin'))
+
+# --- EKSPORT RAPORTÓW W CENTRUM RAPORTÓW ---
 
 def stworz_arkusz_linii(wb, sheet_title, wpisy_linii, wybrana_data, zmiana_label, l_nr, first_sheet_ref):
     if first_sheet_ref[0]:
@@ -3575,6 +3251,141 @@ def generate():
             max_l = max(len(str(cell.value or '')) for cell in col)
             ws_wyd.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 4, 18)
         download_name = f"Raport_Wydajnosci_{wybrana_data}.xlsx"
+
+    elif typ_raportu == 'wydajnosc_rbh':
+        ws_rbh = wb.active
+        ws_rbh.title = "Wydajność szt na rbh"
+        ws_rbh.views.sheetView[0].showGridLines = True
+        ws_rbh['A1'] = f"RAPORT WYDAJNOŚCI NA ROBOCZOGODZINĘ (SZT./RBH) - {wybrana_data}"
+        ws_rbh['A1'].font = font_title
+
+        sztuki_per_line = {str(i): 0 for i in [1, 2, 3, 4, 5, 6]}
+        for item in wpisy_dla_dnia:
+            l_key = str(item['linia'])
+            if l_key in sztuki_per_line:
+                sztuki_per_line[l_key] += int(item['ilosc'] or 0)
+
+        now_dt = datetime.now()
+        emp_sec_per_line = {i: 0 for i in [1, 2, 3, 4, 5, 6]}
+        for eh in PracownikSesjaHistoriaModel.query.filter_by(iso_date=wybrana_data).all():
+            if eh.line_id in emp_sec_per_line:
+                emp_sec_per_line[eh.line_id] += int(eh.duration_sec or 0)
+
+        for act in PracownikSesjaAktywnaModel.query.filter_by(iso_date=wybrana_data).all():
+            if act.line_id in emp_sec_per_line:
+                dt_s = parse_iso_dt(act.start_time_iso)
+                if dt_s:
+                    emp_sec_per_line[act.line_id] += max(0, int((now_dt - dt_s).total_seconds()))
+
+        headers_r = [
+            "Linia",
+            "Wyprodukowano sztuk",
+            "Suma czasów pracowników (HH:MM:SS)",
+            "Suma czasów pracowników (rbh)",
+            "Wydajność (szt. / rbh)"
+        ]
+        ws_rbh.row_dimensions[3].height = 25
+        for c_idx, h_text in enumerate(headers_r, start=1):
+            c = ws_rbh.cell(row=3, column=c_idx, value=h_text)
+            c.font = font_header
+            c.fill = fill_header
+            c.alignment = Alignment(horizontal="center", vertical="center")
+            c.border = thin_border
+
+        r_idx = 4
+        for lid in [1, 2, 3, 4, 5, 6]:
+            szt = sztuki_per_line[str(lid)]
+            sec_total = emp_sec_per_line[lid]
+            rbh = round(sec_total / 3600.0, 2)
+            wyd_rbh = round(szt / (sec_total / 3600.0), 1) if sec_total > 0 else 0.0
+
+            row_vals = [
+                f"Linia {lid}",
+                szt,
+                format_sec_hhmmss(sec_total),
+                rbh,
+                f"{wyd_rbh} szt./rbh"
+            ]
+            for c_idx, val in enumerate(row_vals, start=1):
+                cell = ws_rbh.cell(row=r_idx, column=c_idx, value=val)
+                cell.font = font_bold if c_idx in [2, 5] else font_normal
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            r_idx += 1
+
+        for col in ws_rbh.columns:
+            max_l = max(len(str(cell.value or '')) for cell in col)
+            ws_rbh.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 4, 20)
+        download_name = f"Raport_Wydajnosci_RBH_{wybrana_data}.xlsx"
+
+    elif typ_raportu == 'monitoring_linie_pracownicy':
+        ws_m = wb.active
+        ws_m.title = "Monitoring Linii i Pracowników"
+        ws_m.views.sheetView[0].showGridLines = True
+        ws_m['A1'] = f"RAPORT MONITORINGU LINII 1–6 I CZASU PRACOWNIKÓW - {wybrana_data}"
+        ws_m['A1'].font = font_title
+
+        zdarzenia = LiniaMonitorZdarzenieModel.query.filter_by(iso_date=wybrana_data).order_by(LiniaMonitorZdarzenieModel.start_iso.desc()).all()
+        sesje_hist = PracownikSesjaHistoriaModel.query.filter_by(iso_date=wybrana_data).order_by(PracownikSesjaHistoriaModel.start_time_iso.desc()).all()
+        prac_meta = {p.emp_id: p.stanowisko for p in PracownikQrModel.query.all()}
+
+        headers_m = ["Linia", "Typ zdarzenia", "Rozpoczęcie", "Zakończenie", "Czas trwania", "Przyczyna postoju"]
+        ws_m.row_dimensions[3].height = 24
+        for c_idx, h_text in enumerate(headers_m, start=1):
+            c = ws_m.cell(row=3, column=c_idx, value=h_text)
+            c.font = font_header
+            c.fill = fill_header
+            c.alignment = Alignment(horizontal="center", vertical="center")
+            c.border = thin_border
+
+        rm = 4
+        for z in zdarzenia:
+            vals_m = [
+                f"Linia {z.linia_id}", z.event_type, z.start_iso, z.end_iso,
+                format_sec_hhmmss(z.duration_sec), z.reason or '-'
+            ]
+            for c_idx, val in enumerate(vals_m, start=1):
+                cell = ws_m.cell(row=rm, column=c_idx, value=val)
+                cell.font = font_normal
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            rm += 1
+
+        ws_emp = wb.create_sheet(title="Czasy Pracowników")
+        ws_emp.views.sheetView[0].showGridLines = True
+        ws_emp['A1'] = f"CZASY PRACY PRACOWNIKÓW NA LINIACH - {wybrana_data}"
+        ws_emp['A1'].font = font_title
+
+        headers_e = ["ID Pracownika", "Pracownik", "Stanowisko", "Linia", "Rozpoczęcie", "Zakończenie", "Czas (HH:MM:SS)", "Czas (rbh)"]
+        ws_emp.row_dimensions[3].height = 24
+        for c_idx, h_text in enumerate(headers_e, start=1):
+            c = ws_emp.cell(row=3, column=c_idx, value=h_text)
+            c.font = font_header
+            c.fill = fill_header
+            c.alignment = Alignment(horizontal="center", vertical="center")
+            c.border = thin_border
+
+        re_row = 4
+        for s in sesje_hist:
+            dur_s = int(s.duration_sec or 0)
+            vals_e = [
+                s.emp_id, s.emp_name, prac_meta.get(s.emp_id) or "-",
+                f"Linia {s.line_id}", s.start_time_iso, s.end_time_iso,
+                format_sec_hhmmss(dur_s), round(dur_s / 3600.0, 2)
+            ]
+            for c_idx, val in enumerate(vals_e, start=1):
+                cell = ws_emp.cell(row=re_row, column=c_idx, value=val)
+                cell.font = font_normal
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            re_row += 1
+
+        for sheet_curr in [ws_m, ws_emp]:
+            for col in sheet_curr.columns:
+                max_l = max(len(str(cell.value or '')) for cell in col)
+                sheet_curr.column_dimensions[openpyxl.utils.get_column_letter(col[0].column)].width = max(max_l + 4, 16)
+
+        download_name = f"Raport_Monitoring_Pracownicy_{wybrana_data}.xlsx"
 
     else:
         if not wpisy_dla_dnia:
