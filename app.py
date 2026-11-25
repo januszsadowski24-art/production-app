@@ -280,7 +280,6 @@ DEFAULT_EMPLOYEES_LIST = [
 with app.app_context():
     db.create_all()
 
-    # Bezpieczne dopisanie kolumn loginów do istniejących tabel w PostgreSQL
     try:
         with db.engine.begin() as conn:
             conn.execute(text("ALTER TABLE linie_monitor_stan ADD COLUMN IF NOT EXISTS started_by_login VARCHAR(80)"))
@@ -390,6 +389,23 @@ def parse_iso_dt(iso_str):
     except Exception:
         return None
 
+def okresl_dzien_roboczy_i_zmiane(iso_str):
+    """
+    Zmiana 1: 04:00 (lub 06:00) do 14:00 -> 4 <= godzina < 14 (dzień roboczy = data bieżąca).
+    Zmiana 2: 14:00 do 22:00, maks. do 02:00 (bufor do 03:59) ->
+      - godzina >= 14: Zmiana 2, dzień roboczy = data bieżąca,
+      - godzina < 4: Zmiana 2, dzień roboczy = data poprzednia (nocne przedłużenie 2. zmiany).
+    """
+    dt = parse_iso_dt(iso_str)
+    if not dt:
+        return None, '1'
+    if 4 <= dt.hour < 14:
+        return dt.strftime('%Y-%m-%d'), '1'
+    if dt.hour >= 14:
+        return dt.strftime('%Y-%m-%d'), '2'
+    dzien_poprzedni = (dt - timedelta(days=1)).strftime('%Y-%m-%d')
+    return dzien_poprzedni, '2'
+
 def format_sec_hhmmss(seconds):
     seconds = max(0, int(seconds or 0))
     h = seconds // 3600
@@ -488,7 +504,7 @@ def build_monitor_snapshot(target_date=None):
         "lines": lines_payload
     }
 
-# --- SZABLONY I WIDOKI (NIEZMIENIONE DLA LOGOWANIA, KONCÓWEK I UI LINII) ---
+# --- SZABLONY I WIDOKI ---
 
 T = {
     "pl": {
@@ -1865,8 +1881,8 @@ KONCOWKI_TEMPLATE = """
             <h2>{{ t.wybierz_zm }}</h2>
             <form method="POST" action="/wybierz-zmiane">
                 <select name="zmiana" style="max-width: 300px; margin: 0 auto 15px auto;">
-                    <option value="1">Zmiana 1</option>
-                    <option value="2">Zmiana 2</option>
+                    <option value="1">Zmiana 1 (04:00 / 06:00 – 14:00)</option>
+                    <option value="2">Zmiana 2 (14:00 – 22:00 / max 02:00)</option>
                 </select>
                 <button type="submit" style="max-width: 300px; margin: 0 auto;">{{ t.rozpocznij }}</button>
             </form>
@@ -2103,7 +2119,7 @@ KONCOWKI_TEMPLATE = """
                                 <option value="wydajnosc">⏱️ Raport Wydajności Linii i Zmian (Sztuk na godzinę — szt/h)</option>
                             </optgroup>
                             <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
-                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Wyprodukowane szt. / Suma czasów pracowników / szt. na rbh)</option>
+                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Podział: Linia 1 Z1, Linia 1 Z2, Linia 2 Z1... / szt. na rbh)</option>
                                 <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Kto rozpoczął / zakończył, Zdarzenia, Przyczyny, Pracownicy)</option>
                             </optgroup>
                         </select>
@@ -3289,26 +3305,32 @@ def generate():
         ws_rbh['A1'] = f"RAPORT WYDAJNOŚCI NA ROBOCZOGODZINĘ (SZT./RBH) - {wybrana_data}"
         ws_rbh['A1'].font = font_title
 
-        sztuki_per_line = {str(i): 0 for i in [1, 2, 3, 4, 5, 6]}
+        sztuki_per_line_shift = {(str(i), z): 0 for i in [1, 2, 3, 4, 5, 6] for z in ['1', '2']}
         for item in wpisy_dla_dnia:
             l_key = str(item['linia'])
-            if l_key in sztuki_per_line:
-                sztuki_per_line[l_key] += int(item['ilosc'] or 0)
+            z_key = str(item['zmiana'])
+            if (l_key, z_key) in sztuki_per_line_shift:
+                sztuki_per_line_shift[(l_key, z_key)] += int(item['ilosc'] or 0)
 
         now_dt = datetime.now()
-        emp_sec_per_line = {i: 0 for i in [1, 2, 3, 4, 5, 6]}
-        for eh in PracownikSesjaHistoriaModel.query.filter_by(iso_date=wybrana_data).all():
-            if eh.line_id in emp_sec_per_line:
-                emp_sec_per_line[eh.line_id] += int(eh.duration_sec or 0)
+        emp_sec_per_line_shift = {(i, z): 0 for i in [1, 2, 3, 4, 5, 6] for z in ['1', '2']}
+        next_day_iso = (datetime.strptime(wybrana_data, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d')
 
-        for act in PracownikSesjaAktywnaModel.query.filter_by(iso_date=wybrana_data).all():
-            if act.line_id in emp_sec_per_line:
+        for eh in PracownikSesjaHistoriaModel.query.filter(PracownikSesjaHistoriaModel.iso_date.in_([wybrana_data, next_day_iso])).all():
+            dzien_roboczy, zm = okresl_dzien_roboczy_i_zmiane(eh.start_time_iso)
+            if dzien_roboczy == wybrana_data and (eh.line_id, zm) in emp_sec_per_line_shift:
+                emp_sec_per_line_shift[(eh.line_id, zm)] += int(eh.duration_sec or 0)
+
+        for act in PracownikSesjaAktywnaModel.query.filter(PracownikSesjaAktywnaModel.iso_date.in_([wybrana_data, next_day_iso])).all():
+            dzien_roboczy, zm = okresl_dzien_roboczy_i_zmiane(act.start_time_iso)
+            if dzien_roboczy == wybrana_data and (act.line_id, zm) in emp_sec_per_line_shift:
                 dt_s = parse_iso_dt(act.start_time_iso)
                 if dt_s:
-                    emp_sec_per_line[act.line_id] += max(0, int((now_dt - dt_s).total_seconds()))
+                    emp_sec_per_line_shift[(act.line_id, zm)] += max(0, int((now_dt - dt_s).total_seconds()))
 
         headers_r = [
             "Linia",
+            "Zmiana",
             "Wyprodukowano sztuk",
             "Suma czasów pracowników (HH:MM:SS)",
             "Suma czasów pracowników (rbh)",
@@ -3324,24 +3346,26 @@ def generate():
 
         r_idx = 4
         for lid in [1, 2, 3, 4, 5, 6]:
-            szt = sztuki_per_line[str(lid)]
-            sec_total = emp_sec_per_line[lid]
-            rbh = round(sec_total / 3600.0, 2)
-            wyd_rbh = round(szt / (sec_total / 3600.0), 1) if sec_total > 0 else 0.0
+            for zm in ['1', '2']:
+                szt = sztuki_per_line_shift[(str(lid), zm)]
+                sec_total = emp_sec_per_line_shift[(lid, zm)]
+                rbh = round(sec_total / 3600.0, 2)
+                wyd_rbh = round(szt / (sec_total / 3600.0), 1) if sec_total > 0 else 0.0
 
-            row_vals = [
-                f"Linia {lid}",
-                szt,
-                format_sec_hhmmss(sec_total),
-                rbh,
-                f"{wyd_rbh} szt./rbh"
-            ]
-            for c_idx, val in enumerate(row_vals, start=1):
-                cell = ws_rbh.cell(row=r_idx, column=c_idx, value=val)
-                cell.font = font_bold if c_idx in [2, 5] else font_normal
-                cell.border = thin_border
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            r_idx += 1
+                row_vals = [
+                    f"Linia {lid}",
+                    f"Zmiana {zm}",
+                    szt,
+                    format_sec_hhmmss(sec_total),
+                    rbh,
+                    f"{wyd_rbh} szt./rbh"
+                ]
+                for c_idx, val in enumerate(row_vals, start=1):
+                    cell = ws_rbh.cell(row=r_idx, column=c_idx, value=val)
+                    cell.font = font_bold if c_idx in [3, 6] else font_normal
+                    cell.border = thin_border
+                    cell.alignment = Alignment(horizontal="center", vertical="center")
+                r_idx += 1
 
         for col in ws_rbh.columns:
             max_l = max(len(str(cell.value or '')) for cell in col)
