@@ -557,7 +557,22 @@ T = {
         "tabela_bhp": "Potwierdzenia BHP", "tabela_szczegoly": "Szczegóły",
         "nadwyzka": "Nadwyżka", "wybierz_dzien_prog": "Wybierz dzień do podglądu postępu:",
         "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość na koniec...",
-        "ph_etygora": "Wpisz etykietę górną...", "ph_etydol": "Wpisz etykietę dolną..."
+        "ph_etygora": "Wpisz etykietę górną...", "ph_etydol": "Wpisz etykietę dolną...",
+        "plan_lbl": "Plan",
+        "linia_prefix": "Linia",
+        "st_running": "W PRACY", "st_stopped": "POSTÓJ", "st_idle": "ZAKOŃCZONO",
+        "t_curr_work": "OBECNA PRACA", "t_curr_stop": "OBECNY POSTÓJ",
+        "t_day_work": "ŁĄCZNA PRACA DZISIAJ", "t_day_stop": "ŁĄCZNY POSTÓJ DZISIAJ",
+        "t_emp_sum": "👥 Suma Czasu Pracowników:",
+        "scan_title": "🔍 Skaner ID Pracownika", "scan_ph": "Zeskanuj lub wpisz ID...",
+        "no_emp": "Brak zalogowanych pracowników", "logout_emp": "Wymelduj",
+        "btn_start": "▶ Start", "btn_stop": "⏹ Postój", "btn_end": "🏁 Koniec",
+        "reason_lbl": "Przyczyna postoju (wymagana przed zatrzymaniem):",
+        "reason_select_ph": "-- Wybierz przyczynę --", "reason_custom_ph": "Wpisz własną przyczynę...",
+        "recent_events": "Ostatnie zdarzenia:", "no_events": "Brak zdarzeń",
+        "ev_work": "PRACA", "ev_stop": "POSTÓJ",
+        "r_mech": "Awaria mechaniczna", "r_mat": "Brak materiału", "r_change": "Przezbrojenie",
+        "r_break": "Przerwa pracownicza", "r_qual": "Problem z jakością", "r_other": "Inny"
     },
     "en": {
         "tytul": "Production Execution & Reporting Panel",
@@ -615,7 +630,22 @@ T = {
         "tabela_bhp": "HSE Checks", "tabela_szczegoly": "Details",
         "nadwyzka": "Surplus", "wybierz_dzien_prog": "Select day to view progress:",
         "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Customer", "ph_ilosc": "enter end quantity...",
-        "ph_etygora": "Enter top label...", "ph_etydol": "Enter bottom label..."
+        "ph_etygora": "Enter top label...", "ph_etydol": "Enter bottom label...",
+        "plan_lbl": "Plan",
+        "linia_prefix": "Line",
+        "st_running": "RUNNING", "st_stopped": "STOPPED", "st_idle": "IDLE",
+        "t_curr_work": "CURRENT WORK", "t_curr_stop": "CURRENT STOP",
+        "t_day_work": "TOTAL WORK TODAY", "t_day_stop": "TOTAL STOP TODAY",
+        "t_emp_sum": "👥 Workers Total Time:",
+        "scan_title": "🔍 Worker ID Scanner", "scan_ph": "Scan or enter ID...",
+        "no_emp": "No workers logged in", "logout_emp": "Sign out",
+        "btn_start": "▶ Start", "btn_stop": "⏹ Stop", "btn_end": "🏁 End",
+        "reason_lbl": "Stop reason (required before stopping):",
+        "reason_select_ph": "-- Select reason --", "reason_custom_ph": "Enter custom reason...",
+        "recent_events": "Recent events:", "no_events": "No events",
+        "ev_work": "WORK", "ev_stop": "STOP",
+        "r_mech": "Mechanical failure", "r_mat": "Material shortage", "r_change": "Changeover",
+        "r_break": "Worker break", "r_qual": "Quality issue", "r_other": "Other"
     },
     "uk": {
         "tytul": "Панель Виконання Виробництва та Звітів",
@@ -673,7 +703,22 @@ T = {
         "tabela_bhp": "Перевірки ОП", "tabela_szczegoly": "Деталі",
         "nadwyzka": "Надлишок", "wybierz_dzien_prog": "Оберіть день для перегляду прогресу:",
         "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Клієнт", "ph_ilosc": "введіть кількість...",
-        "ph_etygora": "Введіть верхню етикетку...", "ph_etydol": "Введіть нижню етикетку..."
+        "ph_etygora": "Введіть верхню етикетку...", "ph_etydol": "Введіть нижню етикетку...",
+        "plan_lbl": "План",
+        "linia_prefix": "Лінія",
+        "st_running": "В РОБОТІ", "st_stopped": "ПРОСТОЙ", "st_idle": "ЗАВЕРШЕНО",
+        "t_curr_work": "ПОТОЧНА РОБОТА", "t_curr_stop": "ПОТОЧНИЙ ПРОСТОЙ",
+        "t_day_work": "ВСЬОГО РОБОТИ СЬОГОДНІ", "t_day_stop": "ВСЬОГО ПРОСТОЮ СЬОГОДНІ",
+        "t_emp_sum": "👥 Сума Часу Працівників:",
+        "scan_title": "🔍 Сканер ID Працівника", "scan_ph": "Скануйте або введіть ID...",
+        "no_emp": "Немає авторизованих працівників", "logout_emp": "Виписати",
+        "btn_start": "▶ Старт", "btn_stop": "⏹ Простой", "btn_end": "🏁 Кінець",
+        "reason_lbl": "Причина простою (обов'язково перед зупинкою):",
+        "reason_select_ph": "-- Оберіть причину --", "reason_custom_ph": "Введіть власну причину...",
+        "recent_events": "Останні події:", "no_events": "Немає подій",
+        "ev_work": "РОБОТА", "ev_stop": "ПРОСТОЙ",
+        "r_mech": "Механічна несправність", "r_mat": "Брак матеріалу", "r_change": "Переналагодження",
+        "r_break": "Перерва працівника", "r_qual": "Проблема з якістю", "r_other": "Інше"
     },
     "es": {
         "tytul": "Panel de Ejecución de Producción e Informes",
@@ -731,7 +776,22 @@ T = {
         "tabela_bhp": "Controles PRL", "tabela_szczegoly": "Detalles",
         "nadwyzka": "Excedente", "wybierz_dzien_prog": "Selecciona día para ver progreso:",
         "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Cliente", "ph_ilosc": "escribe cantidad final...",
-        "ph_etygora": "Escribe etiqueta superior...", "ph_etydol": "Escribe etiqueta inferior..."
+        "ph_etygora": "Escribe etiqueta superior...", "ph_etydol": "Escribe etiqueta inferior...",
+        "plan_lbl": "Plan",
+        "linia_prefix": "Línea",
+        "st_running": "EN MARCHA", "st_stopped": "PARADA", "st_idle": "FINALIZADO",
+        "t_curr_work": "TRABAJO ACTUAL", "t_curr_stop": "PARADA ACTUAL",
+        "t_day_work": "TRABAJO TOTAL HOY", "t_day_stop": "PARADA TOTAL HOY",
+        "t_emp_sum": "👥 Tiempo Total Operarios:",
+        "scan_title": "🔍 Escáner ID Operario", "scan_ph": "Escanea o escribe ID...",
+        "no_emp": "No hay operarios conectados", "logout_emp": "Desconectar",
+        "btn_start": "▶ Inicio", "btn_stop": "⏹ Parada", "btn_end": "🏁 Fin",
+        "reason_lbl": "Motivo de parada (obligatorio antes de detener):",
+        "reason_select_ph": "-- Selecciona motivo --", "reason_custom_ph": "Escribe un motivo propio...",
+        "recent_events": "Últimos eventos:", "no_events": "Sin eventos",
+        "ev_work": "TRABAJO", "ev_stop": "PARADA",
+        "r_mech": "Fallo mecánico", "r_mat": "Falta de material", "r_change": "Cambio de formato",
+        "r_break": "Pausa de operario", "r_qual": "Problema de calidad", "r_other": "Otro"
     }
 }
 
@@ -787,14 +847,14 @@ LOGIN_TEMPLATE = """
                 <input type="radio" name="modul" value="koncowki" {{ 'checked' if wybrany_modul != 'produkcja' else '' }}>
                 <div>
                     <div class="module-title">{{ t.mod_koncowki_nazwa }}</div>
-                    <div class="module-desc">Kompletacja / palety, plan, postęp, wydajność, centrum raportów</div>
+                    <div class="module-desc">{{ t.prog_tab }} • {{ t.plan_tab }} • {{ t.raporty_tab }}</div>
                 </div>
             </label>
             <label class="module-card">
                 <input type="radio" name="modul" value="produkcja" {{ 'checked' if wybrany_modul == 'produkcja' else '' }}>
                 <div>
                     <div class="module-title">{{ t.mod_produkcja_nazwa }}</div>
-                    <div class="module-desc">Monitorowanie linii 1–6, postój, skan QR pracowników, plakietki 54×85 mm</div>
+                    <div class="module-desc">{{ t.t_curr_work }} • {{ t.t_curr_stop }} • {{ t.scan_title }}</div>
                 </div>
             </label>
         </div>
@@ -1154,7 +1214,15 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
 <script>
   const lines = [1, 2, 3, 4, 5, 6];
-  const defaultReasons = ["Awaria mechaniczna", "Brak materiału", "Przezbrojenie", "Przerwa pracownicza", "Problem z jakością", "Inny"];
+  const UI_T = {{ t | tojson }};
+  const defaultReasons = [
+    UI_T.r_mech,
+    UI_T.r_mat,
+    UI_T.r_change,
+    UI_T.r_break,
+    UI_T.r_qual,
+    UI_T.r_other
+  ];
 
   let employees = {{ employees_json | safe }};
   let snapshotData = {{ initial_snapshot_json | safe }};
@@ -1192,9 +1260,15 @@ PRODUKCJA_MODULE_TEMPLATE = """
   }
 
   function getStatusText(status) {
-    if (status === 'RUNNING') return 'W PRACY';
-    if (status === 'STOPPED') return 'POSTÓJ';
-    return 'ZAKOŃCZONO';
+    if (status === 'RUNNING') return UI_T.st_running;
+    if (status === 'STOPPED') return UI_T.st_stopped;
+    return UI_T.st_idle;
+  }
+
+  function translateEventType(evType) {
+    if (evType === 'PRACA') return UI_T.ev_work;
+    if (evType === 'POSTÓJ') return UI_T.ev_stop;
+    return evType;
   }
 
   function switchSubtab(tab) {
@@ -1217,43 +1291,43 @@ PRODUKCJA_MODULE_TEMPLATE = """
       card.className = 'card idle';
       card.id = 'card-' + id;
       card.innerHTML =
-        '<div class="card-header"><h2 class="card-title">Linia ' + id + '</h2><span class="status-badge status-idle" id="badge-' + id + '">ZAKOŃCZONO</span></div>' +
+        '<div class="card-header"><h2 class="card-title">' + escapeHtml(UI_T.linia_prefix) + ' ' + id + '</h2><span class="status-badge status-idle" id="badge-' + id + '">' + escapeHtml(UI_T.st_idle) + '</span></div>' +
         '<div class="timers-container">' +
-          '<div class="timer-box"><div class="timer-label">OBECNA PRACA</div><div class="timer-val" id="work-timer-' + id + '">00:00:00</div></div>' +
-          '<div class="timer-box"><div class="timer-label">OBECNY POSTÓJ</div><div class="timer-val" id="stop-timer-' + id + '">00:00:00</div></div>' +
+          '<div class="timer-box"><div class="timer-label">' + escapeHtml(UI_T.t_curr_work) + '</div><div class="timer-val" id="work-timer-' + id + '">00:00:00</div></div>' +
+          '<div class="timer-box"><div class="timer-label">' + escapeHtml(UI_T.t_curr_stop) + '</div><div class="timer-val" id="stop-timer-' + id + '">00:00:00</div></div>' +
         '</div>' +
         '<div class="daily-timers-container">' +
-          '<div class="daily-timer-box"><div class="daily-timer-label">ŁĄCZNA PRACA DZISIAJ</div><div class="daily-timer-val daily-work-val" id="daily-work-timer-' + id + '">00:00:00</div></div>' +
-          '<div class="daily-timer-box"><div class="daily-timer-label">ŁĄCZNY POSTÓJ DZISIAJ</div><div class="daily-timer-val daily-stop-val" id="daily-stop-timer-' + id + '">00:00:00</div></div>' +
+          '<div class="daily-timer-box"><div class="daily-timer-label">' + escapeHtml(UI_T.t_day_work) + '</div><div class="daily-timer-val daily-work-val" id="daily-work-timer-' + id + '">00:00:00</div></div>' +
+          '<div class="daily-timer-box"><div class="daily-timer-label">' + escapeHtml(UI_T.t_day_stop) + '</div><div class="daily-timer-val daily-stop-val" id="daily-stop-timer-' + id + '">00:00:00</div></div>' +
         '</div>' +
         '<div class="total-emp-time-box">' +
-          '<span class="total-emp-time-label">👥 Suma Czasu Pracowników:</span>' +
+          '<span class="total-emp-time-label">' + escapeHtml(UI_T.t_emp_sum) + '</span>' +
           '<span class="total-emp-time-val" id="total-emp-timer-' + id + '">00:00:00</span>' +
         '</div>' +
         '<div class="emp-section">' +
-          '<div class="emp-section-title">🔍 Skaner ID Pracownika</div>' +
+          '<div class="emp-section-title">' + escapeHtml(UI_T.scan_title) + '</div>' +
           '<div class="scan-box">' +
-            '<input type="text" id="manual-emp-' + id + '" placeholder="Zeskanuj lub wpisz ID..." onkeypress="handleScanKeyPress(event, ' + id + ')">' +
+            '<input type="text" id="manual-emp-' + id + '" placeholder="' + escapeHtml(UI_T.scan_ph) + '" onkeypress="handleScanKeyPress(event, ' + id + ')">' +
             '<button type="button" onclick="assignEmpManual(' + id + ')" style="background:#0284c7; color:white; border:none; border-radius:6px; cursor:pointer; padding:0 12px; font-weight:bold;">OK</button>' +
           '</div>' +
           '<div class="emp-list" id="emp-list-' + id + '"></div>' +
         '</div>' +
         '<div class="controls">' +
           '<div class="btn-group">' +
-            '<button type="button" class="action-btn btn-start" id="btn-start-' + id + '" onclick="lineAction(' + id + ', \\'start\\')">▶ Start</button>' +
-            '<button type="button" class="action-btn btn-stop" id="btn-stop-' + id + '" onclick="handleStopClick(' + id + ')">⏹ Postój</button>' +
-            '<button type="button" class="action-btn btn-end" id="btn-end-' + id + '" onclick="lineAction(' + id + ', \\'end\\')">🏁 Koniec</button>' +
+            '<button type="button" class="action-btn btn-start" id="btn-start-' + id + '" onclick="lineAction(' + id + ', \\'start\\')">' + escapeHtml(UI_T.btn_start) + '</button>' +
+            '<button type="button" class="action-btn btn-stop" id="btn-stop-' + id + '" onclick="handleStopClick(' + id + ')">' + escapeHtml(UI_T.btn_stop) + '</button>' +
+            '<button type="button" class="action-btn btn-end" id="btn-end-' + id + '" onclick="lineAction(' + id + ', \\'end\\')">' + escapeHtml(UI_T.btn_end) + '</button>' +
           '</div>' +
           '<div class="reason-box" id="reason-box-' + id + '">' +
-            '<label>Przyczyna postoju (wymagana przed zatrzymaniem):</label>' +
+            '<label>' + escapeHtml(UI_T.reason_lbl) + '</label>' +
             '<select id="reason-select-' + id + '" style="margin-bottom: 4px;">' +
-              '<option value="">-- Wybierz przyczynę --</option>' +
-              defaultReasons.map(function(r) { return '<option value="' + r + '">' + r + '</option>'; }).join('') +
+              '<option value="">' + escapeHtml(UI_T.reason_select_ph) + '</option>' +
+              defaultReasons.map(function(r) { return '<option value="' + escapeHtml(r) + '">' + escapeHtml(r) + '</option>'; }).join('') +
             '</select>' +
-            '<input type="text" id="custom-reason-' + id + '" placeholder="Wpisz własną przyczynę...">' +
+            '<input type="text" id="custom-reason-' + id + '" placeholder="' + escapeHtml(UI_T.reason_custom_ph) + '">' +
           '</div>' +
         '</div>' +
-        '<div class="history"><strong>Ostatnie zdarzenia:</strong><div id="history-list-' + id + '"></div></div>';
+        '<div class="history"><strong>' + escapeHtml(UI_T.recent_events) + '</strong><div id="history-list-' + id + '"></div></div>';
       container.appendChild(card);
     });
   }
@@ -1296,12 +1370,12 @@ PRODUKCJA_MODULE_TEMPLATE = """
       if (empListEl) {
         const activeEmps = lData.activeEmployees || [];
         if (activeEmps.length === 0) {
-          empListEl.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:4px;">Brak zalogowanych pracowników</div>';
+          empListEl.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:4px;">' + escapeHtml(UI_T.no_emp) + '</div>';
         } else {
           empListEl.innerHTML = activeEmps.map(function(s) {
             return '<div class="emp-item">' +
               '<span><strong>' + escapeHtml(s.empId) + '</strong>: ' + escapeHtml(s.empName) + '</span>' +
-              '<button type="button" class="btn-remove-emp" onclick="removeEmpSession(\\'' + escapeHtml(s.empId) + '\\', ' + id + ')">Wymelduj</button>' +
+              '<button type="button" class="btn-remove-emp" onclick="removeEmpSession(\\'' + escapeHtml(s.empId) + '\\', ' + id + ')">' + escapeHtml(UI_T.logout_emp) + '</button>' +
             '</div>';
           }).join('');
         }
@@ -1311,12 +1385,12 @@ PRODUKCJA_MODULE_TEMPLATE = """
       if (histEl) {
         const events = lData.recentEvents || [];
         if (events.length === 0) {
-          histEl.innerHTML = '<div style="color:#94a3b8;">Brak zdarzeń</div>';
+          histEl.innerHTML = '<div style="color:#94a3b8;">' + escapeHtml(UI_T.no_events) + '</div>';
         } else {
           histEl.innerHTML = events.map(function(h) {
             const tStr = new Date(h.startIso).toLocaleTimeString();
             const who = (h.startedByLogin || h.endedByLogin) ? ' [' + escapeHtml(h.startedByLogin || '-') + ' → ' + escapeHtml(h.endedByLogin || '-') + ']' : '';
-            return '<div class="history-item">[' + tStr + '] <strong>' + escapeHtml(h.type) + '</strong> (' + formatTime(h.durationSec) + ')' + who + (h.reason && h.reason !== '-' ? ' - ' + escapeHtml(h.reason) : '') + '</div>';
+            return '<div class="history-item">[' + tStr + '] <strong>' + escapeHtml(translateEventType(h.type)) + '</strong> (' + formatTime(h.durationSec) + ')' + who + (h.reason && h.reason !== '-' ? ' - ' + escapeHtml(h.reason) : '') + '</div>';
           }).join('');
         }
       }
@@ -1397,7 +1471,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     });
     const data = await resp.json();
     if (!resp.ok) {
-      alert(data.error || 'Błąd zapisu stanu linii.');
+      alert(data.error || 'Error');
       return;
     }
     if (action === 'start') {
@@ -1414,7 +1488,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     const customEl = document.getElementById('custom-reason-' + lineId);
     const reason = (customEl && customEl.value.trim()) || (selectEl ? selectEl.value : '');
     if (!reason) {
-      alert("Wybierz lub wpisz przyczynę postoju z pola poniżej!");
+      alert(UI_T.reason_lbl);
       if (selectEl) selectEl.focus();
       return;
     }
@@ -1432,8 +1506,8 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
     let customName = '';
     if (!employees[empId]) {
-      if (confirm("Nieznany pracownik ID: " + empId + ". Czy chcesz go dodać do wspólnej bazy?")) {
-        const name = prompt("Podaj Imię i Nazwisko pracownika:");
+      if (confirm(empId + " - " + UI_T.imie_nazwisko)) {
+        const name = prompt(UI_T.imie_nazwisko);
         if (!name || !name.trim()) return;
         customName = name.trim();
       } else {
@@ -1448,7 +1522,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     });
     const data = await resp.json();
     if (!resp.ok) {
-      alert(data.error || 'Błąd przypisywania pracownika.');
+      alert(data.error || 'Error');
       return;
     }
     if (data.employees) employees = data.employees;
@@ -1478,7 +1552,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     const stanowisko = roleInput.value.trim();
 
     if (!empId || !imieNazwisko) {
-      alert("Wypełnij ID oraz Imię i Nazwisko pracownika!");
+      alert("ID & " + UI_T.imie_nazwisko);
       return;
     }
 
@@ -1494,7 +1568,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     });
     const data = await resp.json();
     if (!resp.ok) {
-      alert(data.error || 'Błąd zapisu pracownika.');
+      alert(data.error || 'Error');
       return;
     }
     employees = data.employees;
@@ -1528,12 +1602,12 @@ PRODUKCJA_MODULE_TEMPLATE = """
     const countEl = document.getElementById('allBadgesCount');
 
     if (keys.length === 0) {
-      alert("Brak pracowników spełniających kryteria filtrów.");
+      alert(UI_T.no_emp);
       return;
     }
 
     grid.innerHTML = '';
-    countEl.textContent = '(' + keys.length + ' plakietek)';
+    countEl.textContent = '(' + keys.length + ')';
     container.style.display = 'block';
 
     keys.forEach(function(id) {
@@ -1542,7 +1616,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
       const header = document.createElement('div');
       header.className = 'badge-header';
-      header.textContent = 'KARTA PRACOWNIKA • 54×85 mm';
+      header.textContent = '54×85 mm';
 
       const qrBox = document.createElement('div');
       qrBox.className = 'badge-qr-box';
@@ -1596,7 +1670,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     document.getElementById('newEmpId').disabled = true;
     document.getElementById('newEmpName').value = rec.imie_nazwisko || '';
     document.getElementById('newEmpRole').value = rec.stanowisko || '';
-    document.getElementById('btnSaveEmp').innerText = '💾 Zapisz zmiany';
+    document.getElementById('btnSaveEmp').innerText = '💾';
     document.getElementById('btnCancelEdit').style.display = 'inline-block';
     document.getElementById('newEmpRole').focus();
   }
@@ -1615,7 +1689,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
   async function deleteEmployee(id) {
     const rec = employees[id];
     if (!rec) return;
-    if (confirm("Czy na pewno chcesz usunąć pracownika " + id + " (" + rec.imie_nazwisko + ") ze wspólnej bazy?")) {
+    if (confirm(id + " - " + rec.imie_nazwisko + "?")) {
       const resp = await fetch('/api/pracownicy/usun', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1700,7 +1774,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
     tbody.innerHTML = '';
     if (keys.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:15px;">Brak pracowników spełniających kryteria</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:15px;">' + escapeHtml(UI_T.no_emp) + '</td></tr>';
       return;
     }
 
@@ -1715,13 +1789,13 @@ PRODUKCJA_MODULE_TEMPLATE = """
       tdName.textContent = rec.imie_nazwisko || '';
 
       const tdPos = document.createElement('td');
-      tdPos.innerHTML = rec.stanowisko ? escapeHtml(rec.stanowisko) : '<span style="color:#94a3b8; font-style:italic;">nie uzupełniono</span>';
+      tdPos.innerHTML = rec.stanowisko ? escapeHtml(rec.stanowisko) : '<span style="color:#94a3b8; font-style:italic;">-</span>';
 
       const tdStatus = document.createElement('td');
       if (activeMap[id]) {
-        tdStatus.innerHTML = '<span style="background:#d1fae5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">Na Linii ' + activeMap[id] + '</span>';
+        tdStatus.innerHTML = '<span style="background:#d1fae5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">' + escapeHtml(UI_T.linia_prefix) + ' ' + activeMap[id] + '</span>';
       } else {
-        tdStatus.innerHTML = '<span style="color:#64748b; font-size:0.78rem;">Poza linią</span>';
+        tdStatus.innerHTML = '<span style="color:#64748b; font-size:0.78rem;">' + escapeHtml(UI_T.st_idle) + '</span>';
       }
 
       const tdActions = document.createElement('td');
@@ -1735,13 +1809,13 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
       const btnEdit = document.createElement('button');
       btnEdit.type = 'button';
-      btnEdit.textContent = 'Edytuj';
+      btnEdit.textContent = '✏️';
       btnEdit.style.cssText = 'background:#d97706; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-right:4px; font-size:0.75rem;';
       btnEdit.onclick = function() { editEmployee(id); };
 
       const btnDel = document.createElement('button');
       btnDel.type = 'button';
-      btnDel.textContent = 'Usuń';
+      btnDel.textContent = '🗑️';
       btnDel.style.cssText = 'background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75rem;';
       btnDel.onclick = function() { deleteEmployee(id); };
 
@@ -1836,6 +1910,7 @@ KONCOWKI_TEMPLATE = """
         }
     </style>
     <script>
+        const UI_KT = {{ t | tojson }};
         const baza = {{ produkty_json | safe }};
         const calyPlan = {{ plan_json | safe }};
         const zrealizowanoDzien = {{ zrealizowane_json | safe }};
@@ -1894,10 +1969,10 @@ KONCOWKI_TEMPLATE = """
                     const wykonaneKwota = (zrealizowanoDzien[dataProd] && zrealizowanoDzien[dataProd][kod]) ? zrealizowanoDzien[dataProd][kod] : 0;
                     const pozostalo = Math.max(planKwota - wykonaneKwota, 0);
                     infoBox.style.display = 'block';
-                    infoBox.innerHTML = '📋 <b>Plan (' + dataProd + '):</b> ' + planKwota + ' | ✅ <b>Wykonano:</b> ' + wykonaneKwota + ' | ⚠️ <b>Pozostało:</b> <b>' + pozostalo + '</b>';
+                    infoBox.innerHTML = '📋 <b>' + UI_KT.plan_lbl + ' (' + dataProd + '):</b> ' + planKwota + ' | ✅ <b>' + UI_KT.wykonano + '</b> ' + wykonaneKwota + ' | ⚠️ <b>' + UI_KT.pozostalo + '</b> <b>' + pozostalo + '</b>';
                 } else {
                     infoBox.style.display = 'block';
-                    infoBox.innerHTML = 'ℹ️ Brak zdefiniowanego planu na dzień <b>' + dataProd + '</b> dla tego kodu.';
+                    infoBox.innerHTML = 'ℹ️ ' + UI_KT.brak_planu_dzis + ' (<b>' + dataProd + '</b>)';
                 }
             } else {
                 nazwaInput.value = "";
@@ -2037,14 +2112,14 @@ KONCOWKI_TEMPLATE = """
         function walidujFormularz(event) {
             const iloscVal = parseInt(document.querySelector('input[name="ilosc"]')?.value || "0", 10);
             if (!iloscVal || iloscVal < 1) {
-                alert("Błąd: Podaj ilość sztuk na koniec palety (minimum 1)!");
+                alert(UI_KT.ilosc_szt);
                 event.preventDefault();
                 return false;
             }
             const start = document.getElementById('czasStart').value;
             const koniec = document.getElementById('czasKoniec').value;
             if (start && koniec && koniec <= start) {
-                alert("Błąd: Czas zakończenia palety nie może być wcześniejszy lub równy czasowi rozpoczęcia!");
+                alert(UI_KT.czas_start_lbl + " / " + UI_KT.czas_koniec_lbl);
                 event.preventDefault();
                 return false;
             }
@@ -2204,7 +2279,7 @@ KONCOWKI_TEMPLATE = """
                                 <th onclick="sortTable(0, false)">{{ t.kol_kod }} ↕️<input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 <th onclick="sortTable(1, false)">{{ t.kol_nazwa }} ↕️<input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 <th onclick="sortTable(2, false)">{{ t.kol_odbiorca }} ↕️<input type="text" id="filterOdbiorca" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
-                                <th style="width: 90px;" onclick="sortTable(3, true)">Plan ↕️<input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 90px;" onclick="sortTable(3, true)">{{ t.plan_lbl }} ↕️<input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 <th style="width: 90px;" onclick="sortTable(4, true)">{{ t.tabela_ilosc }} ↕️<input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 <th style="width: 90px;" onclick="sortTable(5, true)">{{ t.pozostalo }} ↕️<input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 <th style="width: 90px;" onclick="sortTable(6, true)">{{ t.nadwyzka }} ↕️<input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
@@ -2273,9 +2348,9 @@ KONCOWKI_TEMPLATE = """
                             </thead>
                             <tbody id="wydajnoscTableBody">
                                 {% for stat in statystyki_wydajnosci_lista %}
-                                <tr data-linia="Linia {{ stat.linia }}" data-zmiana="Zmiana {{ stat.zmiana }}" data-sztuki="{{ stat.suma_sztuk }}" data-czas="{{ stat.czas_godz }}" data-wyd="{{ stat.sztuk_na_godzine }}">
-                                    <td><b>Linia {{ stat.linia }}</b></td>
-                                    <td>Zmiana {{ stat.zmiana }}</td>
+                                <tr data-linia="{{ t.linia_prefix }} {{ stat.linia }}" data-zmiana="{{ t.th_zmiana }} {{ stat.zmiana }}" data-sztuki="{{ stat.suma_sztuk }}" data-czas="{{ stat.czas_godz }}" data-wyd="{{ stat.sztuk_na_godzine }}">
+                                    <td><b>{{ t.linia_prefix }} {{ stat.linia }}</b></td>
+                                    <td>{{ t.th_zmiana }} {{ stat.zmiana }}</td>
                                     <td><b>{{ stat.suma_sztuk }} szt.</b></td>
                                     <td>{{ stat.czas_godz }} h</td>
                                     <td><b style="color: #6f42c1; font-size: 15px;">{{ stat.sztuk_na_godzine }} szt/h</b></td>
@@ -2313,16 +2388,16 @@ KONCOWKI_TEMPLATE = """
 
                         <label><b>{{ t.raporty_tab }}:</b></label>
                         <select name="typ_raportu" style="margin-bottom: 20px;">
-                            <optgroup label="Końcówki Linii / Rozchód i Plan">
-                                <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1</option>
-                                <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2</option>
-                                <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (Z1 i Z2)</option>
-                                <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu</option>
-                                <option value="wydajnosc">⏱️ Raport Wydajności Linii i Zmian (szt/h)</option>
+                            <optgroup label="{{ t.mod_koncowki_nazwa }}">
+                                <option value="rozchod_zmiana_1">📦 {{ t.raporty_tab }} — {{ t.th_zmiana }} 1</option>
+                                <option value="rozchod_zmiana_2">📦 {{ t.raporty_tab }} — {{ t.th_zmiana }} 2</option>
+                                <option value="rozchod_osobne_arkusze">📦 {{ t.raporty_tab }} — {{ t.th_zmiana }} 1 + 2</option>
+                                <option value="postep_realizacja">📊 {{ t.prog_tab }}</option>
+                                <option value="wydajnosc">⏱️ {{ t.wydajnosc_tab }}</option>
                             </optgroup>
-                            <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
-                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Linia 1–6, Z1–Z2, szt./rbh)</option>
-                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników</option>
+                            <optgroup label="{{ t.mod_produkcja_nazwa }}">
+                                <option value="wydajnosc_rbh">⚡ {{ t.wydajnosc_tab }} (rbh — {{ t.th_linia }} 1–6 / {{ t.th_zmiana }} 1–2)</option>
+                                <option value="monitoring_linie_pracownicy">👥 {{ t.mod_produkcja_nazwa }}</option>
                             </optgroup>
                         </select>
 
@@ -2375,8 +2450,8 @@ KONCOWKI_TEMPLATE = """
                     </div>
                     <label>{{ t.uprawnienia_lbl }}</label>
                     <div style="display: flex; gap: 15px; margin-top: 5px; flex-wrap: wrap; font-size: 13px;">
-                        <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_koncowki" checked style="width:auto; margin:0;"> Moduł Końcówki Linii</label>
-                        <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_produkcja" checked style="width:auto; margin:0;"> Moduł Produkcyjny</label>
+                        <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_koncowki" checked style="width:auto; margin:0;"> {{ t.mod_koncowki_nazwa }}</label>
+                        <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_produkcja" checked style="width:auto; margin:0;"> {{ t.mod_produkcja_nazwa }}</label>
                         <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="1" checked style="width:auto; margin:0;"> {{ t.linia_1 }}</label>
                         <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="2" checked style="width:auto; margin:0;"> {{ t.linia_2 }}</label>
                         <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="3" checked style="width:auto; margin:0;"> {{ t.linia_3 }}</label>
@@ -2415,7 +2490,7 @@ KONCOWKI_TEMPLATE = """
             </div>
         {% elif linia in ['1', '2', '3', '4'] and linia in dostep %}
             <form method="POST" action="/dodaj?linia={{ linia }}" onsubmit="return walidujFormularz(event)">
-                <h3>➕ {{ t.zarejestruj }} {{ t.linia_1.split()[0] }} {{ linia }}</h3>
+                <h3>➕ {{ t.zarejestruj }} {{ t.linia_prefix }} {{ linia }}</h3>
                 <div class="row">
                     <div>
                         <label>{{ t.data_prod }}</label>
@@ -2501,7 +2576,7 @@ KONCOWKI_TEMPLATE = """
                 </form>
             {% endif %}
 
-            <h3>📊 {{ t.realizacja_biez }} {{ t.linia_1.split()[0] }} {{ linia }} ({{ wybrana_data }})</h3>
+            <h3>📊 {{ t.realizacja_biez }} {{ t.linia_prefix }} {{ linia }} ({{ wybrana_data }})</h3>
             <table>
                 <tr>
                     <th>{{ t.tabela_nr }}</th><th>{{ t.kol_kod }}</th><th>{{ t.kol_nazwa }}</th><th>{{ t.tabela_ilosc }}</th>
@@ -2557,8 +2632,8 @@ def login():
 
         dostep_lista = json.loads(user_db.dostep)
         if not czy_ma_dostep_do_modulu(dostep_lista, user_db.rola, modul):
-            nazwa_m = "Moduł Produkcyjny" if modul == "produkcja" else "Końcówki Linii"
-            return render_template_string(LOGIN_TEMPLATE, t=t, lang=lang, wybrany_modul=modul, error=f"Twoje konto nie ma uprawnień do wybranego modułu ({nazwa_m})!")
+            nazwa_m = t["mod_produkcja_nazwa"] if modul == "produkcja" else t["mod_koncowki_nazwa"]
+            return render_template_string(LOGIN_TEMPLATE, t=t, lang=lang, wybrany_modul=modul, error=f"{t['brak_dostepu']} ({nazwa_m})")
 
         zachowany_lang = session.get('lang', lang)
         session.clear()
