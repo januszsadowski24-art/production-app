@@ -498,7 +498,7 @@ def build_monitor_snapshot(target_date=None):
         "lines": lines_payload
     }
 
-# --- SZABLONY I WIDOKI ---
+# --- WIELOJĘZYCZNY SŁOWNIK (PL / EN / UK / ES) ---
 
 T = {
     "pl": {
@@ -558,18 +558,201 @@ T = {
         "nadwyzka": "Nadwyżka", "wybierz_dzien_prog": "Wybierz dzień do podglądu postępu:",
         "ph_kod": "np. 9999", "ph_nazwa": "Nazwa produktu", "ph_odbiorca": "Odbiorca", "ph_ilosc": "wpisz ilość na koniec...",
         "ph_etygora": "Wpisz etykietę górną...", "ph_etydol": "Wpisz etykietę dolną..."
+    },
+    "en": {
+        "tytul": "Production Execution & Reporting Panel",
+        "wybierz_zm": "Select work shift:",
+        "rozpocznij": "Start shift",
+        "zmiana": "Current shift",
+        "zmien_zm": "Change shift",
+        "zalog_op": "Logged-in operator",
+        "linia_1": "Line 1", "linia_2": "Line 2", "linia_3": "Line 3", "linia_4": "Line 4",
+        "plan_tab": "Production Plan", "prog_tab": "Progress / Execution", "wydajnosc_tab": "Efficiency (Pcs/h)",
+        "raporty_tab": "Reports Hub", "db_art_tab": "Items Database", "admin_tab": "Admin Panel",
+        "zarejestruj": "Register produced batch for",
+        "data_prod": "Production date:", "kod_art": "Item code:", "wybierz_kod": "-- Select item code --",
+        "ilosc_szt": "Quantity (end of pallet):", "wpisz_ilosc": "enter end quantity...", "nazwa_ind": "Item name:",
+        "odbiorca": "Customer:", "data_przyd": "Expiry date (min. +4 days):", "nr_partii": "Batch number:",
+        "ety_gora": "TOP label:", "ety_dol": "BOTTOM label:", "operator": "Operator:",
+        "dodaj_btn": "Register produced pallet / batch", "realizacja_biez": "Live execution",
+        "brak_wpisow": "No entries for this line and date.", "lacznie": "Total produced on line:",
+        "wklej_plan": "Production Plan Management",
+        "instrukcja_plan": "Select plan date, paste data from Excel (Code [Tab] Qty):",
+        "zapisz_plan_btn": "Save plan for selected date", "zarzadzanie_art": "Items Database Management",
+        "dodaj_art_btn": "Save item", "istniejace_art": "Existing Items", "usun": "[Delete]",
+        "logowanie_tytul": "Production System Login", "wybierz_modul_lbl": "Select system module:",
+        "mod_koncowki_nazwa": "📦 Line Ends (Packing / Pallets / Reports)",
+        "mod_produkcja_nazwa": "⚙️ Production Module (Lines 1–6 / Workers / QR)",
+        "login": "Username:", "haslo": "Password:", "zaloguj": "Log in",
+        "brak_dostepu": "No permissions for this section or module!", "wyloguj": "Log out",
+        "zarzadzanie_uzyt": "Users & Permissions Management",
+        "bhp_tytul": "Required HSE & Quality Checks:",
+        "bhp_1": "I confirm worker check and equipment cleanliness before starting work.",
+        "bhp_2": "I confirm proper line clearance from remaining labels, seals and cartons before starting next product.",
+        "czas_pracy_tytul": "Working time (REQUIRED):",
+        "czas_opis": "Click Pallet Start at the beginning. Enter end time and quantity at the end.",
+        "start_palety": "Pallet Start", "koniec_palety": "Pallet End",
+        "czas_start_lbl": "Start Time (Required):", "czas_koniec_lbl": "End Time (Required):",
+        "postep_tytul": "Total Production Progress",
+        "podsumowanie_dnia": "Daily Summary (All Items)",
+        "realizacja_podstawowa": "Base plan completion (without surplus):",
+        "realizacja_z_nadwyzka": "Completion including surplus:",
+        "do_zrobienia": "Total planned:", "wykonano": "Completed:", "pozostalo": "Remaining:",
+        "postep_art": "Progress by item:",
+        "brak_planu_dzis": "No production plan for this day.",
+        "raport_wyd_tytul": "Efficiency Report (Pieces per Hour)",
+        "raport_wyd_opis": "Breakdown by line and shift (without double-counting overlapping pallets) and average hourly output.",
+        "th_linia": "Line", "th_zmiana": "Shift", "th_wyprodukowano": "Produced pcs", "th_czas_pracy": "Working time (hours)", "th_wydajnosc": "Efficiency (pcs/h)",
+        "laczna_suma_wypr": "Total produced:", "laczny_czas": "Total working time:", "srednia_wyd": "Average efficiency:",
+        "brak_czasow": "No recorded times or pallets for selected date.",
+        "wybierz_dzien_plan": "Select plan date:", "podglad_planu": "Planned production preview:", "brak_planow": "No production plans defined.",
+        "dodaj_nowego_uzyt": "Add / update user (shared credentials database)",
+        "imie_nazwisko": "Operator full name:", "rola": "Role:",
+        "uprawnienia_lbl": "Permissions (modules and tabs):", "zapisz_uzyt_btn": "Save user", "zarejestrowani_uzyt": "Registered users",
+        "systemowy": "(system)", "kol_kod": "Code", "kol_nazwa": "Name", "kol_odbiorca": "Customer", "kol_akcja": "Action",
+        "wybierz_dzien_hist": "Select day to view history and generate report (Admin):",
+        "data_raportu_hist": "Report / history date:", "tabela_nr": "#", "tabela_ilosc": "Qty", "tabela_czas": "Work time",
+        "tabela_bhp": "HSE Checks", "tabela_szczegoly": "Details",
+        "nadwyzka": "Surplus", "wybierz_dzien_prog": "Select day to view progress:",
+        "ph_kod": "e.g. 9999", "ph_nazwa": "Product name", "ph_odbiorca": "Customer", "ph_ilosc": "enter end quantity...",
+        "ph_etygora": "Enter top label...", "ph_etydol": "Enter bottom label..."
+    },
+    "uk": {
+        "tytul": "Панель Виконання Виробництва та Звітів",
+        "wybierz_zm": "Оберіть робочу зміну:",
+        "rozpocznij": "Розпочати зміну",
+        "zmiana": "Поточна зміна",
+        "zmien_zm": "Змінити зміну",
+        "zalog_op": "Авторизований оператор",
+        "linia_1": "Лінія 1", "linia_2": "Лінія 2", "linia_3": "Лінія 3", "linia_4": "Лінія 4",
+        "plan_tab": "План Виробництва", "prog_tab": "Прогрес / Виконання", "wydajnosc_tab": "Продуктивність (Шт/год)",
+        "raporty_tab": "Центр Звітів", "db_art_tab": "База Артикулів", "admin_tab": "Панель Адміністратора",
+        "zarejestruj": "Зареєструвати партію для",
+        "data_prod": "Дата виробництва:", "kod_art": "Код артикулу:", "wybierz_kod": "-- Оберіть код артикулу --",
+        "ilosc_szt": "Кількість штук (на кінець палети):", "wpisz_ilosc": "введіть кількість...", "nazwa_ind": "Назва артикулу:",
+        "odbiorca": "Клієнт:", "data_przyd": "Термін придатності (мін. +4 дні):", "nr_partii": "Номер партії:",
+        "ety_gora": "Етикетка ВЕРХНЯ:", "ety_dol": "Етикетка НИЖНЯ:", "operator": "Оператор:",
+        "dodaj_btn": "Зареєструвати палету / партію", "realizacja_biez": "Поточне виконання",
+        "brak_wpisow": "Немає записів для цієї лінії та дати.", "lacznie": "Всього вироблено на лінії:",
+        "wklej_plan": "Керування Планом Виробництва",
+        "instrukcja_plan": "Оберіть дату плану, вставте дані з Excel (Код [Tab] Кількість):",
+        "zapisz_plan_btn": "Зберегти план на обрану дату", "zarzadzanie_art": "Керування Базою Артикулів",
+        "dodaj_art_btn": "Зберегти артикул", "istniejace_art": "Наявні Артикули", "usun": "[Видалити]",
+        "logowanie_tytul": "Вхід до Виробничої Системи", "wybierz_modul_lbl": "Оберіть модуль системи:",
+        "mod_koncowki_nazwa": "📦 Кінці Ліній (Пакування / Палети / Звіти)",
+        "mod_produkcja_nazwa": "⚙️ Виробничий Модуль (Лінії 1–6 / Працівники / QR)",
+        "login": "Логін:", "haslo": "Пароль:", "zaloguj": "Увійти",
+        "brak_dostepu": "Немає прав доступу до цього розділу або модуля!", "wyloguj": "Вийти",
+        "zarzadzanie_uzyt": "Керування Користувачами та Правами",
+        "bhp_tytul": "Обов'язкові перевірки ОП та Контролю:",
+        "bhp_1": "Підтверджую перевірку працівників та чистоти обладнання перед початком роботи.",
+        "bhp_2": "Підтверджую очищення лінії від залишків етикеток, стрічок та коробок перед наступним продуктом.",
+        "czas_pracy_tytul": "Час роботи (ОБОВ'ЯЗКОВО):",
+        "czas_opis": "Натисніть Старт Палети на початку. Кінець і кількість введіть наприкінці.",
+        "start_palety": "Старт Палети", "koniec_palety": "Кінець Палети",
+        "czas_start_lbl": "Час Старту (Обов'язково):", "czas_koniec_lbl": "Час Кінця (Обов'язково):",
+        "postep_tytul": "Загальний Прогрес Виробництва",
+        "podsumowanie_dnia": "Підсумок Дня (Усі Артикули)",
+        "realizacja_podstawowa": "Виконання базового плану (без надлишків):",
+        "realizacja_z_nadwyzka": "Виконання разом з надлишками:",
+        "do_zrobienia": "Заплановано всього:", "wykonano": "Виконано:", "pozostalo": "Залишилось:",
+        "postep_art": "Прогрес за артикулами:",
+        "brak_planu_dzis": "Немає плану виробництва на цей день.",
+        "raport_wyd_tytul": "Звіт Продуктивності (Штук за Годину)",
+        "raport_wyd_opis": "Розподіл за лініями та змінами (без подвійного підрахунку палет) та середня продуктивність за годину.",
+        "th_linia": "Лінія", "th_zmiana": "Зміна", "th_wyprodukowano": "Вироблено шт", "th_czas_pracy": "Час роботи (год)", "th_wydajnosc": "Продуктивність (шт/год)",
+        "laczna_suma_wypr": "Загальна сума виробленого:", "laczny_czas": "Загальний час роботи:", "srednia_wyd": "Середня продуктивність:",
+        "brak_czasow": "Немає зафіксованих часів або палет за обрану дату.",
+        "wybierz_dzien_plan": "Оберіть дату плану:", "podglad_planu": "Перегляд запланованого виробництва:", "brak_planow": "Планів виробництва не визначено.",
+        "dodaj_nowego_uzyt": "Додати / оновити користувача (спільна база логінів та паролів)",
+        "imie_nazwisko": "Ім'я та Прізвище оператора:", "rola": "Роль:",
+        "uprawnienia_lbl": "Права доступу (модулі та вкладки):", "zapisz_uzyt_btn": "Зберегти користувача", "zarejestrowani_uzyt": "Зареєстровані користувачі",
+        "systemowy": "(системний)", "kol_kod": "Код", "kol_nazwa": "Назва", "kol_odbiorca": "Клієнт", "kol_akcja": "Дія",
+        "wybierz_dzien_hist": "Оберіть день для перегляду історії та звіту (Адмін):",
+        "data_raportu_hist": "Дата звіту / історії:", "tabela_nr": "#", "tabela_ilosc": "Кількість", "tabela_czas": "Час роботи",
+        "tabela_bhp": "Перевірки ОП", "tabela_szczegoly": "Деталі",
+        "nadwyzka": "Надлишок", "wybierz_dzien_prog": "Оберіть день для перегляду прогресу:",
+        "ph_kod": "напр. 9999", "ph_nazwa": "Назва продукту", "ph_odbiorca": "Клієнт", "ph_ilosc": "введіть кількість...",
+        "ph_etygora": "Введіть верхню етикетку...", "ph_etydol": "Введіть нижню етикетку..."
+    },
+    "es": {
+        "tytul": "Panel de Ejecución de Producción e Informes",
+        "wybierz_zm": "Selecciona el turno de trabajo:",
+        "rozpocznij": "Iniciar turno",
+        "zmiana": "Turno actual",
+        "zmien_zm": "Cambiar turno",
+        "zalog_op": "Operador conectado",
+        "linia_1": "Línea 1", "linia_2": "Línea 2", "linia_3": "Línea 3", "linia_4": "Línea 4",
+        "plan_tab": "Plan de Producción", "prog_tab": "Progreso / Ejecución", "wydajnosc_tab": "Rendimiento (Uds/h)",
+        "raporty_tab": "Centro de Informes", "db_art_tab": "Base de Artículos", "admin_tab": "Panel de Administrador",
+        "zarejestruj": "Registrar lote producido para",
+        "data_prod": "Fecha de producción:", "kod_art": "Código de artículo:", "wybierz_kod": "-- Selecciona código de artículo --",
+        "ilosc_szt": "Cantidad (fin de palé):", "wpisz_ilosc": "escribe cantidad final...", "nazwa_ind": "Nombre del artículo:",
+        "odbiorca": "Cliente:", "data_przyd": "Fecha de caducidad (mín. +4 días):", "nr_partii": "Nº de lote:",
+        "ety_gora": "Etiqueta SUPERIOR:", "ety_dol": "Etiqueta INFERIOR:", "operator": "Operador:",
+        "dodaj_btn": "Registrar palé / lote producido", "realizacja_biez": "Ejecución en tiempo real",
+        "brak_wpisow": "No hay registros para esta línea y fecha.", "lacznie": "Total producido en la línea:",
+        "wklej_plan": "Gestión del Plan de Producción",
+        "instrukcja_plan": "Selecciona la fecha del plan y pega datos de Excel (Código [Tab] Cantidad):",
+        "zapisz_plan_btn": "Guardar plan para la fecha seleccionada", "zarzadzanie_art": "Gestión de Base de Artículos",
+        "dodaj_art_btn": "Guardar artículo", "istniejace_art": "Artículos Existentes", "usun": "[Eliminar]",
+        "logowanie_tytul": "Inicio de Sesión del Sistema de Producción", "wybierz_modul_lbl": "Selecciona el módulo del sistema:",
+        "mod_koncowki_nazwa": "📦 Finales de Línea (Empaque / Palés / Informes)",
+        "mod_produkcja_nazwa": "⚙️ Módulo de Producción (Líneas 1–6 / Operarios / QR)",
+        "login": "Usuario:", "haslo": "Contraseña:", "zaloguj": "Iniciar sesión",
+        "brak_dostepu": "¡Sin permisos para esta sección o módulo!", "wyloguj": "Cerrar sesión",
+        "zarzadzanie_uzyt": "Gestión de Usuarios y Permisos",
+        "bhp_tytul": "Controles Obligatorios de PRL y Calidad:",
+        "bhp_1": "Confirmo el control del personal y la limpieza de los equipos antes de iniciar el trabajo.",
+        "bhp_2": "Confirmo la correcta limpieza de la línea de etiquetas, precintos y cajas restantes antes del siguiente producto.",
+        "czas_pracy_tytul": "Tiempo de trabajo (OBLIGATORIO):",
+        "czas_opis": "Pulsa Inicio de Palé al empezar. Introduce la hora final y cantidad al terminar.",
+        "start_palety": "Inicio de Palé", "koniec_palety": "Fin de Palé",
+        "czas_start_lbl": "Hora de Inicio (Obligatorio):", "czas_koniec_lbl": "Hora de Fin (Obligatorio):",
+        "postep_tytul": "Progreso Total de Producción",
+        "podsumowanie_dnia": "Resumen del Día (Todos los Artículos)",
+        "realizacja_podstawowa": "Cumplimiento del plan base (sin excedentes):",
+        "realizacja_z_nadwyzka": "Cumplimiento incluyendo excedentes:",
+        "do_zrobienia": "Planificado total:", "wykonano": "Realizado:", "pozostalo": "Restante:",
+        "postep_art": "Progreso por artículo:",
+        "brak_planu_dzis": "No hay plan de producción para este día.",
+        "raport_wyd_tytul": "Informe de Rendimiento (Unidades por Hora)",
+        "raport_wyd_opis": "Desglose por línea y turno (sin duplicar palés superpuestos) y productividad media por hora.",
+        "th_linia": "Línea", "th_zmiana": "Turno", "th_wyprodukowano": "Uds. producidas", "th_czas_pracy": "Tiempo de trabajo (horas)", "th_wydajnosc": "Rendimiento (uds/h)",
+        "laczna_suma_wypr": "Total producido:", "laczny_czas": "Tiempo total de trabajo:", "srednia_wyd": "Rendimiento medio:",
+        "brak_czasow": "No hay tiempos ni palés registrados para la fecha seleccionada.",
+        "wybierz_dzien_plan": "Selecciona fecha del plan:", "podglad_planu": "Vista previa de producción planificada:", "brak_planow": "No hay planes de producción definidos.",
+        "dodaj_nowego_uzyt": "Añadir / actualizar usuario (base compartida de usuarios y contraseñas)",
+        "imie_nazwisko": "Nombre y apellidos del operador:", "rola": "Rol:",
+        "uprawnienia_lbl": "Permisos (módulos y pestañas):", "zapisz_uzyt_btn": "Guardar usuario", "zarejestrowani_uzyt": "Usuarios registrados",
+        "systemowy": "(sistema)", "kol_kod": "Código", "kol_nazwa": "Nombre", "kol_odbiorca": "Cliente", "kol_akcja": "Acción",
+        "wybierz_dzien_hist": "Selecciona día para ver historial y generar informe (Admin):",
+        "data_raportu_hist": "Fecha de informe / historial:", "tabela_nr": "#", "tabela_ilosc": "Cant.", "tabela_czas": "Tiempo",
+        "tabela_bhp": "Controles PRL", "tabela_szczegoly": "Detalles",
+        "nadwyzka": "Excedente", "wybierz_dzien_prog": "Selecciona día para ver progreso:",
+        "ph_kod": "ej. 9999", "ph_nazwa": "Nombre del producto", "ph_odbiorca": "Cliente", "ph_ilosc": "escribe cantidad final...",
+        "ph_etygora": "Escribe etiqueta superior...", "ph_etydol": "Escribe etiqueta inferior..."
     }
 }
 
+def get_lang_dict():
+    lang = session.get('lang', 'pl')
+    if lang not in T:
+        lang = 'pl'
+    return T[lang], lang
+
 LOGIN_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ t.logowanie_tytul }}</title>
     <style>
         body { font-family: Arial, sans-serif; background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; }
-        .login-box { background: white; padding: 30px 34px; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.35); width: 440px; max-width: 100%; }
+        .login-box { background: white; padding: 30px 34px; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.35); width: 460px; max-width: 100%; }
+        .top-lang { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+        .lang-pill { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none; border: 1px solid #cbd5e1; color: #334155; background: #f8fafc; }
+        .lang-pill.active { background: #0284c7; color: white; border-color: #0284c7; }
         h3 { text-align: center; color: #0f172a; margin-top: 0; margin-bottom: 18px; font-size: 1.35rem; }
         label { font-weight: bold; display: block; margin-top: 14px; color: #334155; font-size: 13px; }
         input[type="text"], input[type="password"] { width: 100%; padding: 10px 12px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 7px; box-sizing: border-box; font-size: 14px; }
@@ -587,6 +770,12 @@ LOGIN_TEMPLATE = """
 </head>
 <body>
 <div class="login-box">
+    <div class="top-lang">
+        <a href="/set-lang/pl" class="lang-pill {{ 'active' if lang == 'pl' else '' }}">🇵🇱 PL</a>
+        <a href="/set-lang/en" class="lang-pill {{ 'active' if lang == 'en' else '' }}">🇬🇧 EN</a>
+        <a href="/set-lang/uk" class="lang-pill {{ 'active' if lang == 'uk' else '' }}">🇺🇦 UK</a>
+        <a href="/set-lang/es" class="lang-pill {{ 'active' if lang == 'es' else '' }}">🇪🇸 ES</a>
+    </div>
     <h3>🔐 {{ t.logowanie_tytul }}</h3>
     {% if error %}
         <div class="error">{{ error }}</div>
@@ -623,10 +812,10 @@ LOGIN_TEMPLATE = """
 
 PRODUKCJA_MODULE_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8">
-  <title>Moduł Produkcyjny — Monitorowanie Linii i Pracowników</title>
+  <title>{{ t.mod_produkcja_nazwa }}</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -637,6 +826,10 @@ PRODUKCJA_MODULE_TEMPLATE = """
     .header-meta { font-size: 0.9rem; color: #334155; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .mod-badge { background: #0284c7; color: white; padding: 3px 9px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; }
     .header-buttons { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .lang-box { display: inline-flex; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .lang-btn { padding: 5px 8px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; text-decoration: none; color: #334155; }
+    .lang-btn.active { background: #0f172a; color: white; }
 
     .btn-switch { background-color: #16a34a; color: white; padding: 9px 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; text-decoration: none; display: inline-block; }
     .btn-switch:hover { background-color: #15803d; }
@@ -752,26 +945,32 @@ PRODUKCJA_MODULE_TEMPLATE = """
 <div class="container">
   <div class="header-bar">
     <div class="header-meta">
-      <span class="mod-badge">⚙️ MODUŁ PRODUKCYJNY</span>
-      <span><b>Operator:</b> {{ pelna_nazwa }} ({{ role }})</span>
-      <span>| <b>Odświeżanie w tle:</b> <span style="color:#059669; font-weight:bold;">aktywne (co 4s)</span></span>
+      <span class="mod-badge">{{ t.mod_produkcja_nazwa }}</span>
+      <span><b>{{ t.zalog_op }}:</b> {{ pelna_nazwa }} ({{ role }})</span>
+      <span>| <b>Auto-refresh:</b> <span style="color:#059669; font-weight:bold;">4s</span></span>
     </div>
     <div class="header-buttons">
+      <div class="lang-box">
+        <a href="/set-lang/pl" class="lang-btn {{ 'active' if lang == 'pl' else '' }}">PL</a>
+        <a href="/set-lang/en" class="lang-btn {{ 'active' if lang == 'en' else '' }}">EN</a>
+        <a href="/set-lang/uk" class="lang-btn {{ 'active' if lang == 'uk' else '' }}">UK</a>
+        <a href="/set-lang/es" class="lang-btn {{ 'active' if lang == 'es' else '' }}">ES</a>
+      </div>
       {% if role == 'admin' or can_access_koncowki %}
-        <a href="/przelacz-modul/koncowki" class="btn-switch">🔀 Końcówki Linii</a>
+        <a href="/przelacz-modul/koncowki" class="btn-switch">🔀 {{ t.mod_koncowki_nazwa.split('(')[0] }}</a>
       {% endif %}
       {% if role == 'admin' or 'raporty' in dostep %}
-        <a href="/przelacz-modul/koncowki?linia=raporty" class="btn-report">📈 Centrum Raportów</a>
+        <a href="/przelacz-modul/koncowki?linia=raporty" class="btn-report">📈 {{ t.raporty_tab }}</a>
       {% endif %}
-      <a href="/logout" class="btn-logout">🔒 Wyloguj</a>
+      <a href="/logout" class="btn-logout">🔒 {{ t.wyloguj }}</a>
     </div>
   </div>
 
   <div class="subtabs">
-    <button type="button" class="subtab-btn active" id="tabBtnLines" onclick="switchSubtab('lines')">🏭 Linie 1–6 i Pracownicy</button>
-    <button type="button" class="subtab-btn" id="tabBtnEmployees" onclick="switchSubtab('employees')">👤 Baza Pracowników & QR</button>
+    <button type="button" class="subtab-btn active" id="tabBtnLines" onclick="switchSubtab('lines')">🏭 {{ t.mod_produkcja_nazwa.split('(')[0] }}</button>
+    <button type="button" class="subtab-btn" id="tabBtnEmployees" onclick="switchSubtab('employees')">👤 {{ t.zarejestrowani_uzyt.split()[0] }} & QR</button>
     {% if role == 'admin' %}
-      <button type="button" class="subtab-btn admin-sub" id="tabBtnAdmin" onclick="switchSubtab('admin')">🔐 Panel Administratora (Loginy i Hasła)</button>
+      <button type="button" class="subtab-btn admin-sub" id="tabBtnAdmin" onclick="switchSubtab('admin')">🔐 {{ t.admin_tab }}</button>
     {% endif %}
   </div>
 
@@ -781,7 +980,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
   <div id="subtabEmployees" style="display:none;">
     <div class="panel-card">
-      <h3 style="margin-top:0;">👤 Wspólna Baza Pracowników & Generator Kodów QR (54 mm × 85 mm)</h3>
+      <h3 style="margin-top:0;">👤 Baza Pracowników & Generator Kodów QR (54 mm × 85 mm)</h3>
       <p style="font-size:0.85rem; color:#475569; margin-top:0;">Kody QR są generowane z ID pracownika — istniejące wydrukowane plakietki pozostają w pełni kompatybilne. Stanowisko możesz dodać lub zmienić przez przycisk <b>Edytuj</b>.</p>
 
       <div class="row-flex" style="margin-bottom: 18px;">
@@ -790,15 +989,15 @@ PRODUKCJA_MODULE_TEMPLATE = """
           <input type="text" id="newEmpId" placeholder="np. EMPO070">
         </div>
         <div>
-          <label style="font-size:0.78rem; font-weight:bold; color:#334155;">Imię i Nazwisko</label>
-          <input type="text" id="newEmpName" placeholder="Imię i Nazwisko">
+          <label style="font-size:0.78rem; font-weight:bold; color:#334155;">{{ t.imie_nazwisko }}</label>
+          <input type="text" id="newEmpName" placeholder="{{ t.imie_nazwisko }}">
         </div>
         <div>
           <label style="font-size:0.78rem; font-weight:bold; color:#334155;">Stanowisko</label>
           <input type="text" id="newEmpRole" placeholder="np. Operator linii, Pakowacz...">
         </div>
         <div style="flex: 0 0 auto; display: flex; gap: 8px;">
-          <button type="button" id="btnSaveEmp" onclick="registerEmployee()" style="background: #0284c7; color: white; border: none; padding: 9px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zapisz i Wygeneruj Kod</button>
+          <button type="button" id="btnSaveEmp" onclick="registerEmployee()" style="background: #0284c7; color: white; border: none; padding: 9px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zapisz i QR</button>
           <button type="button" id="btnCancelEdit" onclick="cancelEdit()" style="background: #64748b; color: white; border: none; padding: 9px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none;">Anuluj</button>
           <button type="button" onclick="generateAllQRs()" style="background: #0f766e; color: white; border: none; padding: 9px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">🏷️ Wszystkie QR</button>
         </div>
@@ -865,10 +1064,10 @@ PRODUKCJA_MODULE_TEMPLATE = """
           <thead>
             <tr>
               <th class="sortable-th" onclick="toggleSort('id')">ID Pracownika <span id="sort-icon-id">↕️</span></th>
-              <th class="sortable-th" onclick="toggleSort('name')">Imię i Nazwisko <span id="sort-icon-name">↕</span></th>
+              <th class="sortable-th" onclick="toggleSort('name')">{{ t.imie_nazwisko }} <span id="sort-icon-name">↕</span></th>
               <th class="sortable-th" onclick="toggleSort('pos')">Stanowisko <span id="sort-icon-pos">↕</span></th>
               <th>Status na linii</th>
-              <th style="text-align: right; padding-right: 15px;">Akcje</th>
+              <th style="text-align: right; padding-right: 15px;">{{ t.kol_akcja }}</th>
             </tr>
           </thead>
           <tbody id="registeredEmpTableBody"></tbody>
@@ -880,24 +1079,24 @@ PRODUKCJA_MODULE_TEMPLATE = """
   {% if role == 'admin' %}
   <div id="subtabAdmin" style="display:none;">
     <div class="panel-card" style="background: #fef2f2; border: 1px solid #fecaca;">
-      <h3 style="margin-top:0; color: #991b1b;">🔐 Wspólny Panel Administratora — Loginy, Hasła i Uprawnienia</h3>
+      <h3 style="margin-top:0; color: #991b1b;">🔐 {{ t.zarzadzanie_uzyt }}</h3>
       <form method="POST" action="/admin/dodaj-uzytkownika" style="background: white; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
         <input type="hidden" name="powrot_modul" value="produkcja">
         <div class="row-flex">
           <div>
-            <label style="font-size:0.8rem; font-weight:bold;">Login:</label>
+            <label style="font-size:0.8rem; font-weight:bold;">{{ t.login }}</label>
             <input type="text" name="username" placeholder="np. jan_kowalski" required>
           </div>
           <div>
-            <label style="font-size:0.8rem; font-weight:bold;">Hasło:</label>
+            <label style="font-size:0.8rem; font-weight:bold;">{{ t.haslo }}</label>
             <input type="password" name="password" placeholder="Nowe hasło" required>
           </div>
           <div>
-            <label style="font-size:0.8rem; font-weight:bold;">Imię i Nazwisko:</label>
+            <label style="font-size:0.8rem; font-weight:bold;">{{ t.imie_nazwisko }}</label>
             <input type="text" name="pelna_nazwa" placeholder="np. Jan Kowalski" required>
           </div>
           <div>
-            <label style="font-size:0.8rem; font-weight:bold;">Rola:</label>
+            <label style="font-size:0.8rem; font-weight:bold;">{{ t.rola }}</label>
             <select name="rola">
               <option value="operator">operator</option>
               <option value="admin">admin</option>
@@ -908,26 +1107,26 @@ PRODUKCJA_MODULE_TEMPLATE = """
         <div style="margin-top: 12px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.85rem;">
           <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_produkcja" checked style="width:auto;"> Moduł Produkcyjny</label>
           <label style="display:flex; align-items:center; gap:5px; font-weight:bold;"><input type="checkbox" name="dostep" value="mod_koncowki" checked style="width:auto;"> Moduł Końcówki Linii</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="1" checked style="width:auto;"> Linia 1</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="2" checked style="width:auto;"> Linia 2</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="3" checked style="width:auto;"> Linia 3</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="4" checked style="width:auto;"> Linia 4</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="plan" style="width:auto;"> Plan</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="progress" checked style="width:auto;"> Postęp</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="wydajnosc" checked style="width:auto;"> Wydajność</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="raporty" checked style="width:auto;"> Raporty</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="db_art" style="width:auto;"> Baza Art.</label>
-          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="admin" style="width:auto;"> Admin</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="1" checked style="width:auto;"> {{ t.linia_1 }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="2" checked style="width:auto;"> {{ t.linia_2 }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="3" checked style="width:auto;"> {{ t.linia_3 }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="4" checked style="width:auto;"> {{ t.linia_4 }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="plan" style="width:auto;"> {{ t.plan_tab }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="progress" checked style="width:auto;"> {{ t.prog_tab }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="wydajnosc" checked style="width:auto;"> {{ t.wydajnosc_tab }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="raporty" checked style="width:auto;"> {{ t.raporty_tab }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="db_art" style="width:auto;"> {{ t.db_art_tab }}</label>
+          <label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="dostep" value="admin" style="width:auto;"> {{ t.admin_tab }}</label>
         </div>
 
-        <button type="submit" style="background: #dc2626; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 14px;">💾 Zapisz konto / Zmień hasło</button>
+        <button type="submit" style="background: #dc2626; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 14px;">💾 {{ t.zapisz_uzyt_btn }}</button>
       </form>
 
       <div style="background: white; padding: 14px; border-radius: 8px;">
-        <h4 style="margin-top:0;">Zarejestrowani użytkownicy (wspólna baza):</h4>
+        <h4 style="margin-top:0;">{{ t.zarejestrowani_uzyt }}:</h4>
         <table>
           <thead>
-            <tr><th>Login</th><th>Imię i Nazwisko</th><th>Rola</th><th>Uprawnienia</th><th>Akcja</th></tr>
+            <tr><th>{{ t.login }}</th><th>{{ t.imie_nazwisko }}</th><th>{{ t.rola }}</th><th>{{ t.uprawnienia_lbl.split()[0] }}</th><th>{{ t.kol_akcja }}</th></tr>
           </thead>
           <tbody>
             {% for usr, info in uzytkownicy_baza.items() %}
@@ -938,9 +1137,9 @@ PRODUKCJA_MODULE_TEMPLATE = """
               <td>{{ info.dostep | join(', ') }}</td>
               <td>
                 {% if usr != 'admin' %}
-                  <a href="/admin/usun-uzytkownika/{{ usr }}?powrot_modul=produkcja" style="color: #dc2626; text-decoration: none; font-weight: bold;">[Usuń]</a>
+                  <a href="/admin/usun-uzytkownika/{{ usr }}?powrot_modul=produkcja" style="color: #dc2626; text-decoration: none; font-weight: bold;">{{ t.usun }}</a>
                 {% else %}
-                  <i>(systemowy)</i>
+                  <i>{{ t.systemowy }}</i>
                 {% endif %}
               </td>
             </tr>
@@ -1409,7 +1608,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
     idInput.disabled = false;
     document.getElementById('newEmpName').value = '';
     document.getElementById('newEmpRole').value = '';
-    document.getElementById('btnSaveEmp').innerText = 'Zapisz i Wygeneruj Kod';
+    document.getElementById('btnSaveEmp').innerText = 'Zapisz i QR';
     document.getElementById('btnCancelEdit').style.display = 'none';
   }
 
@@ -1572,7 +1771,7 @@ PRODUKCJA_MODULE_TEMPLATE = """
 
 KONCOWKI_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ t.tytul }}</title>
@@ -1581,6 +1780,9 @@ KONCOWKI_TEMPLATE = """
         .container { max-width: 1250px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
         h2, h3 { color: #333; text-align: center; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .lang-box { display: inline-flex; gap: 4px; background: white; padding: 3px 6px; border-radius: 6px; border: 1px solid #ccc; }
+        .lang-btn { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; color: #333; }
+        .lang-btn.active { background: #007bff; color: white; }
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; flex-wrap: wrap; }
         .tabs a { padding: 10px 18px; background: #e2e6ea; color: #333; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; }
         .tabs a.active { background: #007bff; color: white; }
@@ -1855,7 +2057,7 @@ KONCOWKI_TEMPLATE = """
 <div class="container">
     <div class="header-bar">
         <div>
-            <b>Moduł:</b> <span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 4px; font-size: 12px;">📦 KOŃCÓWKI LINII</span> |
+            <b>{{ t.mod_koncowki_nazwa.split('(')[0] }}</b> |
             <b>{{ t.zalog_op }}:</b> {{ pelna_nazwa }} ({{ role }}) |
             {% if wypr_zmiana %}
                 <b>{{ t.zmiana }}:</b> {{ wypr_zmiana }} |
@@ -1863,8 +2065,14 @@ KONCOWKI_TEMPLATE = """
             {% endif %}
         </div>
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <div class="lang-box">
+                <a href="/set-lang/pl" class="lang-btn {{ 'active' if lang == 'pl' else '' }}">PL</a>
+                <a href="/set-lang/en" class="lang-btn {{ 'active' if lang == 'en' else '' }}">EN</a>
+                <a href="/set-lang/uk" class="lang-btn {{ 'active' if lang == 'uk' else '' }}">UK</a>
+                <a href="/set-lang/es" class="lang-btn {{ 'active' if lang == 'es' else '' }}">ES</a>
+            </div>
             {% if role == 'admin' or can_access_produkcja %}
-                <a href="/przelacz-modul/produkcja" style="background: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">🔀 Moduł Produkcyjny</a>
+                <a href="/przelacz-modul/produkcja" style="background: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">🔀 {{ t.mod_produkcja_nazwa.split('(')[0] }}</a>
             {% endif %}
             <a href="/logout" style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">{{ t.wyloguj }}</a>
         </div>
@@ -1914,7 +2122,7 @@ KONCOWKI_TEMPLATE = """
                 <form method="GET" action="/" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="plan">
                     <div style="flex: 1; max-width: 300px;">
-                        <label><b>Wybierz dzień do podglądu:</b></label>
+                        <label><b>{{ t.wybierz_dzien_plan }}</b></label>
                         <select name="wybrana_data_planu" onchange="this.form.submit()">
                             {% for data_p in dostepne_daty_planu %}
                                 <option value="{{ data_p }}" {{ 'selected' if data_p == wybrana_data_planu else '' }}>📅 {{ data_p }}</option>
@@ -1925,7 +2133,7 @@ KONCOWKI_TEMPLATE = """
 
                 {% if wybrana_data_planu and wybrana_data_planu in plan_produkcyjny %}
                     <div style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #c8e1b9;">
-                        <b>📅 Dzień: {{ wybrana_data_planu }}</b>
+                        <b>📅 {{ wybrana_data_planu }}</b>
                         <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 13px;">
                             {% for kod, szt in plan_produkcyjny[wybrana_data_planu].items() %}
                                 <li style="margin-bottom: 5px;"><b>{{ kod }}</b> - {{ produkty_baza.get(kod, {}).get('nazwa', 'Nieznany') }}: <b>{{ szt }} szt.</b>
@@ -1952,13 +2160,13 @@ KONCOWKI_TEMPLATE = """
                         </select>
                     </form>
                     <div>
-                        <button type="button" onclick="window.print()" style="background: #007bff; width: auto; padding: 10px 18px; margin: 0; font-size: 13px;">🖨️ Drukuj / Zapisz PDF</button>
+                        <button type="button" onclick="window.print()" style="background: #007bff; width: auto; padding: 10px 18px; margin: 0; font-size: 13px;">🖨️ PDF / Print</button>
                     </div>
                 </div>
 
                 <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid #28a745; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
                     <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #155724; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                        <span>🚀 {{ t.podsumowanie_dnia }} (Dzień: {{ wybrana_data_progress }})</span>
+                        <span>🚀 {{ t.podsumowanie_dnia }} ({{ wybrana_data_progress }})</span>
                         <span>{{ t.realizacja_podstawowa }} <b>{{ procent_podstawowy_prog }}%</b> | {{ t.realizacja_z_nadwyzka }} <b>{{ procent_calkowity_prog }}%</b></span>
                     </div>
 
@@ -1993,14 +2201,14 @@ KONCOWKI_TEMPLATE = """
                     <table class="progress-table" id="progressTable">
                         <thead>
                             <tr>
-                                <th onclick="sortTable(0, false)">{{ t.kol_kod }} ↕️<input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj..."></th>
-                                <th onclick="sortTable(1, false)">{{ t.kol_nazwa }} ↕️<input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj..."></th>
-                                <th onclick="sortTable(2, false)">{{ t.kol_odbiorca }} ↕️<input type="text" id="filterOdbiorca" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Filtruj..."></th>
-                                <th style="width: 90px;" onclick="sortTable(3, true)">Plan ↕️<input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Plan..."></th>
-                                <th style="width: 90px;" onclick="sortTable(4, true)">{{ t.tabela_ilosc }} ↕️<input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Wykonano..."></th>
-                                <th style="width: 90px;" onclick="sortTable(5, true)">{{ t.pozostalo }} ↕️<input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Pozostało..."></th>
-                                <th style="width: 90px;" onclick="sortTable(6, true)">{{ t.nadwyzka }} ↕️<input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="Nadwyżka..."></th>
-                                <th style="width: 120px;" onclick="sortTable(7, true)">% Realizacji ↕️<input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="%..."></th>
+                                <th onclick="sortTable(0, false)">{{ t.kol_kod }} ↕️<input type="text" id="filterKod" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th onclick="sortTable(1, false)">{{ t.kol_nazwa }} ↕️<input type="text" id="filterNazwa" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th onclick="sortTable(2, false)">{{ t.kol_odbiorca }} ↕️<input type="text" id="filterOdbiorca" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 90px;" onclick="sortTable(3, true)">Plan ↕️<input type="text" id="filterPlan" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 90px;" onclick="sortTable(4, true)">{{ t.tabela_ilosc }} ↕️<input type="text" id="filterWykonano" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 90px;" onclick="sortTable(5, true)">{{ t.pozostalo }} ↕️<input type="text" id="filterPozostalo" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 90px;" onclick="sortTable(6, true)">{{ t.nadwyzka }} ↕️<input type="text" id="filterNadwyzka" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                <th style="width: 120px;" onclick="sortTable(7, true)">% ↕️<input type="text" id="filterProcent" class="filter-input" onkeyup="filtrKolumnTabeli()" onclick="event.stopPropagation()" placeholder="..."></th>
                             </tr>
                         </thead>
                         <tbody id="progressTableBody">
@@ -2042,7 +2250,7 @@ KONCOWKI_TEMPLATE = """
                 <form method="GET" action="/" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;">
                     <input type="hidden" name="linia" value="wydajnosc">
                     <div style="flex: 1; max-width: 300px;">
-                        <label><b>Wybierz dzień do podglądu wydajności:</b></label>
+                        <label><b>{{ t.data_raportu_hist }}</b></label>
                         <select name="wybrana_data_wydajnosc" onchange="this.form.submit()">
                             {% for data_d in dostepne_daty_wpisow %}
                                 <option value="{{ data_d }}" {{ 'selected' if data_d == wybrana_data_wydajnosc else '' }}>📅 {{ data_d }}</option>
@@ -2056,11 +2264,11 @@ KONCOWKI_TEMPLATE = """
                         <table class="progress-table" id="wydajnoscTable" style="margin-top: 0;">
                             <thead>
                                 <tr>
-                                    <th onclick="sortWydTable(0, false)">{{ t.th_linia }} ↕️<input type="text" id="filterWydLinia" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj linię..."></th>
-                                    <th onclick="sortWydTable(1, false)">{{ t.th_zmiana }} ↕️<input type="text" id="filterWydZmiana" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj zmianę..."></th>
-                                    <th onclick="sortWydTable(2, true)">{{ t.th_wyprodukowano }} ↕️<input type="text" id="filterWydSztuki" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj szt..."></th>
-                                    <th onclick="sortWydTable(3, true)">{{ t.th_czas_pracy }} ↕️<input type="text" id="filterWydCzas" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj godz..."></th>
-                                    <th onclick="sortWydTable(4, true)">{{ t.th_wydajnosc }} ↕️<input type="text" id="filterWydSztH" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="Filtruj szt/h..."></th>
+                                    <th onclick="sortWydTable(0, false)">{{ t.th_linia }} ↕️<input type="text" id="filterWydLinia" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                    <th onclick="sortWydTable(1, false)">{{ t.th_zmiana }} ↕️<input type="text" id="filterWydZmiana" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                    <th onclick="sortWydTable(2, true)">{{ t.th_wyprodukowano }} ↕️<input type="text" id="filterWydSztuki" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                    <th onclick="sortWydTable(3, true)">{{ t.th_czas_pracy }} ↕️<input type="text" id="filterWydCzas" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="..."></th>
+                                    <th onclick="sortWydTable(4, true)">{{ t.th_wydajnosc }} ↕️<input type="text" id="filterWydSztH" class="filter-input" onkeyup="filtrWydajnosci()" onclick="event.stopPropagation()" placeholder="..."></th>
                                 </tr>
                             </thead>
                             <tbody id="wydajnoscTableBody">
@@ -2078,7 +2286,7 @@ KONCOWKI_TEMPLATE = """
                     </div>
 
                     <div class="wyd-side-summary">
-                        <h4 style="margin-top: 0; color: #5a32a3; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">📌 Podsumowanie filtrów</h4>
+                        <h4 style="margin-top: 0; color: #5a32a3; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">📌 {{ t.podsumowanie_dnia.split()[0] }}</h4>
                         <div class="wyd-stat-row">
                             <div style="font-size: 12px; color: #555;">{{ t.laczna_suma_wypr }}</div>
                             <div id="wydSumaSztuk" style="font-size: 20px; font-weight: bold; color: #28a745; margin-top: 2px;">0 szt.</div>
@@ -2096,29 +2304,29 @@ KONCOWKI_TEMPLATE = """
             </div>
         {% elif linia == 'raporty' and 'raporty' in dostep %}
             <div class="raporty-section">
-                <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }} (Wspólne dla obu modułów)</h3>
-                <p style="font-size: 13px; color: #555;">Wybierz dzień oraz rodzaj raportu z dowolnego obszaru (końcówki linii, monitoring linii 1–6, czasy pracowników oraz wydajność na roboczogodzinę):</p>
+                <h3 style="margin-top: 0; color: #d9480f;">📈 {{ t.raporty_tab }}</h3>
+                <p style="font-size: 13px; color: #555;">{{ t.data_raportu_hist }}</p>
                 <div style="background: white; padding: 22px; border-radius: 8px; border: 1px solid #ffd8a8; max-width: 780px;">
                     <form action="/generate" method="GET">
-                        <label><b>📅 Wybierz dzień raportu:</b></label>
+                        <label><b>{{ t.data_raportu_hist }}</b></label>
                         <input type="date" name="data" value="{{ wybrana_data }}" style="margin-bottom: 15px; max-width: 280px;" required>
 
-                        <label><b>📑 Rodzaj raportu:</b></label>
+                        <label><b>{{ t.raporty_tab }}:</b></label>
                         <select name="typ_raportu" style="margin-bottom: 20px;">
                             <optgroup label="Końcówki Linii / Rozchód i Plan">
-                                <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1 (osobne arkusze linii)</option>
-                                <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2 (osobne arkusze linii)</option>
-                                <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (osobne arkusze Z1 i Z2)</option>
-                                <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu (Kod, Nazwa, Odbiorca, Plan, Wykonano, Pozostało, Nadwyżka, %)</option>
-                                <option value="wydajnosc">⏱️ Raport Wydajności Linii i Zmian (Sztuk na godzinę — szt/h)</option>
+                                <option value="rozchod_zmiana_1">📦 Raport Rozchodu / Produkcji — ZMIANA 1</option>
+                                <option value="rozchod_zmiana_2">📦 Raport Rozchodu / Produkcji — ZMIANA 2</option>
+                                <option value="rozchod_osobne_arkusze">📦 Raport Rozchodu — ZMIANA 1 + ZMIANA 2 (Z1 i Z2)</option>
+                                <option value="postep_realizacja">📊 Raport Postępu i Realizacji Planu</option>
+                                <option value="wydajnosc">⏱️ Raport Wydajności Linii i Zmian (szt/h)</option>
                             </optgroup>
                             <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
-                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Podział: Linia 1 Z1, Linia 1 Z2, Linia 2 Z1... / szt. na rbh)</option>
-                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Suma pracy i postojów L1–L6 Z1–Z2, Kto rozpoczął / zakończył, Zdarzenia, Pracownicy)</option>
+                                <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Linia 1–6, Z1–Z2, szt./rbh)</option>
+                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników</option>
                             </optgroup>
                         </select>
 
-                        <button type="submit" style="background: #fd7e14; color: white;">📥 Pobierz wygenerowany raport Excel (.xlsx)</button>
+                        <button type="submit" style="background: #fd7e14; color: white;">📥 XLSX</button>
                     </form>
                 </div>
             </div>
@@ -2214,7 +2422,7 @@ KONCOWKI_TEMPLATE = """
                         {% if role == 'admin' %}
                             <input type="date" id="dataProdInput" name="data" value="{{ wybrana_data }}" required onchange="aktualizujDane()">
                         {% else %}
-                            <input type="date" id="dataProdInput" name="data" value="{{ dzis }}" readonly style="background: #e9ecef;" title="Operator może rejestrować tylko na dzisiejszy dzień">
+                            <input type="date" id="dataProdInput" name="data" value="{{ dzis }}" readonly style="background: #e9ecef;">
                         {% endif %}
                     </div>
                     <div>
@@ -2293,7 +2501,7 @@ KONCOWKI_TEMPLATE = """
                 </form>
             {% endif %}
 
-            <h3>📊 {{ t.realizacja_biez }} {{ t.linia_1.split()[0] }} {{ linia }} (dla dnia: {{ wybrana_data }})</h3>
+            <h3>📊 {{ t.realizacja_biez }} {{ t.linia_1.split()[0] }} {{ linia }} ({{ wybrana_data }})</h3>
             <table>
                 <tr>
                     <th>{{ t.tabela_nr }}</th><th>{{ t.kol_kod }}</th><th>{{ t.kol_nazwa }}</th><th>{{ t.tabela_ilosc }}</th>
@@ -2302,8 +2510,8 @@ KONCOWKI_TEMPLATE = """
                 {% for wpis in wpisy_dla_linii %}
                 <tr>
                     <td>{{ loop.index }}</td><td>{{ wpis.kod }}</td><td>{{ wpis.nazwa }}</td><td><b>{{ wpis.ilosc }}</b> szt.</td>
-                    <td>{{ wpis.czas_start }} - {{ wpis.czas_koniec }}</td><td>✅ Sprawdzono (BHP + Linia)</td>
-                    <td>Data przyd: {{ wpis.data_przyd }} | Partia: {{ wpis.partia_prod }} | Op: {{ wpis.operator }}</td>
+                    <td>{{ wpis.czas_start }} - {{ wpis.czas_koniec }}</td><td>✅ BHP</td>
+                    <td>{{ wpis.data_przyd }} | {{ wpis.partia_prod }} | {{ wpis.operator }}</td>
                     <td><a href="/usun/{{ wpis.id }}?data={{ wybrana_data }}" style="color: red; text-decoration: none;">{{ t.usun }}</a></td>
                 </tr>
                 {% else %}
@@ -2321,11 +2529,22 @@ KONCOWKI_TEMPLATE = """
 </html>
 """
 
-# --- LOGOWANIE I PRZEŁĄCZANIE MODUŁÓW ---
+# --- ZMIANA JĘZYKA, LOGOWANIE I PRZEŁĄCZANIE MODUŁÓW ---
+
+@app.route('/set-lang/<lang_code>')
+def set_lang(lang_code):
+    if lang_code in T:
+        session['lang'] = lang_code
+    referer = request.headers.get('Referer')
+    if referer:
+        return redirect(referer)
+    if session.get('modul') == 'produkcja':
+        return redirect(url_for('produkcja_view'))
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    t = T["pl"]
+    t, lang = get_lang_dict()
     wybrany_modul = request.form.get('modul', session.get('modul', 'koncowki'))
     if request.method == 'POST':
         username = (request.form.get('username') or '').strip()
@@ -2334,14 +2553,16 @@ def login():
 
         user_db = UzytkownikModel.query.filter_by(username=username, haslo=password).first()
         if not user_db:
-            return render_template_string(LOGIN_TEMPLATE, t=t, wybrany_modul=modul, error="Nieprawidłowy login lub hasło!")
+            return render_template_string(LOGIN_TEMPLATE, t=t, lang=lang, wybrany_modul=modul, error="Nieprawidłowy login lub hasło!")
 
         dostep_lista = json.loads(user_db.dostep)
         if not czy_ma_dostep_do_modulu(dostep_lista, user_db.rola, modul):
             nazwa_m = "Moduł Produkcyjny" if modul == "produkcja" else "Końcówki Linii"
-            return render_template_string(LOGIN_TEMPLATE, t=t, wybrany_modul=modul, error=f"Twoje konto nie ma uprawnień do wybranego modułu ({nazwa_m})!")
+            return render_template_string(LOGIN_TEMPLATE, t=t, lang=lang, wybrany_modul=modul, error=f"Twoje konto nie ma uprawnień do wybranego modułu ({nazwa_m})!")
 
+        zachowany_lang = session.get('lang', lang)
         session.clear()
+        session['lang'] = zachowany_lang
         session['user'] = user_db.username
         session['rola'] = user_db.rola
         session['pelna_nazwa'] = user_db.pelna_nazwa
@@ -2352,7 +2573,7 @@ def login():
             return redirect(url_for('produkcja_view'))
         return redirect(url_for('index'))
 
-    return render_template_string(LOGIN_TEMPLATE, t=t, wybrany_modul=wybrany_modul, error=None)
+    return render_template_string(LOGIN_TEMPLATE, t=t, lang=lang, wybrany_modul=wybrany_modul, error=None)
 
 @app.route('/przelacz-modul/<modul>')
 def przelacz_modul(modul):
@@ -2378,7 +2599,9 @@ def przelacz_modul(modul):
 
 @app.route('/logout')
 def logout():
+    zachowany_lang = session.get('lang', 'pl')
     session.clear()
+    session['lang'] = zachowany_lang
     return redirect(url_for('login'))
 
 # --- WIDOK MODUŁU PRODUKCYJNEGO (LINIE 1-6 + PRACOWNICY/QR + ADMIN) ---
@@ -2393,6 +2616,7 @@ def produkcja_view():
     if not czy_ma_dostep_do_modulu(dostep_lista, rola, 'produkcja'):
         return "Brak uprawnień do Modułu Produkcyjnego!", 403
 
+    t, lang = get_lang_dict()
     session['modul'] = 'produkcja'
     dzis = datetime.now().strftime('%Y-%m-%d')
     wybrana_data = request.args.get('wybrana_data', dzis) if rola == 'admin' else dzis
@@ -2417,6 +2641,8 @@ def produkcja_view():
 
     return render_template_string(
         PRODUKCJA_MODULE_TEMPLATE,
+        t=t,
+        lang=lang,
         pelna_nazwa=session.get('pelna_nazwa'),
         role=rola,
         dostep=dostep_lista,
@@ -2731,7 +2957,7 @@ def index():
         return redirect(url_for('produkcja_view'))
 
     session['modul'] = 'koncowki'
-    t = T["pl"]
+    t, lang = get_lang_dict()
     user = session.get('user')
     pelna_nazwa = session.get('pelna_nazwa')
     wypr_zmiana = session.get('wybrana_zmiana')
@@ -2739,7 +2965,7 @@ def index():
 
     if not wypr_zmiana:
         return render_template_string(
-            KONCOWKI_TEMPLATE, t=t, wypr_zmiana=None, user=user, role=role,
+            KONCOWKI_TEMPLATE, t=t, lang=lang, wypr_zmiana=None, user=user, role=role,
             pelna_nazwa=pelna_nazwa, dostep=dostep, can_access_produkcja=can_access_produkcja,
             produkty_json="{}", plan_json="{}", zrealizowane_json="{}"
         )
@@ -2845,7 +3071,7 @@ def index():
 
     return render_template_string(
         KONCOWKI_TEMPLATE,
-        t=t, linia=linia, wypr_zmiana=wypr_zmiana, dzis=dzis,
+        t=t, lang=lang, linia=linia, wypr_zmiana=wypr_zmiana, dzis=dzis,
         wybrana_data=wybrana_data, wybrana_data_planu=wybrana_data_planu,
         wybrana_data_progress=wybrana_data_progress, wybrana_data_wydajnosc=wybrana_data_wydajnosc,
         dostepne_daty_planu=dostepne_daty_planu, dostepne_daty_wpisow=dostepne_daty_wpisow,
@@ -3386,7 +3612,6 @@ def generate():
 
         prac_meta = {p.emp_id: p.stanowisko for p in PracownikQrModel.query.all()}
 
-        # Zbiorcze czasy pracy i postojów linii z podziałem na linie 1-6 i zmiany 1-2
         line_shift_times = {(lid, zm): {"work_sec": 0, "stop_sec": 0} for lid in [1, 2, 3, 4, 5, 6] for zm in ['1', '2']}
         for z in zdarzenia:
             _, zm_z = okresl_dzien_roboczy_i_zmiane(z.start_iso)
@@ -3427,7 +3652,6 @@ def generate():
             c.alignment = Alignment(horizontal="center", vertical="center")
             c.border = thin_border
 
-        # Tabela podsumowująca w kolumnach J:N
         headers_sum = [
             "Linia",
             "Zmiana",
