@@ -390,12 +390,6 @@ def parse_iso_dt(iso_str):
         return None
 
 def okresl_dzien_roboczy_i_zmiane(iso_str):
-    """
-    Zmiana 1: 04:00 (lub 06:00) do 14:00 -> 4 <= godzina < 14 (dzień roboczy = data bieżąca).
-    Zmiana 2: 14:00 do 22:00, maks. do 02:00 (bufor do 03:59) ->
-      - godzina >= 14: Zmiana 2, dzień roboczy = data bieżąca,
-      - godzina < 4: Zmiana 2, dzień roboczy = data poprzednia (nocne przedłużenie 2. zmiany).
-    """
     dt = parse_iso_dt(iso_str)
     if not dt:
         return None, '1'
@@ -2120,7 +2114,7 @@ KONCOWKI_TEMPLATE = """
                             </optgroup>
                             <optgroup label="Moduł Produkcyjny (Linie 1–6, Pracownicy, Roboczogodziny)">
                                 <option value="wydajnosc_rbh">⚡ Raport Wydajności na Roboczogodzinę (Podział: Linia 1 Z1, Linia 1 Z2, Linia 2 Z1... / szt. na rbh)</option>
-                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Kto rozpoczął / zakończył, Zdarzenia, Przyczyny, Pracownicy)</option>
+                                <option value="monitoring_linie_pracownicy">👥 Raport Monitoringu Linii 1–6, Postojów i Czasu Pracowników (Suma pracy i postojów L1–L6 Z1–Z2, Kto rozpoczął / zakończył, Zdarzenia, Pracownicy)</option>
                             </optgroup>
                         </select>
 
@@ -3379,9 +3373,41 @@ def generate():
         ws_m['A1'] = f"RAPORT MONITORINGU LINII 1–6 I CZASU PRACOWNIKÓW - {wybrana_data}"
         ws_m['A1'].font = font_title
 
-        zdarzenia = LiniaMonitorZdarzenieModel.query.filter_by(iso_date=wybrana_data).order_by(LiniaMonitorZdarzenieModel.start_iso.desc()).all()
-        sesje_hist = PracownikSesjaHistoriaModel.query.filter_by(iso_date=wybrana_data).order_by(PracownikSesjaHistoriaModel.start_time_iso.desc()).all()
+        next_day_iso = (datetime.strptime(wybrana_data, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d')
+        zdarzenia_all = LiniaMonitorZdarzenieModel.query.filter(
+            LiniaMonitorZdarzenieModel.iso_date.in_([wybrana_data, next_day_iso])
+        ).order_by(LiniaMonitorZdarzenieModel.start_iso.desc()).all()
+        zdarzenia = [z for z in zdarzenia_all if okresl_dzien_roboczy_i_zmiane(z.start_iso)[0] == wybrana_data]
+
+        sesje_hist_all = PracownikSesjaHistoriaModel.query.filter(
+            PracownikSesjaHistoriaModel.iso_date.in_([wybrana_data, next_day_iso])
+        ).order_by(PracownikSesjaHistoriaModel.start_time_iso.desc()).all()
+        sesje_hist = [s for s in sesje_hist_all if okresl_dzien_roboczy_i_zmiane(s.start_time_iso)[0] == wybrana_data]
+
         prac_meta = {p.emp_id: p.stanowisko for p in PracownikQrModel.query.all()}
+
+        # Zbiorcze czasy pracy i postojów linii z podziałem na linie 1-6 i zmiany 1-2
+        line_shift_times = {(lid, zm): {"work_sec": 0, "stop_sec": 0} for lid in [1, 2, 3, 4, 5, 6] for zm in ['1', '2']}
+        for z in zdarzenia:
+            _, zm_z = okresl_dzien_roboczy_i_zmiane(z.start_iso)
+            key = (z.linia_id, zm_z)
+            if key in line_shift_times:
+                if z.event_type == 'PRACA':
+                    line_shift_times[key]["work_sec"] += int(z.duration_sec or 0)
+                elif z.event_type == 'POSTÓJ':
+                    line_shift_times[key]["stop_sec"] += int(z.duration_sec or 0)
+
+        now_dt = datetime.now()
+        for stan_l in LiniaMonitorStanModel.query.all():
+            if stan_l.status in ['RUNNING', 'STOPPED'] and stan_l.start_time_iso:
+                dz_s, zm_s = okresl_dzien_roboczy_i_zmiane(stan_l.start_time_iso)
+                dt_s = parse_iso_dt(stan_l.start_time_iso)
+                if dz_s == wybrana_data and dt_s and (stan_l.linia_id, zm_s) in line_shift_times:
+                    elapsed_s = max(0, int((now_dt - dt_s).total_seconds()))
+                    if stan_l.status == 'RUNNING':
+                        line_shift_times[(stan_l.linia_id, zm_s)]["work_sec"] += elapsed_s
+                    else:
+                        line_shift_times[(stan_l.linia_id, zm_s)]["stop_sec"] += elapsed_s
 
         headers_m = [
             "Linia",
@@ -3400,6 +3426,40 @@ def generate():
             c.fill = fill_header
             c.alignment = Alignment(horizontal="center", vertical="center")
             c.border = thin_border
+
+        # Tabela podsumowująca w kolumnach J:N
+        headers_sum = [
+            "Linia",
+            "Zmiana",
+            "Łączny czas pracy (HH:MM:SS)",
+            "Łączny czas postojów (HH:MM:SS)",
+            "Praca / Postój (godz.)"
+        ]
+        for idx_s, h_s_text in enumerate(headers_sum, start=10):
+            cs = ws_m.cell(row=3, column=idx_s, value=h_s_text)
+            cs.font = font_header
+            cs.fill = fill_header
+            cs.alignment = Alignment(horizontal="center", vertical="center")
+            cs.border = thin_border
+
+        row_sum_idx = 4
+        for lid in [1, 2, 3, 4, 5, 6]:
+            for zm in ['1', '2']:
+                w_sec = line_shift_times[(lid, zm)]["work_sec"]
+                s_sec = line_shift_times[(lid, zm)]["stop_sec"]
+                vals_sum = [
+                    f"Linia {lid}",
+                    f"Zmiana {zm}",
+                    format_sec_hhmmss(w_sec),
+                    format_sec_hhmmss(s_sec),
+                    f"{round(w_sec / 3600.0, 2)}h / {round(s_sec / 3600.0, 2)}h"
+                ]
+                for offset_c, val_s in enumerate(vals_sum):
+                    cell_s = ws_m.cell(row=row_sum_idx, column=10 + offset_c, value=val_s)
+                    cell_s.font = font_bold if offset_c in [0, 2, 3] else font_normal
+                    cell_s.border = thin_border
+                    cell_s.alignment = Alignment(horizontal="center", vertical="center")
+                row_sum_idx += 1
 
         rm = 4
         for z in zdarzenia:
